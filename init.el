@@ -322,6 +322,7 @@
 (recentf-mode +1)
 (show-paren-mode +1)
 (global-auto-revert-mode +1)
+(global-hl-line-mode +1)
 (which-function-mode +1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
