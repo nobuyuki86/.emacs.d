@@ -40,6 +40,7 @@
 
 (straight-use-package 'company)
 (straight-use-package 'company-box)
+(straight-use-package 'company-tabnine)
 
 (setq company-idle-delay 0
       company-minimum-prefix-length 1)
@@ -49,11 +50,9 @@
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "TAB") 'company-complete-selection)
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-  (define-key company-active-map (kbd "C-n") nil)
-  (define-key company-active-map (kbd "C-p") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
-  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-dabbrev)))
+  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
 
 (add-hook 'company-mode-hook 'company-box-mode)
 
@@ -246,6 +245,8 @@
 (add-hook 'css-mode-hook #'lsp)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'java-mode-hook (lambda ()
+			    ;; current VSCode defaults
+			    (setq lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
 			    (require 'lsp-java)
 			    (lsp)))
 (add-hook 'python-mode-hook (lambda ()
