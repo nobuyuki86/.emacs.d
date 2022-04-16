@@ -48,10 +48,12 @@
 (with-eval-after-load 'company
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
-  (define-key company-active-map (kbd "TAB") 'company-select-next)
-  (define-key company-active-map (kbd "<tab>") 'company-select-next)
-  (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
-  (define-key company-active-map (kbd "<backtab>") 'company-select-previous)
+  (define-key company-active-map (kbd "C-n") nil)
+  (define-key company-active-map (kbd "C-p") nil)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+  (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
   (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
 
 (add-hook 'company-mode-hook 'company-box-mode)
@@ -154,17 +156,15 @@
 
 (load-theme 'zerodark t)
 
+(zerodark-setup-modeline-format)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #modeline
 
-(straight-use-package 'doom-modeline)
-(straight-use-package 'nyan-mode)
+(straight-use-package 'minions)
 
-(setq nyan-animate-nyancat t)
-
-(doom-modeline-mode +1)
-(nyan-mode +1)
+(minions-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
