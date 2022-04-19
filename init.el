@@ -177,29 +177,6 @@
 ;; #all-the-icons
 
 (straight-use-package 'all-the-icons)
-(straight-use-package 'all-the-icons-dired)
-
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #rainbow-delimiters
-
-(straight-use-package 'rainbow-delimiters)
-
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #highlight-indent
-
-(straight-use-package 'highlight-indent-guides)
-
-(setq highlight-indent-guides-method 'bitmap
-      highlight-indent-guides-responsive 'top
-      highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-line)
-
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -229,6 +206,7 @@
   (sp-local-pair 'prog-mode "(" nil :post-handlers '((indent-between-pair "RET"))))
 
 (smartparens-global-mode +1)
+(show-smartparens-global-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
