@@ -295,6 +295,16 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #font
+
+(cond ((eq system-type 'windows-nt)
+       (add-to-list 'default-frame-alist '(font . "ＭＳゴシック 12")))
+
+      ((eq system-type 'gnu/linux)
+       (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #emacs
 
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
