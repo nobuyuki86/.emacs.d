@@ -41,20 +41,30 @@
 (straight-use-package 'company)
 (straight-use-package 'company-box)
 (straight-use-package 'company-tabnine)
-
-(setq company-idle-delay 0
-      company-minimum-prefix-length 1)
+(straight-use-package '(company-dwim :type git :host github :repo "zk-phi/company-dwim"))
+(straight-use-package '(company-anywhere :type git :host github :repo "zk-phi/company-anywhere"))
 
 (with-eval-after-load 'company
+  (setq company-idle-delay 0
+	company-minimum-prefix-length 1
+	company-require-match 'never)
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "C-n") nil)
   (define-key company-active-map (kbd "C-p") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
-  (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-  (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
+  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine))
+
+  (require 'company-anywhere)
+  (require 'company-dwim)
+  (setq company-frontends '(company-pseudo-tooltip-unless-just-one-frontend
+			    company-dwim-frontend
+			    company-echo-metadata-frontend))
+  (define-key company-active-map (kbd "TAB") 'company-dwim)
+  (define-key company-active-map (kbd "<tab>") 'company-dwim)
+  (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
+  (define-key company-active-map (kbd "<backtab>") 'company-select-previous))
 
 (add-hook 'company-mode-hook 'company-box-mode)
 
@@ -93,7 +103,14 @@
 (straight-use-package 'yasnippet-snippets)
 
 (with-eval-after-load 'yasnippet
-  (require 'yasnippet-snippets))
+  (require 'yasnippet-snippets)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-keymap (kbd "C-o") 'yas-next-field-or-maybe-expand)
+  (define-key yas-keymap (kbd "TAB") nil)
+  (define-key yas-keymap (kbd "<tab>") nil)
+  (define-key yas-keymap (kbd "S-TAB") nil)
+  (define-key yas-keymap (kbd "<backtab>") nil))
 
 (yas-global-mode +1)
 
@@ -178,6 +195,20 @@
 
 (straight-use-package 'all-the-icons)
 
+(when (display-graphic-p)
+  (require 'all-the-icons))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #smartparens
+
+(straight-use-package 'smartparens)
+
+(with-eval-after-load 'smartparens
+  (require 'smartparens-config))
+
+(smartparens-global-mode +1)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #expand-region
@@ -188,32 +219,9 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #smartparens
-
-(straight-use-package 'smartparens)
-
-(with-eval-after-load 'smartparens
-  (require 'smartparens-config)
-
-  (defun indent-between-pair (&rest _ignored)
-    (newline)
-    (indent-according-to-mode)
-    (forward-line -1)
-    (indent-according-to-mode))
-
-  (sp-local-pair 'prog-mode "{" nil :post-handlers '((indent-between-pair "RET")))
-  (sp-local-pair 'prog-mode "[" nil :post-handlers '((indent-between-pair "RET")))
-  (sp-local-pair 'prog-mode "(" nil :post-handlers '((indent-between-pair "RET"))))
-
-(smartparens-global-mode +1)
-(show-smartparens-global-mode +1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
-(straight-use-package 'lsp-ui)
 (straight-use-package 'lsp-java)
 (straight-use-package 'lsp-pyright)
 
