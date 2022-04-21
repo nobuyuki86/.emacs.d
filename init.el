@@ -223,6 +223,8 @@
 
 (straight-use-package 'apheleia)
 
+(add-hook 'rust-mode-hook 'apheleia-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
