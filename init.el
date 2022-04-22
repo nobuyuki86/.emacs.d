@@ -225,7 +225,6 @@
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'java-mode-hook (lambda ()
 			    ;; current VSCode defaults
-			    (setq lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
 			    (require 'lsp-java)
 			    (lsp)))
 (add-hook 'python-mode-hook (lambda ()
