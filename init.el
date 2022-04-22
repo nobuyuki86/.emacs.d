@@ -41,8 +41,6 @@
 (straight-use-package 'company)
 (straight-use-package 'company-box)
 (straight-use-package 'company-tabnine)
-(straight-use-package '(company-dwim :type git :host github :repo "zk-phi/company-dwim"))
-(straight-use-package '(company-anywhere :type git :host github :repo "zk-phi/company-anywhere"))
 
 (with-eval-after-load 'company
   (setq company-idle-delay 0
@@ -50,21 +48,13 @@
 	company-require-match 'never)
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
+  (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+  (define-key company-active-map (kbd "TAB") 'company-complete-selection)
   (define-key company-active-map (kbd "C-n") nil)
   (define-key company-active-map (kbd "C-p") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
-  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine))
-
-  (require 'company-anywhere)
-  (require 'company-dwim)
-  (setq company-frontends '(company-pseudo-tooltip-unless-just-one-frontend
-			    company-dwim-frontend
-			    company-echo-metadata-frontend))
-  (define-key company-active-map (kbd "TAB") 'company-dwim)
-  (define-key company-active-map (kbd "<tab>") 'company-dwim)
-  (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
-  (define-key company-active-map (kbd "<backtab>") 'company-select-previous))
+  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
 
 (add-hook 'company-mode-hook 'company-box-mode)
 
@@ -105,12 +95,7 @@
 (with-eval-after-load 'yasnippet
   (require 'yasnippet-snippets)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  (define-key yas-keymap (kbd "C-o") 'yas-next-field-or-maybe-expand)
-  (define-key yas-keymap (kbd "TAB") nil)
-  (define-key yas-keymap (kbd "<tab>") nil)
-  (define-key yas-keymap (kbd "S-TAB") nil)
-  (define-key yas-keymap (kbd "<backtab>") nil))
+  (define-key yas-minor-mode-map (kbd "<tab>") nil))
 
 (yas-global-mode +1)
 
