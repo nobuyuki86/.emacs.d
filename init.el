@@ -54,7 +54,8 @@
   (define-key company-active-map (kbd "C-p") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
-  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
+  ;; (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine))
+  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-dabbrev)))
 
 (add-hook 'company-mode-hook 'company-box-mode)
 
@@ -284,6 +285,27 @@
 (straight-use-package 'sql-indent)
 
 (add-hook 'sql-mode-hook 'sqlind-minor-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #orderless
+
+(straight-use-package 'orderless)
+
+(defun my/orderless-dispatch-flex-first (_pattern index _total)
+  (and (eq index 0) 'orderless-flex))
+
+(defun just-one-face (fn &rest args)
+  (let ((orderless-match-faces [completions-common-part]))
+    (apply fn args)))
+
+(setq completion-styles '(orderless)
+      completion-category-defaults nil
+      completion-category-overrides nil
+      orderless-style-dispatchers '(my/orderless-dispatch-flex-first))
+
+(with-eval-after-load 'company
+  (advice-add 'company-capf--candidates :around #'just-one-face))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
