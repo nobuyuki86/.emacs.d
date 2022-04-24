@@ -225,7 +225,6 @@
 (add-hook 'css-mode-hook #'lsp)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'java-mode-hook (lambda ()
-			    ;; current VSCode defaults
 			    (require 'lsp-java)
 			    (lsp)))
 (add-hook 'python-mode-hook (lambda ()
