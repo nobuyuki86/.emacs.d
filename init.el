@@ -72,6 +72,7 @@
 
 (straight-use-package 'company)
 (straight-use-package 'company-box)
+(straight-use-package 'company-tabnine)
 
 (with-eval-after-load 'company
   (setq company-idle-delay 0
@@ -86,7 +87,7 @@
   (define-key company-active-map (kbd "C-p") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
-  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-dabbrev)))
+  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
 
 (add-hook 'company-mode-hook 'company-box-mode)
 
@@ -160,7 +161,7 @@
 (global-set-key (kbd "<help> a") #'consult-apropos)            ;; orig. apropos-command
 ;; M-g bindings (goto-map)
 (global-set-key (kbd "M-g e") #'consult-compile-error)
-(global-set-key (kbd "M-g f") #'consult-flymake)               ;; Alternative: consult-flycheck
+;; (global-set-key (kbd "M-g f") #'consult-flymake)               ;; Alternative: consult-flycheck
 (global-set-key (kbd "M-g g") #'consult-goto-line)             ;; orig. goto-line
 (global-set-key (kbd "M-g M-g") #'consult-goto-line)           ;; orig. goto-line
 (global-set-key (kbd "M-g o") #'consult-outline)               ;; Alternative: consult-org-heading
@@ -188,6 +189,16 @@
 ;; Minibuffer history
 (define-key minibuffer-local-map (kbd "M-s") #'consult-history)                 ;; orig. next-matching-history-element
 (define-key minibuffer-local-map (kbd "M-r") #'consult-history)                ;; orig. previous-matching-history-element
+
+(with-eval-after-load 'consult
+  (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key (kbd "M-.")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -243,6 +254,9 @@
 ;; #flycheck
 
 (straight-use-package 'flycheck)
+(straight-use-package 'consult-flycheck)
+
+(global-set-key (kbd "M-g f") #'consult-flycheck)
 
 (global-flycheck-mode +1)
 
@@ -261,6 +275,43 @@
 ;; #rg
 
 (straight-use-package 'rg)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #rainbow-delimiters
+
+(straight-use-package 'rainbow-delimiters)
+
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #goto-last-change
+
+(straight-use-package 'goto-last-change)
+
+(global-set-key (kbd "M-g c") 'goto-last-change)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #unicode-fonts
+
+(straight-use-package 'unicode-fonts)
+
+(unicode-fonts-setup)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #highlight-indent-guides
+
+(straight-use-package 'highlight-indent-guides)
+
+(setq highlight-indent-guides-method 'column
+      highlight-indent-guides-responsive 'top
+      ;; highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-line
+      )
+
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -291,9 +342,12 @@
 ;; #all-the-icons
 
 (straight-use-package 'all-the-icons)
+(straight-use-package 'all-the-icons-dired)
 
 (when (display-graphic-p)
   (require 'all-the-icons))
+
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
