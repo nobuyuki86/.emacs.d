@@ -21,6 +21,38 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #font
+
+(cond ((eq system-type 'windows-nt)
+       (add-to-list 'default-frame-alist '(font . "ＭＳゴシック 12")))
+
+      ((eq system-type 'gnu/linux)
+       (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #emacs
+
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+      completion-ignore-case t
+      gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      use-short-answers t)
+
+(server-mode +1)
+(savehist-mode +1)
+(save-place-mode +1)
+(recentf-mode +1)
+(show-paren-mode +1)
+(global-auto-revert-mode +1)
+(global-hl-line-mode +1)
+(which-function-mode +1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #ime
 
 (straight-use-package 'tr-ime)
@@ -40,11 +72,11 @@
 
 (straight-use-package 'company)
 (straight-use-package 'company-box)
-(straight-use-package 'company-tabnine)
 
 (with-eval-after-load 'company
   (setq company-idle-delay 0
 	company-minimum-prefix-length 1
+	company-dabbrev-downcase nil
 	company-require-match 'never)
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
@@ -54,7 +86,6 @@
   (define-key company-active-map (kbd "C-p") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
-  ;; (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine))
   (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-dabbrev)))
 
 (add-hook 'company-mode-hook 'company-box-mode)
@@ -85,6 +116,86 @@
 
 (selectrum-prescient-mode +1)
 (company-prescient-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #ctrlf
+
+(straight-use-package 'ctrlf)
+
+(ctrlf-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #marginalia
+
+(straight-use-package 'marginalia)
+
+(marginalia-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #consult
+
+(straight-use-package 'consult)
+
+;; C-c bindings (mode-specific-map)
+(global-set-key (kbd "C-c h") #'consult-history)
+(global-set-key (kbd "C-c m") #'consult-mode-command)
+(global-set-key (kbd "C-c k") #'consult-kmacro)
+
+;; C-x bindings (ctl-x-map)
+(global-set-key (kbd "C-x M-:") #'consult-complex-command)     ;; orig. repeat-complex-command
+(global-set-key (kbd "C-x b") #'consult-buffer)                ;; orig. switch-to-buffer
+(global-set-key (kbd "C-x 4 b") #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+(global-set-key (kbd "C-x 5 b") #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+(global-set-key (kbd "C-x r b") #'consult-bookmark)            ;; orig. bookmark-jump
+(global-set-key (kbd "C-x p b") #'consult-project-buffer)      ;; orig. project-switch-to-buffer
+;; Custom M-# bindings for fast register access
+(global-set-key (kbd "M-#") #'consult-register-load)
+(global-set-key (kbd "M-'") #'consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+(global-set-key (kbd "C-M-#") #'consult-register)
+;; Other custom bindings
+(global-set-key (kbd "M-y") #'consult-yank-pop)                ;; orig. yank-pop
+(global-set-key (kbd "<help> a") #'consult-apropos)            ;; orig. apropos-command
+;; M-g bindings (goto-map)
+(global-set-key (kbd "M-g e") #'consult-compile-error)
+(global-set-key (kbd "M-g f") #'consult-flymake)               ;; Alternative: consult-flycheck
+(global-set-key (kbd "M-g g") #'consult-goto-line)             ;; orig. goto-line
+(global-set-key (kbd "M-g M-g") #'consult-goto-line)           ;; orig. goto-line
+(global-set-key (kbd "M-g o") #'consult-outline)               ;; Alternative: consult-org-heading
+(global-set-key (kbd "M-g m") #'consult-mark)
+(global-set-key (kbd "M-g k") #'consult-global-mark)
+(global-set-key (kbd "M-g i") #'consult-imenu)
+(global-set-key (kbd "M-g I") #'consult-imenu-multi)
+;; M-s bindings (search-map)
+(global-set-key (kbd "M-s d") #'consult-find)
+(global-set-key (kbd "M-s D") #'consult-locate)
+(global-set-key (kbd "M-s g") #'consult-grep)
+(global-set-key (kbd "M-s G") #'consult-git-grep)
+(global-set-key (kbd "M-s r") #'consult-ripgrep)
+(global-set-key (kbd "M-s l") #'consult-line)
+(global-set-key (kbd "M-s L") #'consult-line-multi)
+(global-set-key (kbd "M-s m") #'consult-multi-occur)
+(global-set-key (kbd "M-s k") #'consult-keep-lines)
+(global-set-key (kbd "M-s u") #'consult-focus-lines)
+;; Isearch integration
+(global-set-key (kbd "M-s e") #'consult-isearch-history)
+(define-key isearch-mode-map (kbd "M-e") #'consult-isearch-history)         ;; orig. isearch-edit-string
+(define-key isearch-mode-map (kbd "M-s e") #'consult-isearch-history)       ;; orig. isearch-edit-string
+(define-key isearch-mode-map (kbd "M-s l") #'consult-line)                  ;; needed by consult-line to detect isearch
+(define-key isearch-mode-map (kbd "M-s L") #'consult-line-multi)            ;; needed by consult-line to detect isearch
+;; Minibuffer history
+(define-key minibuffer-local-map (kbd "M-s") #'consult-history)                 ;; orig. next-matching-history-element
+(define-key minibuffer-local-map (kbd "M-r") #'consult-history)                ;; orig. previous-matching-history-element
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #emabrk
+
+(straight-use-package 'embark)
+
+(global-set-key (kbd "C-.") #'embark-act)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -191,7 +302,17 @@
 (straight-use-package 'smartparens)
 
 (with-eval-after-load 'smartparens
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+
+  (defun indent-between-pair (&rest _ignored)
+    (newline)
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (sp-local-pair 'prog-mode "(" nil :post-handlers '((indent-between-pair "RET")))
+  (sp-local-pair 'prog-mode "[" nil :post-handlers '((indent-between-pair "RET")))
+  (sp-local-pair 'prog-mode "{" nil :post-handlers '((indent-between-pair "RET"))))
 
 (smartparens-global-mode +1)
 
@@ -210,12 +331,35 @@
 (straight-use-package 'apheleia)
 
 (add-hook 'rust-mode-hook 'apheleia-mode)
+(add-hook 'python-mode-hook 'apheleia-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #orderless
+
+(straight-use-package 'orderless)
+
+(defun my/orderless-dispatch-flex-first (_pattern index _total)
+  (and (eq index 0) 'orderless-flex))
+
+(defun just-one-face (fn &rest args)
+  (let ((orderless-match-faces [completions-common-part]))
+    (apply fn args)))
+
+(setq completion-styles '(basic orderless)
+      completion-category-defaults nil
+      completion-category-overrides nil
+      orderless-style-dispatchers '(my/orderless-dispatch-flex-first))
+
+(with-eval-after-load 'company
+  (advice-add 'company-capf--candidates :around #'just-one-face))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
+(straight-use-package 'lsp-ui)
 (straight-use-package 'lsp-java)
 (straight-use-package 'lsp-pyright)
 
@@ -272,6 +416,12 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #python
+
+(straight-use-package 'pyvenv)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #common-lisp
 
 (straight-use-package 'slime)
@@ -284,59 +434,6 @@
 (straight-use-package 'sql-indent)
 
 (add-hook 'sql-mode-hook 'sqlind-minor-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #orderless
-
-(straight-use-package 'orderless)
-
-(defun my/orderless-dispatch-flex-first (_pattern index _total)
-  (and (eq index 0) 'orderless-flex))
-
-(defun just-one-face (fn &rest args)
-  (let ((orderless-match-faces [completions-common-part]))
-    (apply fn args)))
-
-(setq completion-styles '(orderless)
-      completion-category-defaults nil
-      completion-category-overrides nil
-      orderless-style-dispatchers '(my/orderless-dispatch-flex-first))
-
-(with-eval-after-load 'company
-  (advice-add 'company-capf--candidates :around #'just-one-face))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #font
-
-(cond ((eq system-type 'windows-nt)
-       (add-to-list 'default-frame-alist '(font . "ＭＳゴシック 12")))
-
-      ((eq system-type 'gnu/linux)
-       (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #emacs
-
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-      completion-ignore-case t
-      gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
-      use-short-answers t)
-
-(server-mode +1)
-(savehist-mode +1)
-(save-place-mode +1)
-(recentf-mode +1)
-(show-paren-mode +1)
-(global-auto-revert-mode +1)
-(global-hl-line-mode +1)
-(which-function-mode +1)
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 
 (provide 'init)
 ;;; init.el ends here
