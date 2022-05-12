@@ -190,6 +190,14 @@
 (define-key minibuffer-local-map (kbd "M-s") #'consult-history)                 ;; orig. next-matching-history-element
 (define-key minibuffer-local-map (kbd "M-r") #'consult-history)                ;; orig. previous-matching-history-element
 
+(setq register-preview-delay 0.5
+      register-preview-function #'consult-register-format)
+
+(advice-add #'register-preview :override #'consult-register-window)
+
+(setq xref-show-xrefs-function #'consult-xref
+      xref-show-definitions-function #'consult-xref)
+
 (with-eval-after-load 'consult
   (consult-customize
    consult-theme
@@ -306,10 +314,9 @@
 
 (straight-use-package 'highlight-indent-guides)
 
-(setq highlight-indent-guides-method 'column
+(setq highlight-indent-guides-method 'bitmap
       highlight-indent-guides-responsive 'top
-      ;; highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-line
-      )
+      highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-line)
 
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
