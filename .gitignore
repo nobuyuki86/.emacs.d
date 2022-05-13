@@ -4,6 +4,7 @@
 auto-save-list/
 backup/
 bookmarks
+early-init.elc
 history
 init.elc
 places
