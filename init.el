@@ -387,12 +387,17 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #apheleia
+;; #format
 
 (straight-use-package 'apheleia)
+(straight-use-package 'sqlformat)
 
 (add-hook 'rust-mode-hook 'apheleia-mode)
 (add-hook 'python-mode-hook 'apheleia-mode)
+(add-hook 'sql-mode-hook 'sqlformat-on-save-mode)
+
+(with-eval-after-load 'sql
+  (define-key sql-mode-map (kbd "C-c C-f") 'sqlformat))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -414,6 +419,17 @@
 
 (with-eval-after-load 'company
   (advice-add 'company-capf--candidates :around #'just-one-face))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #anzu
+
+(straight-use-package 'anzu)
+
+(global-anzu-mode +1)
+
+(global-set-key [remap query-replace] 'anzu-query-replace)
+(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -495,6 +511,14 @@
 (straight-use-package 'sql-indent)
 
 (add-hook 'sql-mode-hook 'sqlind-minor-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #org
+
+(straight-use-package 'org-modern)
+
+(add-hook 'org-mode-hook 'org-modern-mode)
 
 (provide 'init)
 ;;; init.el ends here
