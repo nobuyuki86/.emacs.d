@@ -126,6 +126,8 @@
 
 (straight-use-package 'ctrlf)
 
+(setq ctrlf-default-search-style 'fuzzy)
+
 (ctrlf-mode +1)
 
 
