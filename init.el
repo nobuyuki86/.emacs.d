@@ -452,14 +452,6 @@
 
 (add-hook 'sql-mode-hook 'sqlind-minor-mode)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #org
-
-(straight-use-package 'org-modern)
-
-(add-hook 'org-mode-hook 'org-modern-mode)
-
 (provide 'init)
 ;;; init.el ends here
 
