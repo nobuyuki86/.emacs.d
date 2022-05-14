@@ -146,7 +146,6 @@
 (global-set-key (kbd "C-c h") #'consult-history)
 (global-set-key (kbd "C-c m") #'consult-mode-command)
 (global-set-key (kbd "C-c k") #'consult-kmacro)
-
 ;; C-x bindings (ctl-x-map)
 (global-set-key (kbd "C-x M-:") #'consult-complex-command)     ;; orig. repeat-complex-command
 (global-set-key (kbd "C-x b") #'consult-buffer)                ;; orig. switch-to-buffer
@@ -442,6 +441,17 @@
 (setq beacon-color "yellow")
 
 (beacon-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #imenu-list
+
+(straight-use-package 'imenu-list)
+
+(setq imenu-list-focus-after-activation t
+      imenu-list-auto-resize t)
+
+(global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
