@@ -140,87 +140,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #consult
-
-(straight-use-package 'consult)
-
-;; C-c bindings (mode-specific-map)
-(global-set-key (kbd "C-c h") #'consult-history)
-(global-set-key (kbd "C-c m") #'consult-mode-command)
-(global-set-key (kbd "C-c k") #'consult-kmacro)
-;; C-x bindings (ctl-x-map)
-(global-set-key (kbd "C-x M-:") #'consult-complex-command)     ;; orig. repeat-complex-command
-(global-set-key (kbd "C-x b") #'consult-buffer)                ;; orig. switch-to-buffer
-(global-set-key (kbd "C-x 4 b") #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-(global-set-key (kbd "C-x 5 b") #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-(global-set-key (kbd "C-x r b") #'consult-bookmark)            ;; orig. bookmark-jump
-(global-set-key (kbd "C-x p b") #'consult-project-buffer)      ;; orig. project-switch-to-buffer
-;; Custom M-# bindings for fast register access
-(global-set-key (kbd "M-#") #'consult-register-load)
-(global-set-key (kbd "M-'") #'consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-(global-set-key (kbd "C-M-#") #'consult-register)
-;; Other custom bindings
-(global-set-key (kbd "M-y") #'consult-yank-pop)                ;; orig. yank-pop
-(global-set-key (kbd "<help> a") #'consult-apropos)            ;; orig. apropos-command
-;; M-g bindings (goto-map)
-(global-set-key (kbd "M-g e") #'consult-compile-error)
-;; (global-set-key (kbd "M-g f") #'consult-flymake)               ;; Alternative: consult-flycheck
-(global-set-key (kbd "M-g g") #'consult-goto-line)             ;; orig. goto-line
-(global-set-key (kbd "M-g M-g") #'consult-goto-line)           ;; orig. goto-line
-(global-set-key (kbd "M-g o") #'consult-outline)               ;; Alternative: consult-org-heading
-(global-set-key (kbd "M-g m") #'consult-mark)
-(global-set-key (kbd "M-g k") #'consult-global-mark)
-(global-set-key (kbd "M-g i") #'consult-imenu)
-(global-set-key (kbd "M-g I") #'consult-imenu-multi)
-;; M-s bindings (search-map)
-(global-set-key (kbd "M-s d") #'consult-find)
-(global-set-key (kbd "M-s D") #'consult-locate)
-(global-set-key (kbd "M-s g") #'consult-grep)
-(global-set-key (kbd "M-s G") #'consult-git-grep)
-(global-set-key (kbd "M-s r") #'consult-ripgrep)
-(global-set-key (kbd "M-s l") #'consult-line)
-(global-set-key (kbd "M-s L") #'consult-line-multi)
-(global-set-key (kbd "M-s m") #'consult-multi-occur)
-(global-set-key (kbd "M-s k") #'consult-keep-lines)
-(global-set-key (kbd "M-s u") #'consult-focus-lines)
-;; Isearch integration
-(global-set-key (kbd "M-s e") #'consult-isearch-history)
-(define-key isearch-mode-map (kbd "M-e") #'consult-isearch-history)         ;; orig. isearch-edit-string
-(define-key isearch-mode-map (kbd "M-s e") #'consult-isearch-history)       ;; orig. isearch-edit-string
-(define-key isearch-mode-map (kbd "M-s l") #'consult-line)                  ;; needed by consult-line to detect isearch
-(define-key isearch-mode-map (kbd "M-s L") #'consult-line-multi)            ;; needed by consult-line to detect isearch
-;; Minibuffer history
-(define-key minibuffer-local-map (kbd "M-s") #'consult-history)                 ;; orig. next-matching-history-element
-(define-key minibuffer-local-map (kbd "M-r") #'consult-history)                ;; orig. previous-matching-history-element
-
-(setq register-preview-delay 0.5
-      register-preview-function #'consult-register-format)
-
-(advice-add #'register-preview :override #'consult-register-window)
-
-(setq xref-show-xrefs-function #'consult-xref
-      xref-show-definitions-function #'consult-xref)
-
-(with-eval-after-load 'consult
-  (consult-customize
-   consult-theme
-   :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-recent-file
-   consult--source-project-recent-file
-   :preview-key (kbd "M-.")))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #emabrk
-
-(straight-use-package 'embark)
-
-(global-set-key (kbd "C-.") #'embark-act)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #yasnippet
 
 (straight-use-package 'yasnippet)
@@ -265,9 +184,6 @@
 ;; #flycheck
 
 (straight-use-package 'flycheck)
-(straight-use-package 'consult-flycheck)
-
-(global-set-key (kbd "M-g f") #'consult-flycheck)
 
 (global-flycheck-mode +1)
 
