@@ -132,14 +132,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #marginalia
-
-(straight-use-package 'marginalia)
-
-(marginalia-mode +1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #yasnippet
 
 (straight-use-package 'yasnippet)
