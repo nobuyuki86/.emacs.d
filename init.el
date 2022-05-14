@@ -99,6 +99,8 @@
 
 (straight-use-package 'selectrum)
 
+(global-set-key (kbd "C-x C-z") #'selectrum-repeat)
+
 (selectrum-mode +1)
 
 
