@@ -359,7 +359,8 @@
 
 (straight-use-package 'imenu-list)
 
-(setq imenu-list-focus-after-activation t)
+(setq imenu-list-focus-after-activation t
+      imenu-list-auto-resize t)
 
 (global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
 
