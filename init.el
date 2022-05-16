@@ -366,6 +366,16 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #gcmh
+
+(straight-use-package 'gcmh)
+
+(setq garbage-collection-messages t)
+
+(gcmh-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
