@@ -51,6 +51,25 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+ 
+(set-language-environment "Japanese")
+(prefer-coding-system 'utf-8)
+(when (eq system-type 'windows-nt)
+  (set-file-name-coding-system 'cp932)
+  (set-keyboard-coding-system 'cp932)
+  (set-terminal-coding-system 'cp932))
+
+(set-charset-priority 'ascii
+		      'japanese-jisx0208
+		      'latin-jisx0201
+		      'katakana-jisx0201
+		      'iso-8859-1
+		      'cp1252
+		      'unicode)
+(set-coding-system-priority 'utf-8
+			    'euc-jp
+			    'iso-2022-jp
+			    'cp932)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
