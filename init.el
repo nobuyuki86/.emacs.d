@@ -47,6 +47,7 @@
 (global-auto-revert-mode +1)
 (global-hl-line-mode +1)
 (which-function-mode +1)
+(electric-pair-mode +1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -266,27 +267,6 @@
   (require 'all-the-icons))
 
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #smartparens
-
-(straight-use-package 'smartparens)
-
-(with-eval-after-load 'smartparens
-  (require 'smartparens-config)
-
-  (defun indent-between-pair (&rest _ignored)
-    (newline)
-    (indent-according-to-mode)
-    (forward-line -1)
-    (indent-according-to-mode))
-
-  (sp-local-pair 'prog-mode "(" nil :post-handlers '((indent-between-pair "RET")))
-  (sp-local-pair 'prog-mode "[" nil :post-handlers '((indent-between-pair "RET")))
-  (sp-local-pair 'prog-mode "{" nil :post-handlers '((indent-between-pair "RET"))))
-
-(smartparens-global-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
