@@ -383,7 +383,13 @@
 (straight-use-package 'lsp-java)
 (straight-use-package 'lsp-pyright)
 
-(setq lsp-keymap-prefix "M-l")
+(setq lsp-keymap-prefix "M-l"
+      lsp-eldoc-enable-hover nil
+      lsp-enable-folding nil
+      lsp-enable-symbol-highlighting nil
+      lsp-headerline-breadcrumb-enable nil
+      lsp-headerline-breadcrumb-enable-diagnostics nil
+      lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
 
 (add-hook 'html-mode-hook #'lsp)
 (add-hook 'css-mode-hook #'lsp)
