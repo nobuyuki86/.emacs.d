@@ -39,6 +39,8 @@
       read-process-output-max (* 1024 1024)
       use-short-answers t)
 
+(add-to-list 'completion-styles 'flex t)
+
 (server-mode +1)
 (savehist-mode +1)
 (save-place-mode +1)
@@ -100,7 +102,8 @@
 	company-dabbrev-ignore-case nil
 	company-dabbrev-other-buffers nil
 	company-dabbrev-downcase nil
-	company-require-match 'never)
+	company-require-match 'never
+	company-box-doc-enable nil)
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
@@ -302,35 +305,9 @@
 ;; #format
 
 (straight-use-package 'apheleia)
-(straight-use-package 'sqlformat)
 
 (add-hook 'rust-mode-hook 'apheleia-mode)
 (add-hook 'python-mode-hook 'apheleia-mode)
-(add-hook 'sql-mode-hook 'sqlformat-on-save-mode)
-
-(with-eval-after-load 'sql
-  (define-key sql-mode-map (kbd "C-c C-f") 'sqlformat))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #orderless
-
-(straight-use-package 'orderless)
-
-(defun my/orderless-dispatch-flex-first (_pattern index _total)
-  (and (eq index 0) 'orderless-flex))
-
-(defun just-one-face (fn &rest args)
-  (let ((orderless-match-faces [completions-common-part]))
-    (apply fn args)))
-
-(setq completion-styles '(basic orderless)
-      completion-category-defaults nil
-      completion-category-overrides nil
-      orderless-style-dispatchers '(my/orderless-dispatch-flex-first))
-
-(with-eval-after-load 'company
-  (advice-add 'company-capf--candidates :around #'just-one-face))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
