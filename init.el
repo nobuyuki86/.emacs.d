@@ -353,6 +353,20 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #dashboard
+
+(straight-use-package 'dashboard)
+
+(setq dashboard-center-content t
+      dashboard-set-heading-icons t
+      dashboard-set-file-icons t
+      dashboard-set-navigator t
+      dashboard-set-init-info t)
+
+(dashboard-setup-startup-hook)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
