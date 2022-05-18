@@ -75,6 +75,20 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #whitespace
+
+(setq whitespace-style '(face
+			 trailing
+			 tabs
+			 empty
+			 spaces
+			 space-mark
+			 tab-mark))
+
+(global-whitespace-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #ime
 
 (straight-use-package 'tr-ime)
