@@ -389,6 +389,17 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #ace-window
+
+(straight-use-package 'ace-window)
+
+(with-eval-after-load 'ace-window
+  (set-face-attribute 'aw-leading-char-face nil :height 4.0))
+
+(global-set-key (kbd "M-o") 'ace-window)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
