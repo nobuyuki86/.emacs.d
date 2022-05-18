@@ -400,6 +400,17 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #org
+
+;; org-capture
+(setq org-directory "~/.emacs.d/org/"
+      org-default-notes-file (concat org-directory "/notes.org"))
+
+;; org-agenda
+(setq org-agenda-files '("~/.emacs.d/org/notes.org"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
