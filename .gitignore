@@ -1,0 +1,17 @@
+.cache/
+.dap-breakpoints
+.lsp-session-v1
+auto-save-list/
+backup/
+bookmarks
+eshell/
+history
+init.elc
+org/
+places
+projectile-bookmarks.eld
+recentf
+session.2c69e30f4-0d2d-4645-9025-10d4a3acd836
+straight/
+transient/
+var/
