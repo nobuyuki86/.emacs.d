@@ -111,8 +111,7 @@
 	company-dabbrev-ignore-case nil
 	company-dabbrev-other-buffers nil
 	company-dabbrev-downcase nil
-	company-require-match 'never
-	company-box-doc-enable nil)
+	company-require-match 'never)
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
