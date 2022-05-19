@@ -491,6 +491,7 @@
 ;; #sql
 
 (straight-use-package 'sql-indent)
+(straight-use-package 'sqlformat)
 
 (add-hook 'sql-mode-hook 'sqlind-minor-mode)
 
