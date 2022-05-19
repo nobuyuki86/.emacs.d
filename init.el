@@ -260,6 +260,7 @@
 (straight-use-package 'highlight-indent-guides)
 
 (setq highlight-indent-guides-method 'character
+      highlight-indent-guides-character 124
       highlight-indent-guides-responsive 'top)
 
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
