@@ -53,7 +53,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
- 
+
 (set-language-environment "Japanese")
 (prefer-coding-system 'utf-8)
 (when (eq system-type 'windows-nt)
@@ -424,7 +424,7 @@
       lsp-headerline-breadcrumb-enable-diagnostics nil
       lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
 
-(add-hook 'html-mode-hook #'lsp)
+(add-hook 'web-mode-hook #'lsp)
 (add-hook 'css-mode-hook #'lsp)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'java-mode-hook (lambda ()
