@@ -78,12 +78,7 @@
 ;; #whitespace
 
 (setq whitespace-style '(face
-			 trailing
-			 tabs
-			 empty
-			 spaces
-			 space-mark
-			 tab-mark))
+			 trailing))
 
 (global-whitespace-mode +1)
 
@@ -264,9 +259,8 @@
 
 (straight-use-package 'highlight-indent-guides)
 
-(setq highlight-indent-guides-method 'bitmap
-      highlight-indent-guides-responsive 'top
-      highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-line)
+(setq highlight-indent-guides-method 'character
+      highlight-indent-guides-responsive 'top)
 
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
@@ -406,8 +400,12 @@
 (setq org-directory "~/.emacs.d/org/"
       org-default-notes-file (concat org-directory "/notes.org"))
 
+(global-set-key (kbd "C-c c") 'org-capture)
+
 ;; org-agenda
 (setq org-agenda-files '("~/.emacs.d/org/notes.org"))
+
+(global-set-key (kbd "C-c a") 'org-agenda)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
