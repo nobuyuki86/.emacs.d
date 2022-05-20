@@ -401,13 +401,19 @@
 ;; #org
 
 ;; org-capture
-(setq org-directory "~/.emacs.d/org/"
+(setq org-directory "~/org/"
       org-default-notes-file (concat org-directory "/notes.org"))
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("j" "Journal" entry (file+datetree "~/org/notes.org")
+         "* %?\nEntered on %U\n  %i\n  %a")))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
 ;; org-agenda
-(setq org-agenda-files '("~/.emacs.d/org/notes.org"))
+(setq org-agenda-files '("~/org/notes.org"))
 
 (global-set-key (kbd "C-c a") 'org-agenda)
 
