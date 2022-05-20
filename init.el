@@ -278,8 +278,6 @@
 
 (load-theme 'zerodark t)
 
-(zerodark-setup-modeline-format)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #modeline
