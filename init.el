@@ -214,6 +214,8 @@
 
 (straight-use-package 'flycheck)
 
+(setq flycheck-idle-change-delay 4.0)
+
 (global-flycheck-mode +1)
 
 
