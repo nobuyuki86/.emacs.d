@@ -422,7 +422,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #alert
 
+(straight-use-package 'alert)
 (straight-use-package 'alert-toast)
+
+(cond ((eq system-type 'windows-nt)
+       (setq alert-default-style 'toast))
+
+      ((eq system-type 'gnu/linux)
+       (setq alert-default-style 'libnotify)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -430,16 +437,14 @@
 
 (straight-use-package 'org-pomodoro)
 
-(defun my-alert-notify (title message)
-  (cond ((eq system-type 'windows-nt)
-	 (alert-toast-notify '(:tytle title :message message)))
+(add-hook 'org-pomodoro-started-hook (lambda ()
+				       (alert "Let's focus for 25 minutes!" :title "org-pomodoro")))
 
-	((eq system-type 'gnu/linux)
-	 (notifications-notify :title title :body message))))
+(add-hook 'org-pomodoro-finished-hook (lambda ()
+					(alert "Well done! Take a break." :title "org-pomodoro")))
 
-(add-hook 'org-pomodoro-started-hook '(my-alert-notify "org-pomodoro" "Let's focus for 25 minutes!"))
-(add-hook 'org-pomodoro-finished-hook '(my-alert-notify "org-pomodoro" "Well done! Take a break."))
-(add-hook 'org-pomodoro-break-finished-hook '(my-alert-notify "org-pomodoro" "The break time is over. Let's do out best!"))
+(add-hook 'org-pomodoro-break-finished-hook (lambda ()
+					      (alert "The break time is over. Let's do out best!" :title "org-pomodoro")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
