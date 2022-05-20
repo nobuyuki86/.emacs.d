@@ -407,13 +407,14 @@
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
          "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/org/notes.org")
+        ("j" "Journal" entry (file+datetree "~/org/journal.org")
          "* %?\nEntered on %U\n  %i\n  %a")))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
 ;; org-agenda
-(setq org-agenda-files '("~/org/notes.org"))
+(setq org-agenda-files '("~/org/notes.org"
+			 "~/org/journal.org"))
 
 (global-set-key (kbd "C-c a") 'org-agenda)
 
@@ -429,17 +430,16 @@
 
 (straight-use-package 'org-pomodoro)
 
-(add-hook 'org-pomodoro-started-hook (lambda ()
-				       (when (eq system-type 'windows-nt)
-					 (alert-toast-notify '(:tytle "org-pomodoro" :message "Let's focus for 25 minutes!")))))
+(defun my-alert-notify (title message)
+  (cond ((eq system-type 'windows-nt)
+	 (alert-toast-notify '(:tytle title :message message)))
 
-(add-hook 'org-pomodoro-finished-hook (lambda ()
-					(when (eq system-type 'windows-nt)
-					  (alert-toast-notify '(:tytle "org-pomodoro" :message "Well done! Take a break.")))))
+	((eq system-type 'gnu/linux)
+	 (notifications-notify :title title :body message))))
 
-(add-hook 'org-pomodoro-break-finished-hook (lambda ()
-					      (when (eq system-type 'windows-nt)
-						(alert-toast-notify '(:title "org-pomodoro" :message "The break time is over. Let's do out best!")))))
+(add-hook 'org-pomodoro-started-hook '(my-alert-notify "org-pomodoro" "Let's focus for 25 minutes!"))
+(add-hook 'org-pomodoro-finished-hook '(my-alert-notify "org-pomodoro" "Well done! Take a break."))
+(add-hook 'org-pomodoro-break-finished-hook '(my-alert-notify "org-pomodoro" "The break time is over. Let's do out best!"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
