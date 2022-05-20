@@ -114,7 +114,7 @@
 	company-require-match 'never
 	company-async-redisplay-delay 0.1
 	company-box-doc-enable nil)
-  
+
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
   (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
