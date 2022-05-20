@@ -419,6 +419,30 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #alert
+
+(straight-use-package 'alert-toast)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #org-pomodoro
+
+(straight-use-package 'org-pomodoro)
+
+(add-hook 'org-pomodoro-started-hook (lambda ()
+				       (when (eq system-type 'windows-nt)
+					 (alert-toast-notify '(:tytle "org-pomodoro" :message "Let's focus for 25 minutes!")))))
+
+(add-hook 'org-pomodoro-finished-hook (lambda ()
+					(when (eq system-type 'windows-nt)
+					  (alert-toast-notify '(:tytle "org-pomodoro" :message "Well done! Take a break.")))))
+
+(add-hook 'org-pomodoro-break-finished-hook (lambda ()
+					      (when (eq system-type 'windows-nt)
+						(alert-toast-notify '(:title "org-pomodoro" :message "The break time is over. Let's do out best!")))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
