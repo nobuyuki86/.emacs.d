@@ -203,7 +203,8 @@
 
 (straight-use-package 'projectile)
 
-(global-set-key (kbd "C-c p") 'projectile-command-map)
+(with-eval-after-load 'projectile
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 (projectile-mode +1)
 
