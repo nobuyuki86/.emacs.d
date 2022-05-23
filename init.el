@@ -24,7 +24,7 @@
 ;; #font
 
 (cond ((eq system-type 'windows-nt)
-       (add-to-list 'default-frame-alist '(font . "Consolas 10")))
+       (add-to-list 'default-frame-alist '(font . "ＭＳ ゴシック-10")))
 
       ((eq system-type 'gnu/linux)
        (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
