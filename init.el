@@ -444,6 +444,15 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #valign
+
+(straight-use-package 'valign)
+
+(add-hook 'org-mode-hook 'valign-mode)
+(add-hook 'markdown-mode-hook 'valign-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
