@@ -271,6 +271,14 @@
 
 (load-theme 'zerodark t)
 
+(defun disable-all-themes ()
+  "Disable all active themes."
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme)))
+
+(defadvice load-theme (before disable-themes-first activate)
+  (disable-all-themes))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #modeline
