@@ -438,14 +438,9 @@
 
 (straight-use-package 'org-pomodoro)
 
-(add-hook 'org-pomodoro-started-hook (lambda ()
-				       (alert "Let's focus for 25 minutes!" :title "org-pomodoro")))
-
-(add-hook 'org-pomodoro-finished-hook (lambda ()
-					(alert "Well done! Take a break." :title "org-pomodoro")))
-
-(add-hook 'org-pomodoro-break-finished-hook (lambda ()
-					      (alert "The break time is over. Let's do out best!" :title "org-pomodoro")))
+(when (eq system-type 'windows-nt)
+  (with-eval-after-load 'org-pomodoro
+    (require 'alert-toast)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
