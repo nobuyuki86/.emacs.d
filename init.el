@@ -253,14 +253,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #unicode-fonts
-
-(straight-use-package 'unicode-fonts)
-
-(unicode-fonts-setup)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #highlight-indent-guides
 
 (straight-use-package 'highlight-indent-guides)
