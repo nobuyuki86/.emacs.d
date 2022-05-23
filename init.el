@@ -225,7 +225,7 @@
 
 (straight-use-package 'undo-tree)
 
-(setq undo-tree-auto-save-history nil)
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
 
 (global-undo-tree-mode +1)
 
