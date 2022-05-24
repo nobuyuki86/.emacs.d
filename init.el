@@ -349,9 +349,6 @@
 
 (straight-use-package 'imenu-list)
 
-(setq imenu-list-focus-after-activation t
-      imenu-list-auto-resize t)
-
 (global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
 
 
@@ -407,9 +404,9 @@
 
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/org/journal.org")
-         "* %?\nEntered on %U\n  %i\n  %a")))
+	 "* TODO %?\n  %i\n  %a")
+	("j" "Journal" entry (file+datetree "~/org/journal.org")
+	 "* %?\nEntered on %U\n  %i\n  %a")))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
