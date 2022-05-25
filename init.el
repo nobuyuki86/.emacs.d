@@ -180,6 +180,7 @@
 ;; #consutl
 
 (straight-use-package 'consult)
+(straight-use-package 'consult-flycheck)
 
 ;; C-c bindings (mode-specific-map)
 (global-set-key (kbd "C-c h") 'consult-history)
@@ -201,7 +202,7 @@
 (global-set-key (kbd "<help> a") 'consult-apropos) ;; orig. apropos-command
 ;; M-g bindings (goto-map)
 (define-key goto-map (kbd "e") 'consult-compile-error)
-(define-key goto-map (kbd "f") 'consult-flymake) ;; Alternative: consult-flycheck
+(define-key goto-map (kbd "f") 'consult-flycheck)
 (define-key goto-map (kbd "g") 'consult-goto-line) ;; orig. goto-line
 (define-key goto-map (kbd "o") 'consult-outline) ;; Alternative: consult-org-heading
 (define-key goto-map (kbd "m") 'consult-mark)
