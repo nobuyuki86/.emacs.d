@@ -216,6 +216,8 @@
 
 (setq ctrlf-default-search-style 'fuzzy)
 
+(define-key search-map (kbd "s") 'ctrlf-forward-default)
+
 (ctrlf-mode +1)
 
 
