@@ -665,17 +665,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #ace-window
-
-(straight-use-package 'ace-window)
-
-(with-eval-after-load 'ace-window
-  (set-face-attribute 'aw-leading-char-face nil :height 4.0))
-
-(global-set-key (kbd "M-o") 'ace-window)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #unicode-fonts
 
 (straight-use-package 'unicode-fonts)
