@@ -356,9 +356,9 @@
 (with-eval-after-load 'embark
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none))))
+	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		 nil
+		 (window-parameters (mode-line-format . none))))
 
   (with-eval-after-load 'consult
     (add-hook 'embark-collect-mode 'consult-preview-at-point-mode)))
@@ -548,8 +548,8 @@
       ;; covered in `modus-themes-weights'.  Bold is used in the absence
       ;; of an explicit WEIGHT.
       modus-themes-completions '((matches . (extrabold))
-                                 (selection . (semibold accented))
-                                 (popup . (accented intense)))
+				 (selection . (semibold accented))
+				 (popup . (accented intense)))
 
       modus-themes-mail-citations nil ; {nil,'intense,'faint,'monochrome}
 
@@ -565,15 +565,15 @@
 
       modus-themes-org-agenda ; this is an alist: read the manual or its doc string
       '((header-block . (variable-pitch 1.3))
-        (header-date . (grayscale workaholic bold-today 1.1))
-        (event . (accented varied))
-        (scheduled . uniform)
-        (habit . traffic-light))
+	(header-date . (grayscale workaholic bold-today 1.1))
+	(event . (accented varied))
+	(scheduled . uniform)
+	(habit . traffic-light))
 
       modus-themes-headings ; this is an alist: read the manual or its doc string
       '((1 . (overline background variable-pitch 1.3))
-        (2 . (rainbow overline 1.1))
-        (t . (semibold))))
+	(2 . (rainbow overline 1.1))
+	(t . (semibold))))
 
 (modus-themes-load-vivendi)
 
@@ -778,6 +778,10 @@
       lsp-headerline-breadcrumb-enable nil
       lsp-headerline-breadcrumb-enable-diagnostics nil
       lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
+
+(with-eval-after-load 'evil
+  (add-hook 'lsp-mode-hook (lambda ()
+			     (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
 
 (add-hook 'web-mode-hook #'lsp)
 (add-hook 'css-mode-hook #'lsp)
