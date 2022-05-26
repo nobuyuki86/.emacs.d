@@ -48,6 +48,7 @@
 (show-paren-mode +1)
 (global-auto-revert-mode +1)
 (global-hl-line-mode +1)
+(global-display-line-numbers-mode +1)
 (which-function-mode +1)
 (electric-pair-mode +1)
 (pixel-scroll-mode +1)
