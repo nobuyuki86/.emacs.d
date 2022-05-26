@@ -633,14 +633,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #imenu-list
-
-(straight-use-package 'imenu-list)
-
-(global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #gcmh
 
 (straight-use-package 'gcmh)
