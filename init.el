@@ -164,6 +164,7 @@
 	company-dabbrev-downcase nil
 	company-require-match 'never
 	company-async-redisplay-delay 0.1
+	company-auto-complete nil
 	company-box-doc-enable nil)
 
   (global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
