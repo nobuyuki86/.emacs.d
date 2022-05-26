@@ -442,14 +442,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #goto-last-change
-
-(straight-use-package 'goto-last-change)
-
-(global-set-key (kbd "M-g c") 'goto-last-change)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #highlight-indent-guides
 
 (straight-use-package 'highlight-indent-guides)
