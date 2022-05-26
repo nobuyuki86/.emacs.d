@@ -100,6 +100,56 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #evil
+
+(straight-use-package 'evil)
+(straight-use-package 'evil-collection)
+(straight-use-package 'evil-commentary)
+(straight-use-package 'evil-surround)
+(straight-use-package 'evil-matchit)
+(straight-use-package 'evil-org)
+
+(setq evil-want-keybinding nil
+      evil-symbol-word-search t)
+
+(defvar my-intercept-mode-map (make-sparse-keymap)
+  "High precedence keymap.")
+
+(define-minor-mode my-intercept-mode
+  "Global minor mode for higher precedence evil keybindings."
+  :global t)
+
+(my-intercept-mode)
+
+(with-eval-after-load 'evil
+  (evil-collection-init)
+  (evil-commentary-mode +1)
+  (global-evil-surround-mode +1)
+  (global-evil-matchit-mode +1)
+
+  (dolist (state '(normal visual insert))
+    (evil-make-intercept-map
+     ;; NOTE: This requires an evil version from 2018-03-20 or later
+     (evil-get-auxiliary-keymap my-intercept-mode-map state t t)
+     state))
+
+  (evil-define-key '(normal visual) my-intercept-mode-map
+    (kbd "SPC SPC") 'execute-extended-command
+    (kbd "SPC s") `("search" . ,search-map)
+    (kbd "SPC g") `("goto" . ,goto-map)))
+
+(with-eval-after-load 'evil-org
+  (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+
+(add-hook 'org-mode-hook 'evil-org-mode)
+
+(evil-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #company
 
 (straight-use-package 'company)
