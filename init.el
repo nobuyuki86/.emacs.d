@@ -505,7 +505,7 @@
       ;; Options for `modus-themes-hl-line' are either nil (the default),
       ;; or a list of properties that may include any of those symbols:
       ;; `accented', `underline', `intense'
-      modus-themes-hl-line '(underline accented)
+      modus-themes-hl-line '(accented)
 
       ;; Options for `modus-themes-paren-match' are either nil (the
       ;; default), or a list of properties that may include any of those
@@ -572,7 +572,7 @@
 	(2 . (rainbow overline 1.1))
 	(t . (semibold))))
 
-(modus-themes-load-vivendi)
+(load-theme 'zenburn t)
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -631,7 +631,7 @@
 
 (straight-use-package 'beacon)
 
-(setq beacon-color "yellow")
+(setq beacon-color "#93E0E3") ;; zenbur-cyan
 
 (beacon-mode +1)
 
@@ -682,6 +682,9 @@
 ;; org-capture
 (setq org-directory "~/org/"
       org-default-notes-file (concat org-directory "/notes.org"))
+
+(setq org-tab-alist '(("@Sample1" . nil)
+		      ("@Test" . nil)))
 
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
