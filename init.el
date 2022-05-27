@@ -424,6 +424,9 @@
 
 (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
 
+(with-eval-after-load 'evil
+  (evil-set-undo-system 'undo-tree))
+
 (global-undo-tree-mode +1)
 
 
