@@ -4,6 +4,8 @@
 auto-save-list/
 backup/
 bookmarks
+eclipse.jdt.ls/
+eln-cache/
 eshell/
 history
 init.elc
@@ -16,3 +18,4 @@ straight/
 transient/
 undo-history/
 var/
+workspace/
