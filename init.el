@@ -253,7 +253,7 @@
   :require t
   :after company
   :init
-  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-dabbrev)))
+  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
