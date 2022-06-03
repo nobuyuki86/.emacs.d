@@ -255,6 +255,19 @@
   :init
   (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
 
+(leaf company-dwim
+  :straight '(company-dwim :type git :host github :repo "zk-phi/company-dwim")
+  :require t
+  :bind (:company-active-map
+	 ("<tab>" . company-dwim)
+	 ("TAB" . company-dwim))
+  :init
+  (add-to-list 'company-frontends 'company-dwim-frontend))
+
+(leaf company-anywhere
+  :straight '(company-anywhere :type git :host github :repo "zk-phi/company-anywhere")
+  :require t)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #selectrum
