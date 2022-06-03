@@ -758,7 +758,18 @@
   :init
   (setq completion-styles '(fussy)
 	completion-category-defaults nil
-	compleiton-category-overrides nil))
+	compleiton-category-overrides nil)
+
+  (with-eval-after-load 'company
+    (defun company-capf-smart-completion-styles (f &rest args)
+      "Change which `completion-style' to use based off `company-prefix'."
+      (let ((completion-styles
+	     (if (length< company-prefix 3)
+		 '(basic partial-completion emacs22)
+	       '(fussy basic partial-completion emacs22))))
+	(apply f args)))
+
+    (advice-add 'company-capf :around 'company-capf-smart-completion-styles)))
 
 (leaf liquidmetal
   :straight t
