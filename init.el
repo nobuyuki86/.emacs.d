@@ -262,6 +262,7 @@
 	 ("<tab>" . company-dwim)
 	 ("TAB" . company-dwim))
   :init
+  (setq company-frontends (delq 'company-preview-if-just-one-frontend company-frontends))
   (add-to-list 'company-frontends 'company-dwim-frontend))
 
 (leaf company-anywhere
