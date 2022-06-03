@@ -295,12 +295,11 @@
 (leaf company-prescient
   :straight t
   :require t
-  :hook (lsp-mode-hook . (lambda ()
-			   (setq-local company-prescient-sort-length-enable nil)))
-  :global-minor-mode t)
+  :global-minor-mode t
+  :init
+  (setq company-prescient-sort-length-enable nil))
 
-
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #ctrlf
 
