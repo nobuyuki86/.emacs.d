@@ -858,8 +858,7 @@
   :init
   (setq completion-styles '(fussy)
 	completion-category-defaults nil
-	compleiton-category-overrides nil
-	fussy-filter-fn 'fussy-filter-flex-c))
+	compleiton-category-overrides nil))
 
 (leaf liquidmetal
   :straight t
