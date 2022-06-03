@@ -145,6 +145,9 @@
 (defvar my-buffer-map (make-sparse-keymap)
   "My buffer keymap.")
 
+(defvar my-error-map (make-sparse-keymap)
+  "My error keymap.")
+
 (leaf evil
   :straight t
   :require t
@@ -176,6 +179,7 @@
     (kbd "SPC q") `("quit" . ,my-quit-map)
     (kbd "SPC f") `("file" . ,my-file-map)
     (kbd "SPC b") `("buffer" . ,my-buffer-map)
+    (kbd "SPC e") `("error" . ,my-buffer-map)
     (kbd "SPC 0") 'delete-window
     (kbd "SPC 1") 'delete-other-windows
     (kbd "SPC 2") 'split-window-below
@@ -474,6 +478,10 @@
 (leaf flycheck
   :straight t
   :require t
+  :bind (:my-error-map
+	 ("l" . flycheck-list-errors)
+	 ("n" . flycheck-next-error)
+	 ("p" . flycheck-previous-error))
   :global-minor-mode global-flycheck-mode
   :init
   (setq flycheck-idle-change-delay 4.0))
@@ -482,8 +490,10 @@
   :straight t
   :require t
   :after consult flycheck
-  :bind (:goto-map
-	 ("f" . consult-flycheck)))
+  :bind ((:my-error-map
+	  ("e" . consult-flycheck))
+	 (:goto-map
+	  ("f" . consult-flycheck))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
