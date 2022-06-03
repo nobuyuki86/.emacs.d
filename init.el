@@ -469,7 +469,11 @@
   :require t
   :bind (:projectile-mode-map
 	 ("C-c p" . projectile-command-map))
-  :global-minor-mode t)
+  :global-minor-mode t
+  :config
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal my-intercept-mode-map
+      (kbd "SPC p") `("projectile" . ,projectile-command-map))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
