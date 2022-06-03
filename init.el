@@ -502,6 +502,8 @@
 (leaf undo-tree
   :straight t
   :require t
+  :bind (:evil-normal-state-map
+	 ("SPC u" . undo-tree-visualize))
   :global-minor-mode global-undo-tree-mode
   :init
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
