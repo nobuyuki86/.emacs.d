@@ -686,7 +686,7 @@
 
 (leaf org
   :init
-  (setq org-tab-alist '(("@Sample1" . nil)
+  (setq org-tag-alist '(("@Sample1" . nil)
 			("@Test" . nil))))
 
 (leaf org-capture
