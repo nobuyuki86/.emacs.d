@@ -762,20 +762,27 @@
   :straight '(fussy :type git :host github :repo "jojojames/fussy")
   :require t
   :init
-  (setq completion-styles '(fussy)
-	completion-category-defaults nil
+  (push 'fussy completion-styles)
+  (setq completion-category-defaults nil
 	compleiton-category-overrides nil)
 
   (with-eval-after-load 'company
-    (defun company-capf-smart-completion-styles (f &rest args)
-      "Change which `completion-style' to use based off `company-prefix'."
-      (let ((completion-styles
-	     (if (length< company-prefix 3)
-		 '(basic partial-completion emacs22)
-	       '(fussy basic partial-completion emacs22))))
+    (defun bb-company-capf (f &rest args)
+      "Manage `completion-styles'."
+      (if (length< company-prefix 2)
+	  (let ((completion-styles (remq 'fussy completion-styles)))
+	    (apply f args))
 	(apply f args)))
 
-    (advice-add 'company-capf :around 'company-capf-smart-completion-styles)))
+    (defun bb-company-transformers (f &rest args)
+      "Manage `company-transformers'."
+      (if (length< company-prefix 2)
+	  (apply f args)
+	(let ((company-transformers '(fussy-company-sort-by-completion-score)))
+	  (apply f args))))
+
+    (advice-add 'company--transform-candidates :around 'bb-company-transformers)
+    (advice-add 'company-capf :around 'bb-company-capf)))
 
 (leaf liquidmetal
   :straight t
