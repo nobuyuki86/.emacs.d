@@ -81,6 +81,7 @@
 			      'iso-2022-jp
 			      'cp932))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #font
 
@@ -94,7 +95,7 @@
   :init
   (add-to-list 'default-frame-alist '(font . "VLゴシック 9")))
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #whitespace
 
@@ -123,7 +124,7 @@
   :init
   (setq default-input-method "japanese-mozc"))
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #evil
 
@@ -232,6 +233,8 @@
 	 (:company-active-map
 	  ("<tab>" . company-complete-selection)
 	  ("TAB" . company-complete-selection)
+	  ("<backtab>" . company-select-previous)
+	  ("S-TAB" . company-select-previous)
 	  ("RET" . nil)
 	  ("<return>" . nil)))
   :global-minor-mode global-company-mode
@@ -317,7 +320,7 @@
   :init
   (setq ctrlf-default-search-style 'fuzzy))
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #marginalia
 
@@ -438,7 +441,7 @@
   :require t
   :after yasnippet)
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #git
 
@@ -522,7 +525,7 @@
   :straight t
   :require t)
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #rainbow-delimiters
 
@@ -587,7 +590,7 @@
   :init
   (setq nyan-animate-nyancat t))
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #restart-emacs
 
@@ -631,7 +634,7 @@
   :hook ((rust-mode-hook . apheleia-mode)
 	 (python-mode-hook . apheleia-mode)))
 
-
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #beacon
 
@@ -758,37 +761,67 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #fussy
 
+(leaf orderless
+  :straight t
+  :require t
+  :init
+  (defun just-one-face (fn &rest args)
+    (let ((orderless-match-faces [completions-common-part]))
+      (apply fn args)))
+
+  (advice-add 'company-capf--candidates :around #'just-one-face))
+
 (leaf fussy
   :straight '(fussy :type git :host github :repo "jojojames/fussy")
   :require t
   :init
-  (push 'fussy completion-styles)
-  (setq completion-category-defaults nil
-	compleiton-category-overrides nil)
+  (setq completion-styles '(fussy)
+	completion-category-defaults nil
+	compleiton-category-overrides nil
+	;; fussy-score-fn 'flx-score
+	;; fussy-score-fn 'flx-rs-score
+	;; fussy-score-fn 'fussy-fzf-native-score
+	fussy-score-fn 'fussy-fuz-bin-score
+	;; fussy-score-fn 'fussy-liquidmetal-score
+	;; fussy-score-fn 'fussy-sublime-fuzzy-score
+	fussy-filter-fn 'fussy-filter-orderless-flex)
 
-  (with-eval-after-load 'company
-    (defun bb-company-capf (f &rest args)
-      "Manage `completion-styles'."
-      (if (length< company-prefix 2)
-	  (let ((completion-styles (remq 'fussy completion-styles)))
-	    (apply f args))
-	(apply f args)))
+  (defun bb-company-capf (f &rest args)
+    "Manage `completion-styles'."
+    (if (length< company-prefix 2)
+	(let ((completion-styles (remq 'fussy completion-styles)))
+	  (apply f args))
+      (apply f args)))
 
-    (defun bb-company-transformers (f &rest args)
-      "Manage `company-transformers'."
-      (if (length< company-prefix 2)
-	  (apply f args)
-	(let ((company-transformers '(fussy-company-sort-by-completion-score)))
-	  (apply f args))))
+  (advice-add 'company-capf :around 'bb-company-capf))
 
-    (advice-add 'company--transform-candidates :around 'bb-company-transformers)
-    (advice-add 'company-capf :around 'bb-company-capf)))
+(leaf flx-rs
+  :straight '(flx-rs :repo "jcs-elpa/flx-rs" :fetcher github :files (:defaults "bin"))
+  :require t
+  :init
+  (flx-rs-load-dyn))
+
+(leaf fzf-native
+  :straight '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin"))
+  :require t
+  :init
+  (fzf-native-load-dyn))
+
+(leaf fuz-bin
+  :straight '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin"))
+  :require t
+  :init
+  (fuz-bin-load-dyn))
 
 (leaf liquidmetal
   :straight t
+  :require t)
+
+(leaf sublime-fuzzy
+  :straight '(sublime-fuzzy :repo "jcs-elpa/sublime-fuzzy" :fetcher github :files (:defaults "bin"))
   :require t
   :init
-  (setq fussy-score-fn 'fussy-liquidmetal-score))
+  (sublime-fuzzy-load-dyn))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
