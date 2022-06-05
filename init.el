@@ -825,6 +825,15 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #diff-hl
+
+(leaf diff-hl
+  :straight t
+  :require t
+  :global-minor-mode global-diff-hl-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (leaf lsp-mode
