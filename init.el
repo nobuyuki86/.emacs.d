@@ -19,56 +19,49 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(straight-use-package 'leaf)
-(straight-use-package 'leaf-keywords)
+(straight-use-package 'use-package)
 
-(leaf leaf-keywords
-  :require t
+(use-package straight
   :init
-  (leaf-keywords-init))
+  (setq straight-use-package-by-default t))
+
+(use-package bind-key)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #emacs
 
-(leaf emacs
-  :init
-  (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-	completion-ignore-case t
-	read-process-output-max (* 1024 1024)
-	use-short-answers t)
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+      completion-ignore-case t
+      read-process-output-max (* 1024 1024)
+      use-short-answers t)
 
-  (server-mode +1)
-  (savehist-mode +1)
-  (save-place-mode +1)
-  (recentf-mode +1)
-  (show-paren-mode +1)
-  (global-auto-revert-mode +1)
-  (global-hl-line-mode +1)
-  (global-display-line-numbers-mode +1)
-  (which-function-mode +1)
-  (electric-pair-mode +1)
-  (pixel-scroll-mode +1)
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1))
+(server-mode +1)
+(savehist-mode +1)
+(save-place-mode +1)
+(recentf-mode +1)
+(show-paren-mode +1)
+(global-auto-revert-mode +1)
+(global-hl-line-mode +1)
+(global-display-line-numbers-mode +1)
+(which-function-mode +1)
+(electric-pair-mode +1)
+(pixel-scroll-mode +1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #character-code
 
-(leaf character-code
-  :init
-  (set-language-environment "Japanese")
-  (prefer-coding-system 'utf-8))
+(set-language-environment "Japanese")
+(prefer-coding-system 'utf-8)
 
-(leaf character-code-for-windows
-  :if (eq system-type 'windows-nt)
-  :init
+(when (eq system-type 'windows-nt)
   (set-file-name-coding-system 'cp932)
   (set-keyboard-coding-system 'cp932)
   (set-terminal-coding-system 'cp932)
-
   (set-charset-priority 'ascii
 			'japanese-jisx0208
 			'latin-jisx0201
@@ -85,48 +78,39 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #font
 
-(leaf font-for-windows
-  :if (eq system-type 'windows-nt)
-  :init
-  (add-to-list 'default-frame-alist '(font . "ＭＳ ゴシック-10")))
+(cond ((eq system-type 'windows-nt)
+       (add-to-list 'default-frame-alist '(font . "ＭＳ ゴシック-10")))
 
-(leaf font-for-linux
-  :if (eq system-type 'gnu/linux)
-  :init
-  (add-to-list 'default-frame-alist '(font . "VLゴシック 9")))
+      ((eq system-type 'gnu/linux)
+       (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #whitespace
 
-(leaf whitespace
-  :global-minor-mode global-whitespace-mode
-  :init
-  (setq whitespace-style '(face trailing)))
+(setq whitespace-style '(face trailing))
+
+(global-whitespace-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #ime
 
-(leaf tr-ime
+(use-package tr-ime
   :if (eq system-type 'windows-nt)
-  :straight t
-  :require t
   :init
   (setq default-input-method "W32-IME")
   (tr-ime-standard-install)
   (w32-ime-initialize))
 
-(leaf mozc
+(use-package mozc
   :if (eq system-type 'gnu/linux)
-  :straight t
-  :require t
   :init
   (setq default-input-method "japanese-mozc"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #evil
+;; #m-keymap
 
 (defvar my-intercept-mode-map (make-sparse-keymap)
   "High precedence keymap.")
@@ -149,22 +133,26 @@
 (defvar my-error-map (make-sparse-keymap)
   "My error keymap.")
 
-(leaf evil
-  :straight t
-  :require t
-  :global-minor-mode t
-  :bind ((:my-quit-map
-	  ("q" . save-buffers-kill-terminal))
-	 (:my-file-map
-	  ("f" . find-file)
-	  ("b" . bookmark-jump))
-	 (:my-buffer-map
-	  ("b" . switch-to-buffer)
-	  ("d" . evil-delete-buffer)
-	  ("p" . project-switch-to-buffer)))
+(defvar my-org-map (make-sparse-keymap)
+  "My error keymap.")
+
+(define-key my-quit-map (kbd "q") 'save-buffers-kill-terminal)
+(define-key my-file-map (kbd "f") 'find-file)
+(define-key my-file-map (kbd "b") 'bookmark-jump)
+(define-key my-buffer-map (kbd "b") 'switch-to-buffer)
+(define-key my-buffer-map (kbd "p") 'project-switch-to-buffer)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #evil
+
+(use-package evil
+  :bind (:map my-buffer-map
+	      ("d" . evil-delete-buffer))
   :init
   (setq evil-want-keybinding nil
-	evil-symbol-word-search  t)
+	evil-symbol-word-search t)
+  (evil-mode +1)
 
   :config
   (dolist (state '(normal visual insert))
@@ -180,42 +168,36 @@
     (kbd "SPC q") `("quit" . ,my-quit-map)
     (kbd "SPC f") `("file" . ,my-file-map)
     (kbd "SPC b") `("buffer" . ,my-buffer-map)
-    (kbd "SPC e") `("error" . ,my-buffer-map)
+    (kbd "SPC e") `("error" . ,my-error-map)
+    (kbd "SPC o") `("org" . ,my-org-map)
     (kbd "SPC 0") 'delete-window
     (kbd "SPC 1") 'delete-other-windows
     (kbd "SPC 2") 'split-window-below
     (kbd "SPC 3") 'split-window-right))
 
-(leaf evil-collection
-  :straight t
-  :require t
+(use-package evil-collection
   :after evil
   :init
   (evil-collection-init))
 
-(leaf evil-commentary
-  :straight t
-  :require t
+(use-package evil-commentary
   :after evil
-  :global-minor-mode t)
+  :init
+  (evil-commentary-mode +1))
 
-(leaf evil-surround
-  :straight t
-  :require t
+(use-package evil-surround
   :after evil
-  :global-minor-mode global-evil-surround-mode)
+  :init
+  (global-evil-surround-mode +1))
 
-(leaf evil-matchit
-  :straight t
-  :require t
+(use-package evil-matchit
   :after evil
-  :global-minor-mode global-evil-matchit-mode)
+  :init
+  (global-evil-matchit-mode +1))
 
-(leaf evil-org
-  :straight t
-  :require t
+(use-package evil-org
   :after evil
-  :hook (org-mode-hook . evil-org-mode)
+  :hook (org-mode . evil-org-mode)
   :config
   (require 'evil-org-agenda)
   (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
@@ -225,19 +207,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #company
 
-(leaf company
-  :straight t
-  :require t
+(use-package company
   :bind (([remap indent-for-tab-command] . company-indent-or-complete-common)
-	 ([remap c-indent-line-or-region] . company-indent-or-complete-common)
-	 (:company-active-map
-	  ("<tab>" . company-complete-selection)
-	  ("TAB" . company-complete-selection)
-	  ("<backtab>" . company-select-previous)
-	  ("S-TAB" . company-select-previous)
-	  ("RET" . nil)
-	  ("<return>" . nil)))
-  :global-minor-mode global-company-mode
+	 ([remap c-indent-line-or-region] . company-indent-or-complete-common))
   :init
   (setq company-idle-delay 0
 	company-minimum-prefix-length 1
@@ -247,95 +219,90 @@
 	company-require-match 'never
 	company-async-redisplay-delay 0.1
 	company-auto-complete nil
-	company-box-doc-enable nil))
+	company-box-doc-enable nil)
 
-(leaf company-box
-  :straight t
-  :require t
+  (global-company-mode +1))
+
+(use-package company-box
   :after company
-  :hook (company-mode-hook . company-box-mode))
+  :hook (company-mode . company-box-mode))
 
-(leaf company-tabnine
-  :straight t
-  :require t
+(use-package company-tabnine
   :after company
   :init
   (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine)))
 
-(leaf company-dwim
-  :straight '(company-dwim :type git :host github :repo "zk-phi/company-dwim")
-  :require t
-  :bind (:company-active-map
-	 ("<tab>" . company-dwim)
-	 ("TAB" . company-dwim))
-  :init
-  (setq company-frontends (delq 'company-preview-if-just-one-frontend company-frontends))
+(use-package company-dwim
+  :straight (company-dwim :type git :host github :repo "zk-phi/company-dwim")
+  :bind (:map company-active-map
+	      ("TAB" . company-dwim)
+	      ("<tab>" . company-dwim)
+	      ("S-TAB" . company-dwim-select-previous)
+	      ("<backtab>" . company-dwim-select-previous)
+	      ("C-j" . company-complete-selection)
+	      ("RET" . nil)
+	      ("<return>" . nil))
+  :config
   (add-to-list 'company-frontends 'company-dwim-frontend))
 
-(leaf company-anywhere
-  :straight '(company-anywhere :type git :host github :repo "zk-phi/company-anywhere")
-  :require t)
+(use-package company-anywhere
+  :straight (company-anywhere :type git :host github :repo "zk-phi/company-anywhere"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #selectrum
 
-(leaf selectrum
-  :straight t
-  :require t
+(use-package selectrum
   :bind ("C-x C-z" . selectrum-repeat)
-  :global-minor-mode t)
+  :init
+  (evil-define-key '(normal visual) my-intercept-mode-map
+    (kbd "SPC z") 'selectrum-repeat)
+
+  (selectrum-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #prescient
 
-(leaf prescient
-  :straight t
-  :require t
-  :global-minor-mode prescient-persist-mode)
+(use-package prescient
+  :config
+  (prescient-persist-mode +1))
 
-(leaf selectrum-prescient
-  :straight t
-  :require t
-  :global-minor-mode t)
-
-(leaf company-prescient
-  :straight t
-  :require t
-  :global-minor-mode t
+(use-package selectrum-prescient
   :init
-  (setq company-prescient-sort-length-enable nil))
+  (selectrum-prescient-mode +1))
+
+(use-package company-prescient
+  :init
+  (setq company-prescient-sort-length-enable nil)
+  (company-prescient-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #ctrlf
 
-(leaf ctrlf
-  :straight t
-  :require t
-  :bind (:search-map
-	 ("s" . ctrlf-forward-default))
-  :global-minor-mode t
+(use-package ctrlf
+  :bind (:map search-map
+	      ("s" . ctrlf-forward-default))
   :init
-  (setq ctrlf-default-search-style 'fuzzy))
+  (setq ctrlf-default-search-style 'fuzzy)
+  (ctrlf-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #marginalia
 
-(leaf marginalia
-  :straight t
-  :require t
-  :global-minor-mode t)
+(use-package marginalia
+  :init
+  (marginalia-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #consutl
 
-(leaf consult
-  :straight t
-  :require t
+;; Example configuration for Consult
+(use-package consult
+  ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings (mode-specific-map)
 	 ("C-c h" . consult-history)
 	 ("C-c m" . consult-mode-command)
@@ -354,58 +321,101 @@
 	 ;; Other custom bindings
 	 ("M-y" . consult-yank-pop) ;; orig. yank-pop
 	 ("<help> a" . consult-apropos) ;; orig. apropos-command
-	 (:my-buffer-map
-	  ("4" . consult-buffer-other-window)
-	  ("5" . consult-buffer-other-frame))
+	 :map my-buffer-map
+	 ("4" . consult-buffer-other-window)
+	 ("5" . consult-buffer-other-frame)
 	 ;; M-g bindings (goto-map)
-	 (:goto-map
-	  ("e" . consult-compile-error)
-	  ("g" . consult-goto-line) ;; orig. goto-line
-	  ("o" . consult-outline) ;; Alternative: consult-org-heading
-	  ("m" . consult-mark)
-	  ("k" . consult-global-mark)
-	  ("i" . consult-imenu)
-	  ("I" . consult-imenu-multi))
+	 :map goto-map
+	 ("e" . consult-compile-error)
+	 ("g" . consult-goto-line) ;; orig. goto-line
+	 ("o" . consult-outline) ;; Alternative: consult-org-heading
+	 ("m" . consult-mark)
+	 ("k" . consult-global-mark)
+	 ("i" . consult-imenu)
+	 ("I" . consult-imenu-multi)
 	 ;; M-s bindings (search-map)
-	 (:search-map
-	  ("d" . consult-find)
-	  ("D" . consult-locate)
-	  ("g" . consult-grep)
-	  ("G" . consult-git-grep)
-	  ("r" . consult-ripgrep)
-	  ("l" . consult-line)
-	  ("L" . consult-line-multi)
-	  ("m" . consult-multi-occur)
-	  ("k" . consult-keep-lines)
-	  ("u" . consult-focus-lines))
+	 :map search-map
+	 ("d" . consult-find)
+	 ("D" . consult-locate)
+	 ("g" . consult-grep)
+	 ("G" . consult-git-grep)
+	 ("r" . consult-ripgrep)
+	 ("l" . consult-line)
+	 ("L" . consult-line-multi)
+	 ("m" . consult-multi-occur)
+	 ("k" . consult-keep-lines)
+	 ("u" . consult-focus-lines)
 	 ;; Minibuffer history
-	 (:minibuffer-local-map
-	  ("M-s" . consult-history) ;; orig. next-matching-history-element
-	  ("M-r" . consult-history))) ;; orig. previous-matching-history-element
-  :hook (completion-list-mode-hook . consult-preview-at-point-mode)
-  :init
-  (setq register-preview-delay 0.5
-	register-preview-function #'consult-register-format
-	xref-show-xrefs-function #'consult-xref
-	xref-show-definitions-function #'consult-xref
-	consult-narrow-key "<")
+	 :map minibuffer-local-map
+	 ("M-s" . consult-history) ;; orig. next-matching-history-element
+	 ("M-r" . consult-history)) ;; orig. previous-matching-history-element
 
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+	register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
   (advice-add #'register-preview :override #'consult-register-window)
 
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+	xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
   :config
-  (consult-customize consult-theme consult-ripgrep consult-git-grep consult-grep
-		     consult-bookmark consult-recent-file consult-xref
-		     consult--source-bookmark consult--source-recent-file
-		     consult--source-project-recent-file
-		     :preview-key (kbd "M-.")))
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key (kbd "M-."))
+  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key (kbd "M-."))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;; There are multiple reasonable alternatives to chose from.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 3. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 4. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #emabrk
 
-(leaf embark
-  :straight t
-  :require t
+(use-package embark
   :bind (("C-." . embark-act) ;; pick some comfortable binding
 	 ("C-;" . embark-dwim) ;; good alternative: M-.
 	 ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
@@ -418,130 +428,109 @@
 		 nil
 		 (window-parameters (mode-line-format . none)))))
 
-(leaf embark-consult
-  :straight t
-  :require t
+(use-package embark-consult
   :after embark consult
-  :hook (embark-collect-mode-hook . consult-preview-at-point-mode))
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #yasnippet
 
-(leaf yasnippet
-  :straight t
-  :require t
-  :bind (:yas-minor-mode-map
-	 ("TAB" . nil)
-	 ("<tab>" . nil))
-  :global-minor-mode yas-global-mode)
+(use-package yasnippet
+  :bind (:map yas-minor-mode-map
+	      ("TAB" . nil)
+	      ("<tab>" . nil))
+  :init
+  (yas-global-mode +1))
 
-(leaf yasnippet-snippets
-  :straight t
-  :require t
+(use-package yasnippet-snippets
   :after yasnippet)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #git
 
-(leaf magit
-  :straight t
-  :require t)
+(use-package magit)
 
-(leaf git-gutter
-  :straight t
-  :require t
-  :global-minor-mode global-git-gutter-mode)
+(use-package git-gutter
+  :init
+  (global-git-gutter-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #which-key
 
-(leaf which-key
-  :straight t
-  :require t
-  :global-minor-mode t)
+(use-package which-key
+  :init
+  (which-key-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #projectile
 
-(leaf projectile
-  :straight t
-  :require t
-  :bind (:projectile-mode-map
-	 ("C-c p" . projectile-command-map))
-  :global-minor-mode t
-  :config
+(use-package projectile
+  :bind (:map projectile-mode-map
+	      ("C-c p" . projectile-command-map))
+  :init
   (with-eval-after-load 'evil
     (evil-define-key 'normal my-intercept-mode-map
-      (kbd "SPC p") `("projectile" . ,projectile-command-map))))
+      (kbd "SPC p") `("projectile" . ,projectile-command-map)))
+
+  (projectile-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #flycheck
 
-(leaf flycheck
-  :straight t
-  :require t
-  :bind (:my-error-map
-	 ("l" . flycheck-list-errors)
-	 ("n" . flycheck-next-error)
-	 ("p" . flycheck-previous-error))
-  :global-minor-mode global-flycheck-mode
+(use-package flycheck
+  :bind (:map my-error-map
+	      ("l" . flycheck-list-errors)
+	      ("n" . flycheck-next-error)
+	      ("p" . flycheck-previous-error))
   :init
-  (setq flycheck-idle-change-delay 4.0))
+  (setq flycheck-idle-change-delay 4.0)
+  (global-flycheck-mode +1))
 
-(leaf consult-flycheck
-  :straight t
-  :require t
-  :after consult flycheck
-  :bind ((:my-error-map
-	  ("e" . consult-flycheck))
-	 (:goto-map
-	  ("f" . consult-flycheck))))
+(use-package consult-flycheck
+  :after flycheck consult
+  :bind ((:map goto-map
+	       ("f" . consult-flycheck))
+	 (:map my-error-map
+	       ("e" . consult-flycheck))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #undo-tree
 
-(leaf undo-tree
-  :straight t
-  :require t
-  :bind (:evil-normal-state-map
-	 ("SPC u" . undo-tree-visualize))
-  :global-minor-mode global-undo-tree-mode
+(use-package undo-tree
   :init
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
   (with-eval-after-load 'evil
-    (evil-set-undo-system 'undo-tree)))
+    (evil-set-undo-system 'undo-tree)
+    (evil-define-key 'normal my-intercept-mode-map
+      (kbd "SPC u") 'undo-tree-visualize))
+
+  (global-undo-tree-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #rg
 
-(leaf rg
-  :straight t
-  :require t)
+(use-package rg)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #rainbow-delimiters
 
-(leaf rainbow-delimiters
-  :straight t
-  :require t
-  :hook (prog-mode-hook . rainbow-delimiters-mode))
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #highlight-indent-guides
 
-(leaf highlight-indent-guides
-  :straight t
-  :require t
-  :hook (prog-mode-hook . highlight-indent-guides-mode)
+(use-package highlight-indent-guides
+  :hook (prog-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character
 	highlight-indent-guides-character 124
@@ -551,9 +540,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
 
-(leaf zerodark-theme
-  :straight t
-  :require t
+(use-package zerodark-theme
   :init
   (load-theme 'zerodark t))
 
@@ -569,98 +556,78 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #modeline
 
-(leaf moody
-  :straight t
-  :require t
+(use-package moody
   :config
   (setq x-underline-at-descent-line t)
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode)
   (moody-replace-eldoc-minibuffer-message-function))
 
-(leaf minions
-  :straight t
-  :require t
-  :global-minor-mode t)
-
-(leaf nyan-mode
-  :straight t
-  :require t
-  :global-minor-mode t
+(use-package minions
   :init
-  (setq nyan-animate-nyancat t))
+  (minions-mode +1))
+
+(use-package nyan-mode
+  :init
+  (setq nyan-animate-nyancat t)
+  (nyan-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #restart-emacs
 
-(leaf restart-emacs
-  :straight t
-  :require t
-  :bind (:my-quit-map
-	 ("r" . restart-emacs)))
+(use-package restart-emacs
+  :bind (:map my-quit-map
+	      ("r" . restart-emacs)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #all-the-icons
 
-(leaf all-the-icons
-  :if (display-graphic-p)
-  :straight t
-  :require t)
+(use-package all-the-icons
+  :if (display-graphic-p))
 
-(leaf all-the-icons-dired
-  :straight t
-  :require t
+(use-package all-the-icons-dired
   :after all-the-icons
-  :hook (dired-mode-hook . all-the-icons-dired-mode))
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #expand-region
 
-(leaf expand-region
-  :straight t
-  :require t
+(use-package expand-region
   :bind ("C-=" . er/expand-region))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #format
 
-(leaf apheleia
-  :straight t
-  :require t
-  :hook ((rust-mode-hook . apheleia-mode)
-	 (python-mode-hook . apheleia-mode)))
+(use-package apheleia
+  :hook ((rust-mode . apheleia-mode)
+	 (python-mode . apheleia-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #beacon
 
-(leaf beacon
-  :straight t
-  :require t
-  :global-minor-mode t)
+(use-package beacon
+  :init
+  (beacon-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #gcmh
 
-(leaf gcmh
-  :straight t
-  :require t
-  :global-minor-mode t
+(use-package gcmh
   :init
-  (setq garbage-collection-messages t))
+  (setq garbage-collection-messages t)
+  (gcmh-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #dashboard
 
-(leaf dashboard
-  :straight t
-  :require t
+(use-package dashboard
   :init
   (setq dashboard-center-content t
 	dashboard-set-heading-icons t
@@ -674,18 +641,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #volatile-highlights
 
-(leaf volatile-highlights
-  :straight t
-  :require t
-  :global-minor-mode t)
+(use-package volatile-highlights
+  :init
+  (volatile-highlights-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #unicode-fonts
 
-(leaf unicode-fonts
-  :straight t
-  :require t
+(use-package unicode-fonts
   :init
   (unicode-fonts-setup))
 
@@ -693,39 +657,36 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #org
 
-(leaf org
-  :init
-  (setq org-tag-alist '(("@Sample1" . nil)
-			("@Test" . nil))))
+(setq org-tag-alist '(("@Sample1" . nil)
+		      ("@Test" . nil))
+      org-directory "~/org/"
+      org-default-notes-file (concat org-directory "/notes.org")
+      org-capture-templates '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
+			       "* TODO %?\n  %i\n  %a")
+			      ("j" "Journal" entry (file+datetree "~/org/journal.org")
+			       "* %?\nEntered on %U\n  %i\n  %a"))
+      org-agenda-files '("~/org/notes.org"
+			 "~/org/journal.org"))
 
-(leaf org-capture
-  :bind ("C-c c" . org-capture)
-  :init
-  (setq org-directory "~/org/"
-	org-default-notes-file (concat org-directory "/notes.org")
-	org-capture-templates '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
-				 "* TODO %?\n  %i\n  %a")
-				("j" "Journal" entry (file+datetree "~/org/journal.org")
-				 "* %?\nEntered on %U\n  %i\n  %a"))))
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(define-key my-org-map (kbd "c") 'org-capture)
+(define-key my-org-map (kbd "a") 'org-agenda)
+(define-key my-org-map (kbd "o") 'org-open-at-point)
+(define-key my-org-map (kbd "l") 'org-link)
 
-(leaf org-agenda
-  :bind ("C-c a" . org-agenda)
-  :init
-  (setq org-agenda-files '("~/org/notes.org"
-			   "~/org/journal.org")))
+(use-package org-modern
+  :hook (org-mode . org-modern-mode))
 
-(leaf org-modern
-  :straight t
-  :require t
-  :hook (org-mode-hook . org-modern-mode))
+(use-package org-pomodoro
+  :bind (:map my-org-map
+	      ("p" . org-pomodoro)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #alert
 
-(leaf alert
-  :straight t
-  :require t
+(use-package alert
   :init
   (cond ((eq system-type 'windows-nt)
 	 (setq alert-default-style 'toast))
@@ -733,120 +694,57 @@
 	((eq system-type 'gnu/linux)
 	 (setq alert-default-style 'libnotify))))
 
-(leaf alert-toast
+(use-package alert-toast
   :if (eq system-type 'windows-nt)
-  :straight t
-  :require t
   :after alert)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #org-pomodoro
-
-(leaf org-pomodoro
-  :straight t
-  :require t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #valign
 
-(leaf valign
-  :straight t
-  :require t
-  :hook ((org-mode-hook . valign-mode)
-	 (markdown-mode-hook . valign-mode)))
+(use-package valign
+  :hook ((org-mode . valign-mode)
+	 (markdown-mode . valign-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #fussy
 
-(leaf orderless
-  :straight t
-  :require t
-  :init
-  (defun just-one-face (fn &rest args)
-    (let ((orderless-match-faces [completions-common-part]))
-      (apply fn args)))
-
-  (advice-add 'company-capf--candidates :around #'just-one-face))
-
-(leaf fussy
-  :straight '(fussy :type git :host github :repo "jojojames/fussy")
-  :require t
+(use-package fussy
   :init
   (setq completion-styles '(fussy)
 	completion-category-defaults nil
 	compleiton-category-overrides nil
-	;; fussy-score-fn 'flx-score
-	;; fussy-score-fn 'flx-rs-score
-	;; fussy-score-fn 'fussy-fzf-native-score
-	fussy-score-fn 'fussy-fuz-bin-score
-	;; fussy-score-fn 'fussy-liquidmetal-score
-	;; fussy-score-fn 'fussy-sublime-fuzzy-score
-	fussy-filter-fn 'fussy-filter-orderless-flex)
+	fussy-filter-fn 'fussy-filter-fast
+	fussy-fast-regex-fn 'fussy-pattern-flex-rx))
 
-  (defun bb-company-capf (f &rest args)
-    "Manage `completion-styles'."
-    (if (length< company-prefix 2)
-	(let ((completion-styles (remq 'fussy completion-styles)))
-	  (apply f args))
-      (apply f args)))
-
-  (advice-add 'company-capf :around 'bb-company-capf))
-
-(leaf flx-rs
-  :straight '(flx-rs :repo "jcs-elpa/flx-rs" :fetcher github :files (:defaults "bin"))
-  :require t
-  :init
-  (flx-rs-load-dyn))
-
-(leaf fzf-native
-  :straight '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin"))
-  :require t
-  :init
-  (fzf-native-load-dyn))
-
-(leaf fuz-bin
-  :straight '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin"))
-  :require t
-  :init
-  (fuz-bin-load-dyn))
-
-(leaf liquidmetal
-  :straight t
-  :require t)
-
-(leaf sublime-fuzzy
-  :straight '(sublime-fuzzy :repo "jcs-elpa/sublime-fuzzy" :fetcher github :files (:defaults "bin"))
-  :require t
-  :init
+(use-package sublime-fuzzy
+  :straight (sublime-fuzzy :repo "jcs-elpa/sublime-fuzzy" :fetcher github :files (:defaults "bin"))
+  :config
+  (setq fussy-score-fn 'fussy-sublime-fuzzy-score)
   (sublime-fuzzy-load-dyn))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #diff-hl
 
-(leaf diff-hl
-  :straight t
-  :require t
-  :global-minor-mode global-diff-hl-mode)
+(use-package diff-hl
+  :init
+  (global-diff-hl-mode +1))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
-(leaf lsp-mode
-  :straight t
-  :require t
-  :hook ((lsp-mode-hook . (lambda ()
-			    (with-eval-after-load 'evil
-			      (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
-	 (web-mode-hook . lsp)
-	 (css-mode-hook . lsp)
-	 (rust-mode-hook . lsp)
-	 (java-mode-hook . lsp)
-	 (python-mode-hook . lsp))
+(use-package lsp-mode
+  :hook ((lsp-mode . (lambda ()
+		       (with-eval-after-load 'evil
+			 (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
+	 (web-mode . lsp)
+	 (css-mode . lsp)
+	 (rust-mode . lsp)
+	 (java-mode . lsp)
+	 (python-mode . lsp))
   :init
   (setq lsp-keymap-prefix "M-l"
 	lsp-eldoc-enable-hover nil
@@ -855,94 +753,71 @@
 	lsp-headerline-breadcrumb-enable-diagnostics nil
 	lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m")))
 
-(leaf lsp-ui
-  :straight t
-  :require t
+(use-package lsp-ui
   :after lsp-mode)
 
-(leaf lsp-java
-  :straight t
-  :require t
+(use-package lsp-java
   :after lsp-mode java-mode)
 
-(leaf lsp-pyright
-  :straight t
-  :require t
+(use-package lsp-pyright
   :after lsp-mode python-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #java
 
-(leaf java
-  :hook (java-mode-hook . (lambda ()
+(add-hook 'java-mode-hook (lambda ()
 			    (setq-local tab-width 2
 					c-basic-offset 2
-					indent-tabs-mode t))))
+					indent-tabs-mode t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #web
 
-(leaf web-mode
-  :straight t
-  :require t
+(use-package web-mode
   :mode (("\\.html\\'" . web-mode)
 	 ("\\.jsp\\'" . web-mode))
-  :hook (web-mode-hook . (lambda ()
-			   (setq-local tab-width 2))))
+  :hook (web-mode . (lambda ()
+		      (setq-local tab-width 2))))
 
-(leaf emmet-mode
-  :straight t
-  :require t
-  :hook ((web-mode-hook . emmet-mode)
-	 (css-mode-hook . emmet-mode)))
+(use-package emmet-mode
+  :hook ((web-mode . emmet-mode)
+	 (css-mode . emmet-mode)))
 
-(leaf css-mode
-  :hook (css-mode-hook . (lambda ()
-			   (setq-local tab-width 2))))
+(use-package css-mode
+  :hook (css-mode . (lambda ()
+		      (setq-local tab-width 2))))
 
-(leaf web-beautify
-  :straight t
-  :require t)
+(use-package web-beautify)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #rust
 
-(leaf rust-mode
-  :straight t
-  :require t
-  :hook (rust-mode-hook . (lambda ()
-			    (setq-local tab-width 4
-					indent-tabs-mode nil))))
+(use-package rust-mode
+  :hook (rust-mode . (lambda ()
+		       (setq-local tab-width 4
+				   indent-tabs-mode nil))))
 
-(leaf cargo
-  :straight t
-  :require t
-  :hook (rust-mode-hook . cargo-minor-mode))
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #python
 
-(leaf pyvenv
-  :straight t
-  :require t)
+(use-package pyvenv)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #common-lisp
 
-(leaf slime
-  :straight t
-  :require t
+(use-package slime
   :init
   (setq inferior-lisp-program "sbcl"))
 
-(leaf slime-company
-  :straight t
-  :require t
+(use-package slime-company
   :after slime
   :init
   (slime-setup '(slime-fancy slime-company slime-banner)))
@@ -951,14 +826,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #sql
 
-(leaf sql-indent
-  :straight t
-  :require t
-  :hook (sql-mode-hook . sqlind-minor-mode))
+(use-package sql-indent
+  :hook (sql-mode . sqlind-minor-mode))
 
-(leaf sqlformat
-  :straight t
-  :require t)
+(use-package sqlformat)
 
 (provide 'init)
 ;;; init.el ends here
