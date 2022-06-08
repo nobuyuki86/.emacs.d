@@ -110,7 +110,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #m-keymap
+;; #my-keymap
 
 (defvar my-intercept-mode-map (make-sparse-keymap)
   "High precedence keymap.")
