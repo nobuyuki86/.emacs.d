@@ -243,6 +243,7 @@
 	      ("RET" . nil)
 	      ("<return>" . nil))
   :config
+  (setq company-frontends (remq 'company-preview-if-just-one-frontend company-frontends))
   (add-to-list 'company-frontends 'company-dwim-frontend))
 
 (use-package company-anywhere
