@@ -173,7 +173,9 @@
     (kbd "SPC 0") 'delete-window
     (kbd "SPC 1") 'delete-other-windows
     (kbd "SPC 2") 'split-window-below
-    (kbd "SPC 3") 'split-window-right))
+    (kbd "SPC 3") 'split-window-right
+    (kbd "SPC 4") 'switch-to-buffer-other-window
+    (kbd "SPC 5") 'switch-to-buffer-other-frame))
 
 (use-package evil-collection
   :after evil
@@ -311,8 +313,8 @@
 	 ;; C-x bindings (ctl-x-map)
 	 ("C-x M-:" . consult-complex-command) ;; orig. repeat-complex-command
 	 ([remap switch-to-buffer] . consult-buffer) ;; orig. switch-to-buffer
-	 ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-	 ("C-x 5 b" . consult-buffer-other-frame) ;; orig. switch-to-buffer-other-frame
+	 ([remap switch-to-buffer-other-window] . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+	 ([remap switch-to-buffer-other-frame]. consult-buffer-other-frame) ;; orig. switch-to-buffer-other-frame
 	 ([remap bookmark-jump] . consult-bookmark) ;; orig. bookmark-jump
 	 ([remap project-switch-to-buffer] . consult-project-buffer) ;; orig. project-switch-to-buffer
 	 ;; Custom M-# bindings for fast register access
