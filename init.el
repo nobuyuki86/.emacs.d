@@ -688,16 +688,14 @@
 ;; #alert
 
 (use-package alert
+  :if (eq system-type 'gnu/linux)
   :init
-  (cond ((eq system-type 'windows-nt)
-	 (setq alert-default-style 'toast))
-
-	((eq system-type 'gnu/linux)
-	 (setq alert-default-style 'libnotify))))
+  (setq alert-default-style 'libnotify))
 
 (use-package alert-toast
   :if (eq system-type 'windows-nt)
-  :after alert)
+  :init
+  (setq alert-default-style 'toast))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -711,27 +709,36 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #fussy
 
+(use-package orderless
+  :init
+  (defun just-one-face (fn &rest args)
+    (let ((orderless-match-faces [completions-common-part]))
+      (apply fn args)))
+
+  (advice-add 'company-capf--candidates :around #'just-one-face))
+
 (use-package fussy
+  :straight (fussy :type git :host github :repo "jojojames/fussy")
   :init
   (setq completion-styles '(fussy)
 	completion-category-defaults nil
 	compleiton-category-overrides nil
-	fussy-filter-fn 'fussy-filter-fast
-	fussy-fast-regex-fn 'fussy-pattern-flex-rx))
+	fussy-filter-fn 'fussy-filter-orderless-flex))
 
-(use-package sublime-fuzzy
-  :straight (sublime-fuzzy :repo "jcs-elpa/sublime-fuzzy" :fetcher github :files (:defaults "bin"))
+(use-package fuz-bin
+  :straight
+  (fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin"))
   :config
-  (setq fussy-score-fn 'fussy-sublime-fuzzy-score)
-  (sublime-fuzzy-load-dyn))
+  (setq fussy-score-fn 'fussy-fuz-bin-score)
+  (fuz-bin-load-dyn))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #diff-hl
 
-(use-package diff-hl
-  :init
-  (global-diff-hl-mode +1))
+(use-package page-break-lines
+  :hook ((prog-mode . page-break-lines-mode)
+	 (text-mode . page-break-lines-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
