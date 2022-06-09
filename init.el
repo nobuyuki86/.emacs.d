@@ -133,6 +133,9 @@
 (defvar my-error-map (make-sparse-keymap)
   "My error keymap.")
 
+(defvar my-toggle-map (make-sparse-keymap)
+  "My toggle keymap.")
+
 (defvar my-org-map (make-sparse-keymap)
   "My error keymap.")
 
@@ -169,6 +172,7 @@
     (kbd "SPC f") `("file" . ,my-file-map)
     (kbd "SPC b") `("buffer" . ,my-buffer-map)
     (kbd "SPC e") `("error" . ,my-error-map)
+    (kbd "SPC t") `("toggle" . ,my-toggle-map)
     (kbd "SPC o") `("org" . ,my-org-map)
     (kbd "SPC 0") 'delete-window
     (kbd "SPC 1") 'delete-other-windows
@@ -406,8 +410,8 @@
   ;;;; 1. project.el (the default)
   ;; (setq consult-project-function #'consult--default-project--function)
   ;;;; 2. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 3. vc.el (vc-root-dir)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file
@@ -526,6 +530,8 @@
 ;; #rainbow-delimiters
 
 (use-package rainbow-delimiters
+  :bind (:map my-toggle-map
+	      ("r" . rainbow-delimiters-mode))
   :hook (prog-mode . rainbow-delimiters-mode))
 
 
@@ -533,6 +539,8 @@
 ;; #highlight-indent-guides
 
 (use-package highlight-indent-guides
+  :bind (:map my-toggle-map
+	      ("h" . highlight-indent-guides-mode))
   :hook (prog-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character
@@ -543,9 +551,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
 
+(use-package modus-themes
+  :init
+  (set-frame-parameter nil 'alpha 85)
+  (modus-themes-load-vivendi))
+
+(use-package zenburn-theme
+  :init
+  ;; (load-theme 'zenburn t)
+  )
+
 (use-package zerodark-theme
   :init
-  (load-theme 'zerodark t))
+  ;; (load-theme 'zerodark t)
+  )
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -599,7 +618,11 @@
 ;; #expand-region
 
 (use-package expand-region
-  :bind ("C-=" . er/expand-region))
+  :bind ("C-=" . er/expand-region)
+  :init
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) my-intercept-mode-map
+      (kbd "SPC v") 'er/expand-region)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -645,6 +668,8 @@
 ;; #volatile-highlights
 
 (use-package volatile-highlights
+  :bind (:map my-toggle-map
+	      ("v" . volatile-highlights-mode))
   :init
   (volatile-highlights-mode +1))
 
@@ -736,7 +761,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #diff-hl
+;; #page-break-lines
 
 (use-package page-break-lines
   :hook ((prog-mode . page-break-lines-mode)
