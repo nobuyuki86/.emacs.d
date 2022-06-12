@@ -4,6 +4,8 @@
 auto-save-list/
 backup/
 bookmarks
+company-statistics-cache.el
+early-init.elc
 eclipse.jdt.ls/
 eln-cache/
 eshell/
