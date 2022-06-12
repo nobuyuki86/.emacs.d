@@ -12,9 +12,9 @@
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -63,16 +63,16 @@
   (set-keyboard-coding-system 'cp932)
   (set-terminal-coding-system 'cp932)
   (set-charset-priority 'ascii
-			'japanese-jisx0208
-			'latin-jisx0201
-			'katakana-jisx0201
-			'iso-8859-1
-			'cp1252
-			'unicode)
+                        'japanese-jisx0208
+                        'latin-jisx0201
+                        'katakana-jisx0201
+                        'iso-8859-1
+                        'cp1252
+                        'unicode)
   (set-coding-system-priority 'utf-8
-			      'euc-jp
-			      'iso-2022-jp
-			      'cp932))
+                              'euc-jp
+                              'iso-2022-jp
+                              'cp932))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -151,10 +151,10 @@
 
 (use-package evil
   :bind (:map my-buffer-map
-	      ("d" . evil-delete-buffer))
+              ("d" . evil-delete-buffer))
   :init
   (setq evil-want-keybinding nil
-	evil-symbol-word-search t)
+        evil-symbol-word-search t)
   (evil-mode +1)
 
   :config
@@ -179,7 +179,8 @@
     (kbd "SPC 2") 'split-window-below
     (kbd "SPC 3") 'split-window-right
     (kbd "SPC 4") 'switch-to-buffer-other-window
-    (kbd "SPC 5") 'switch-to-buffer-other-frame))
+    (kbd "SPC 5") 'switch-to-buffer-other-frame
+    (kbd "SPC w") 'evil-window-next))
 
 (use-package evil-collection
   :after evil
@@ -215,23 +216,25 @@
 
 (use-package company
   :bind (([remap indent-for-tab-command] . company-indent-or-complete-common)
-	 ([remap c-indent-line-or-region] . company-indent-or-complete-common))
+         ([remap c-indent-line-or-region] . company-indent-or-complete-common))
   :init
   (setq company-idle-delay 0
-	company-minimum-prefix-length 1
-	company-dabbrev-ignore-case nil
-	company-dabbrev-other-buffers nil
-	company-dabbrev-downcase nil
-	company-require-match 'never
-	company-async-redisplay-delay 0.1
-	company-auto-complete nil
-	company-box-doc-enable nil)
+        company-minimum-prefix-length 1
+        company-dabbrev-ignore-case nil
+        company-dabbrev-other-buffers nil
+        company-dabbrev-downcase nil
+        company-require-match 'never
+        company-async-redisplay-delay 0.1
+        company-auto-complete nil)
 
   (global-company-mode +1))
 
-(use-package company-box
+(use-package company-posframe
   :after company
-  :hook (company-mode . company-box-mode))
+  :init
+  (setq company-posframe-show-indicator nil
+        company-posframe-show-metadata nil)
+  (company-posframe-mode +1))
 
 (use-package company-tabnine
   :after company
@@ -241,13 +244,13 @@
 (use-package company-dwim
   :straight (company-dwim :type git :host github :repo "zk-phi/company-dwim")
   :bind (:map company-active-map
-	      ("TAB" . company-dwim)
-	      ("<tab>" . company-dwim)
-	      ("S-TAB" . company-dwim-select-previous)
-	      ("<backtab>" . company-dwim-select-previous)
-	      ("C-j" . company-complete-selection)
-	      ("RET" . nil)
-	      ("<return>" . nil))
+              ("TAB" . company-dwim)
+              ("<tab>" . company-dwim)
+              ("S-TAB" . company-dwim-select-previous)
+              ("<backtab>" . company-dwim-select-previous)
+              ("C-j" . company-complete-selection)
+              ("RET" . nil)
+              ("<return>" . nil))
   :config
   (setq company-frontends (remq 'company-preview-if-just-one-frontend company-frontends))
   (add-to-list 'company-frontends 'company-dwim-frontend))
@@ -290,7 +293,7 @@
 
 (use-package ctrlf
   :bind (:map search-map
-	      ("s" . ctrlf-forward-default))
+              ("s" . ctrlf-forward-default))
   :init
   (setq ctrlf-default-search-style 'fuzzy)
   (ctrlf-mode +1))
@@ -311,51 +314,51 @@
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings (mode-specific-map)
-	 ("C-c h" . consult-history)
-	 ("C-c m" . consult-mode-command)
-	 ("C-c k" . consult-kmacro)
-	 ;; C-x bindings (ctl-x-map)
-	 ("C-x M-:" . consult-complex-command) ;; orig. repeat-complex-command
-	 ([remap switch-to-buffer] . consult-buffer) ;; orig. switch-to-buffer
-	 ([remap switch-to-buffer-other-window] . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-	 ([remap switch-to-buffer-other-frame]. consult-buffer-other-frame) ;; orig. switch-to-buffer-other-frame
-	 ([remap bookmark-jump] . consult-bookmark) ;; orig. bookmark-jump
-	 ([remap project-switch-to-buffer] . consult-project-buffer) ;; orig. project-switch-to-buffer
-	 ;; Custom M-# bindings for fast register access
-	 ("M-#" . consult-register-load)
-	 ("M-'" . consult-register-store) ;; orig. abbrev-prefix-mark (unrelated)
-	 ("C-M-#" . consult-register)
-	 ;; Other custom bindings
-	 ("M-y" . consult-yank-pop) ;; orig. yank-pop
-	 ("<help> a" . consult-apropos) ;; orig. apropos-command
-	 :map my-buffer-map
-	 ("4" . consult-buffer-other-window)
-	 ("5" . consult-buffer-other-frame)
-	 ;; M-g bindings (goto-map)
-	 :map goto-map
-	 ("e" . consult-compile-error)
-	 ("g" . consult-goto-line) ;; orig. goto-line
-	 ("o" . consult-outline) ;; Alternative: consult-org-heading
-	 ("m" . consult-mark)
-	 ("k" . consult-global-mark)
-	 ("i" . consult-imenu)
-	 ("I" . consult-imenu-multi)
-	 ;; M-s bindings (search-map)
-	 :map search-map
-	 ("d" . consult-find)
-	 ("D" . consult-locate)
-	 ("g" . consult-grep)
-	 ("G" . consult-git-grep)
-	 ("r" . consult-ripgrep)
-	 ("l" . consult-line)
-	 ("L" . consult-line-multi)
-	 ("m" . consult-multi-occur)
-	 ("k" . consult-keep-lines)
-	 ("u" . consult-focus-lines)
-	 ;; Minibuffer history
-	 :map minibuffer-local-map
-	 ("M-s" . consult-history) ;; orig. next-matching-history-element
-	 ("M-r" . consult-history)) ;; orig. previous-matching-history-element
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c k" . consult-kmacro)
+         ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command) ;; orig. repeat-complex-command
+         ([remap switch-to-buffer] . consult-buffer) ;; orig. switch-to-buffer
+         ([remap switch-to-buffer-other-window] . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ([remap switch-to-buffer-other-frame]. consult-buffer-other-frame) ;; orig. switch-to-buffer-other-frame
+         ([remap bookmark-jump] . consult-bookmark) ;; orig. bookmark-jump
+         ([remap project-switch-to-buffer] . consult-project-buffer) ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store) ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop) ;; orig. yank-pop
+         ("<help> a" . consult-apropos) ;; orig. apropos-command
+         :map my-buffer-map
+         ("4" . consult-buffer-other-window)
+         ("5" . consult-buffer-other-frame)
+         ;; M-g bindings (goto-map)
+         :map goto-map
+         ("e" . consult-compile-error)
+         ("g" . consult-goto-line) ;; orig. goto-line
+         ("o" . consult-outline) ;; Alternative: consult-org-heading
+         ("m" . consult-mark)
+         ("k" . consult-global-mark)
+         ("i" . consult-imenu)
+         ("I" . consult-imenu-multi)
+         ;; M-s bindings (search-map)
+         :map search-map
+         ("d" . consult-find)
+         ("D" . consult-locate)
+         ("g" . consult-grep)
+         ("G" . consult-git-grep)
+         ("r" . consult-ripgrep)
+         ("l" . consult-line)
+         ("L" . consult-line-multi)
+         ("m" . consult-multi-occur)
+         ("k" . consult-keep-lines)
+         ("u" . consult-focus-lines)
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history) ;; orig. next-matching-history-element
+         ("M-r" . consult-history)) ;; orig. previous-matching-history-element
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
@@ -368,7 +371,7 @@
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
   (setq register-preview-delay 0.5
-	register-preview-function #'consult-register-format)
+        register-preview-function #'consult-register-format)
 
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
@@ -376,7 +379,7 @@
 
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
-	xref-show-definitions-function #'consult-xref)
+        xref-show-definitions-function #'consult-xref)
 
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
@@ -424,16 +427,16 @@
 
 (use-package embark
   :bind (("C-." . embark-act) ;; pick some comfortable binding
-	 ("C-;" . embark-dwim) ;; good alternative: M-.
-	 ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+         ("C-;" . embark-dwim) ;; good alternative: M-.
+         ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
 
   :config
   (add-to-list 'display-buffer-alist
-	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-		 nil
-		 (window-parameters (mode-line-format . none)))))
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
 
 (use-package embark-consult
   :after embark consult
@@ -445,8 +448,8 @@
 
 (use-package yasnippet
   :bind (:map yas-minor-mode-map
-	      ("TAB" . nil)
-	      ("<tab>" . nil))
+              ("TAB" . nil)
+              ("<tab>" . nil))
   :init
   (yas-global-mode +1))
 
@@ -477,7 +480,7 @@
 
 (use-package projectile
   :bind (:map projectile-mode-map
-	      ("C-c p" . projectile-command-map))
+              ("C-c p" . projectile-command-map))
   :init
   (with-eval-after-load 'evil
     (evil-define-key 'normal my-intercept-mode-map
@@ -491,9 +494,9 @@
 
 (use-package flycheck
   :bind (:map my-error-map
-	      ("l" . flycheck-list-errors)
-	      ("n" . flycheck-next-error)
-	      ("p" . flycheck-previous-error))
+              ("l" . flycheck-list-errors)
+              ("n" . flycheck-next-error)
+              ("p" . flycheck-previous-error))
   :init
   (setq flycheck-idle-change-delay 4.0)
   (global-flycheck-mode +1))
@@ -501,9 +504,9 @@
 (use-package consult-flycheck
   :after flycheck consult
   :bind ((:map goto-map
-	       ("f" . consult-flycheck))
-	 (:map my-error-map
-	       ("e" . consult-flycheck))))
+               ("f" . consult-flycheck))
+         (:map my-error-map
+               ("e" . consult-flycheck))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -531,7 +534,7 @@
 
 (use-package rainbow-delimiters
   :bind (:map my-toggle-map
-	      ("r" . rainbow-delimiters-mode))
+              ("r" . rainbow-delimiters-mode))
   :hook (prog-mode . rainbow-delimiters-mode))
 
 
@@ -540,31 +543,55 @@
 
 (use-package highlight-indent-guides
   :bind (:map my-toggle-map
-	      ("h" . highlight-indent-guides-mode))
+              ("h" . highlight-indent-guides-mode))
   :hook (prog-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character
-	highlight-indent-guides-character 124
-	highlight-indent-guides-responsive 'top))
+        highlight-indent-guides-character 124
+        highlight-indent-guides-responsive 'top))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #nano
+
+(use-package nano-emacs
+  :straight (nano-emacs :type git :host github :repo "rougier/nano-emacs")
+  :init
+  (setq nano-font-family-monospaced "VLゴシック"
+        nano-font-size 10)
+
+  (require 'nano-layout)
+  (require 'nano-theme-dark)
+
+  (require 'nano-base-colors)
+  (require 'nano-faces)
+  (nano-faces)
+
+  (require 'nano-help)
+  (require 'nano-splash)
+  (require 'nano-defaults)
+  (require 'nano-session)
+  (require 'nano-bindings)
+  (require 'nano-colors))
+
+(use-package nano-theme
+  :config
+  (custom-set-faces
+   '(nano-mono ((t (:weight normal :height 100 :family "VLゴシック"))))
+   '(nano-sans ((t (:weight normal :height 100 :family "VLPゴシック"))))
+   '(nano-serif ((t (:weight normal :height 100 :family "IPAexMincho")))))
+  (nano-mode)
+  (nano-dark))
+
+(use-package nano-modeline
+  :config
+  (nano-modeline-mode +1))
+
+(use-package nano-agenda)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
-
-(use-package modus-themes
-  :init
-  (set-frame-parameter nil 'alpha 85)
-  (modus-themes-load-vivendi))
-
-(use-package zenburn-theme
-  :init
-  ;; (load-theme 'zenburn t)
-  )
-
-(use-package zerodark-theme
-  :init
-  ;; (load-theme 'zerodark t)
-  )
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -576,31 +603,11 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #modeline
-
-(use-package moody
-  :config
-  (setq x-underline-at-descent-line t)
-  (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode)
-  (moody-replace-eldoc-minibuffer-message-function))
-
-(use-package minions
-  :init
-  (minions-mode +1))
-
-(use-package nyan-mode
-  :init
-  (setq nyan-animate-nyancat t)
-  (nyan-mode +1))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #restart-emacs
 
 (use-package restart-emacs
   :bind (:map my-quit-map
-	      ("r" . restart-emacs)))
+              ("r" . restart-emacs)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -630,7 +637,7 @@
 
 (use-package apheleia
   :hook ((rust-mode . apheleia-mode)
-	 (python-mode . apheleia-mode)))
+         (python-mode . apheleia-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -656,10 +663,10 @@
 (use-package dashboard
   :init
   (setq dashboard-center-content t
-	dashboard-set-heading-icons t
-	dashboard-set-file-icons t
-	dashboard-set-navigator t
-	dashboard-set-init-info t)
+        dashboard-set-heading-icons t
+        dashboard-set-file-icons t
+        dashboard-set-navigator t
+        dashboard-set-init-info t)
 
   (dashboard-setup-startup-hook))
 
@@ -669,7 +676,7 @@
 
 (use-package volatile-highlights
   :bind (:map my-toggle-map
-	      ("v" . volatile-highlights-mode))
+              ("v" . volatile-highlights-mode))
   :init
   (volatile-highlights-mode +1))
 
@@ -686,15 +693,15 @@
 ;; #org
 
 (setq org-tag-alist '(("@Sample1" . nil)
-		      ("@Test" . nil))
+                      ("@Test" . nil))
       org-directory "~/org/"
       org-default-notes-file (concat org-directory "/notes.org")
       org-capture-templates '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
-			       "* TODO %?\n  %i\n  %a")
-			      ("j" "Journal" entry (file+datetree "~/org/journal.org")
-			       "* %?\nEntered on %U\n  %i\n  %a"))
+                               "* TODO %?\n  %i\n  %a")
+                              ("j" "Journal" entry (file+datetree "~/org/journal.org")
+                               "* %?\nEntered on %U\n  %i\n  %a"))
       org-agenda-files '("~/org/notes.org"
-			 "~/org/journal.org"))
+                         "~/org/journal.org"))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -708,7 +715,7 @@
 
 (use-package org-pomodoro
   :bind (:map my-org-map
-	      ("p" . org-pomodoro)))
+              ("p" . org-pomodoro)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -730,7 +737,7 @@
 
 (use-package valign
   :hook ((org-mode . valign-mode)
-	 (markdown-mode . valign-mode)))
+         (markdown-mode . valign-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -748,9 +755,10 @@
   :straight (fussy :type git :host github :repo "jojojames/fussy")
   :init
   (setq completion-styles '(fussy)
-	completion-category-defaults nil
-	compleiton-category-overrides nil
-	fussy-filter-fn 'fussy-filter-orderless-flex))
+        completion-category-defaults nil
+        compleiton-category-overrides nil
+        fussy-filter-fn 'fussy-filter-fast
+        fussy-fast-regex-fn 'fussy-pattern-flex-rx))
 
 (use-package fuz-bin
   :straight
@@ -765,7 +773,7 @@
 
 (use-package page-break-lines
   :hook ((prog-mode . page-break-lines-mode)
-	 (text-mode . page-break-lines-mode)))
+         (text-mode . page-break-lines-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -773,20 +781,20 @@
 
 (use-package lsp-mode
   :hook ((lsp-mode . (lambda ()
-		       (with-eval-after-load 'evil
-			 (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
-	 (web-mode . lsp)
-	 (css-mode . lsp)
-	 (rust-mode . lsp)
-	 (java-mode . lsp)
-	 (python-mode . lsp))
+                       (with-eval-after-load 'evil
+                         (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
+         (web-mode . lsp)
+         (css-mode . lsp)
+         (rust-mode . lsp)
+         (java-mode . lsp)
+         (python-mode . lsp))
   :init
   (setq lsp-keymap-prefix "M-l"
-	lsp-eldoc-enable-hover nil
-	lsp-enable-folding nil
-	lsp-headerline-breadcrumb-enable nil
-	lsp-headerline-breadcrumb-enable-diagnostics nil
-	lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m")))
+        lsp-eldoc-enable-hover nil
+        lsp-enable-folding nil
+        lsp-headerline-breadcrumb-enable nil
+        lsp-headerline-breadcrumb-enable-diagnostics nil
+        lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m")))
 
 (use-package lsp-ui
   :after lsp-mode)
@@ -802,9 +810,9 @@
 ;; #java
 
 (add-hook 'java-mode-hook (lambda ()
-			    (setq-local tab-width 2
-					c-basic-offset 2
-					indent-tabs-mode t)))
+                            (setq-local tab-width 2
+                                        c-basic-offset 2
+                                        indent-tabs-mode t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -812,17 +820,17 @@
 
 (use-package web-mode
   :mode (("\\.html\\'" . web-mode)
-	 ("\\.jsp\\'" . web-mode))
+         ("\\.jsp\\'" . web-mode))
   :hook (web-mode . (lambda ()
-		      (setq-local tab-width 2))))
+                      (setq-local tab-width 2))))
 
 (use-package emmet-mode
   :hook ((web-mode . emmet-mode)
-	 (css-mode . emmet-mode)))
+         (css-mode . emmet-mode)))
 
 (use-package css-mode
   :hook (css-mode . (lambda ()
-		      (setq-local tab-width 2))))
+                      (setq-local tab-width 2))))
 
 (use-package web-beautify)
 
@@ -832,8 +840,8 @@
 
 (use-package rust-mode
   :hook (rust-mode . (lambda ()
-		       (setq-local tab-width 4
-				   indent-tabs-mode nil))))
+                       (setq-local tab-width 4
+                                   indent-tabs-mode nil))))
 
 (use-package cargo
   :hook (rust-mode . cargo-minor-mode))
