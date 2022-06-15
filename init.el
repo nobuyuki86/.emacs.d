@@ -258,11 +258,25 @@
 
 (global-set-key (kbd "C-x C-z") #'selectrum-repeat)
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) my-intercept-mode-map
-    (kbd "SPC z") 'selectrum-repeat))
+(with-eval-after-load 'selectrum
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) my-intercept-mode-map
+      (kbd "SPC z") 'selectrum-repeat)))
 
 (selectrum-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #vertico
+
+(straight-use-package 'vertico)
+
+(with-eval-after-load 'vertico
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) my-intercept-mode-map
+      (kbd "SPC z") #'vertico-repeat)))
+
+;; (vertico-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -697,17 +711,27 @@
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
 (straight-use-package '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
+(straight-use-package 'orderless)
 
 (require 'fussy)
 
 (setq completion-styles '(fussy)
       completion-category-defaults nil
       compleiton-category-overrides nil
-      fussy-filter-fn 'fussy-filter-fast
-      fussy-score-fn 'fussy-fuz-bin-score
+      fussy-filter-fn #'fussy-filter-fast
+      fussy-fast-regex-fn #'fussy-pattern-flex-rx
+      fussy-score-fn #'fussy-fuz-bin-score
       fussy-fuz-use-skim-p nil)
 
 (fuz-bin-load-dyn)
+
+(defmacro fussy--measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY.
+https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html"
+  `(let ((time (current-time)))
+     (let ((result ,@body))
+       (message "%.06f" (float-time (time-since time)))
+       result)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
