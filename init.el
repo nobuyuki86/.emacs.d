@@ -842,7 +842,6 @@
       completion-category-defaults nil
       compleiton-category-overrides nil
       fussy-filter-fn #'fussy-filter-fast
-      fussy-fast-regex-fn #'fussy-pattern-flex-rx
       fussy-score-fn #'fussy-fuz-bin-score
       fussy-fuz-use-skim-p nil)
 
