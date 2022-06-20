@@ -28,6 +28,70 @@
       read-process-output-max (* 1024 1024)
       use-short-answers t)
 
+;; A second, case-insensitive pass over `auto-mode-alist' is time wasted, and
+;; indicates misconfiguration (don't rely on case insensitivity for file names).
+(setq auto-mode-case-fold nil)
+
+;; Disabling the BPA makes redisplay faster, but might produce incorrect display
+;; reordering of bidirectional text with embedded parentheses and other bracket
+;; characters whose 'paired-bracket' Unicode property is non-nil.
+(setq bidi-inhibit-bpa t)  ; Emacs 27 only
+
+;; Disable bidirectional text scanning for a modest performance boost. I've set
+;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
+;; is an undefined state and suggest this to be just as good:
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+
+;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
+;; in non-focused windows.
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
+;; More performant rapid scrolling over unfontified regions. May cause brief
+;; spells of inaccurate syntax highlighting right after scrolling, which should
+;; quickly self-correct.
+(setq fast-but-imprecise-scrolling t)
+
+;; Don't ping things that look like domain names.
+(setq ffap-machine-p-known 'reject)
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we halve startup times, particularly when we use
+;; fonts that are larger than the system default (which would resize the frame).
+(setq frame-inhibit-implied-resize t)
+
+;; Emacs "updates" its ui more often than it needs to, so slow it down slightly
+(setq idle-update-delay 1.0)  ; default is 0.5
+
+;; Font compacting can be terribly expensive, especially for rendering icon
+;; fonts on Windows. Whether disabling it has a notable affect on Linux and Mac
+;; hasn't been determined, but do it there anyway, just in case. This increases
+;; memory usage, however!
+(setq inhibit-compacting-font-caches t)
+
+;; PGTK builds only: this timeout adds latency to frame operations, like
+;; `make-frame-invisible', which are frequently called without a guard because
+;; it's inexpensive in non-PGTK builds. Lowering the timeout from the default
+;; 0.1 should make childframes and packages that manipulate them (like `lsp-ui',
+;; `company-box', and `posframe') feel much snappier. See emacs-lsp/lsp-ui#613.
+(setq pgtk-wait-for-event-timeout 0.001)
+
+;; Performance on Windows is considerably worse than elsewhere. We'll need
+;; everything we can get.
+(when (boundp 'w32-get-true-file-attributes)
+  (setq w32-get-true-file-attributes nil   ; decrease file IO workload
+        w32-pipe-read-delay 0              ; faster IPC
+        w32-pipe-buffer-size (* 64 1024))  ; read more at a time (was 4K)
+
+  ;; The clipboard on Windows could be in another encoding (likely utf-16), so
+  ;; let Emacs/the OS decide what to use there.
+  (setq selection-coding-system 'utf-8))
+
+;; Reduce debug output, well, unless we've asked for it.
+(setq debug-on-error init-file-debug
+      jka-compr-verbose init-file-debug)
+
 (server-mode +1)
 (savehist-mode +1)
 (save-place-mode +1)
@@ -42,6 +106,46 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; emacs-ui
+
+;; Reduce the clutter in the fringes; we'd like to reserve that space for more
+;; useful information, like git-gutter and flycheck.
+(setq indicate-buffer-boundaries nil
+      indicate-empty-lines nil)
+
+;; Don't resize the frames in steps; it looks weird, especially in tiling window
+;; managers, where it can leave unseemly gaps.
+(setq frame-resize-pixelwise t)
+
+;; But do not resize windows pixelwise, this can cause crashes in some cases
+;; when resizing too many windows at once or rapidly.
+(setq window-resize-pixelwise nil)
+
+;; The native border "consumes" a pixel of the fringe on righter-most splits,
+;; `window-divider' does not. Available since Emacs 25.1.
+(setq window-divider-default-places t
+      window-divider-default-bottom-width 1
+      window-divider-default-right-width 1)
+
+;; GUIs are inconsistent across systems and themes (and will rarely match our
+;; active Emacs theme). They impose inconsistent shortcut key paradigms too.
+;; It's best to avoid them altogether and have Emacs handle the prompting.
+(setq use-dialog-box nil)
+(when (bound-and-true-p tooltip-mode)
+  (tooltip-mode -1))
+(when (eq system-type 'gnu/linux)
+  (setq x-gtk-use-system-tooltips nil))
+
+;; Allow for minibuffer-ception. Sometimes we need another minibuffer command
+;; while we're in the minibuffer.
+(setq enable-recursive-minibuffers t)
+
+;; Show current key-sequence in minibuffer ala 'set showcmd' in vim. Any
+;; feedback after typing is better UX than no feedback at all.
+(setq echo-keystrokes 0.02)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -267,19 +371,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #vertico
-
-(straight-use-package 'vertico)
-
-(with-eval-after-load 'vertico
-  (with-eval-after-load 'evil
-    (evil-define-key '(normal visual) my-intercept-mode-map
-      (kbd "SPC z") #'vertico-repeat)))
-
-;; (vertico-mode +1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #prescient
 
 (straight-use-package 'prescient)
@@ -320,6 +411,8 @@
 ;; #consutl
 
 (straight-use-package 'consult)
+
+(require 'consult)
 
 ;; C-c bindings (mode-specific-map)
 (global-set-key (kbd "C-c h") #'consult-history)
@@ -393,7 +486,9 @@
   ;; For some commands and buffer sources it is useful to configure the
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
-   consult-theme consult-ripgrep consult-git-grep consult-grep
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
@@ -495,13 +590,32 @@
 
 (straight-use-package 'flycheck)
 (straight-use-package 'consult-flycheck)
-
-(setq flycheck-idle-change-delay 4.0)
+(straight-use-package 'flycheck-posframe)
 
 (define-key my-error-map (kbd "l") #'flycheck-list-errors)
 (define-key my-error-map (kbd "n") #'flycheck-next-error)
 (define-key my-error-map (kbd "p") #'flycheck-previous-error)
-(define-key my-error-map (kbd "f") #'consult-flycheck)
+(define-key my-error-map (kbd "e") #'consult-flycheck)
+
+(with-eval-after-load 'flycheck
+  ;; Rerunning checks on every newline is a mote excessive.
+  (delq 'new-line flycheck-check-syntax-automatically)
+  ;; And don't recheck on idle as often
+  (setq flycheck-idle-change-delay 1.0)
+  ;; For the above functionality, check syntax in a buffer that you switched to
+  ;; only briefly. This allows "refreshing" the syntax check state for several
+  ;; buffers quickly after e.g. changing a config file.
+  (setq flycheck-buffer-switch-check-intermediate-buffers t)
+  ;; Display errors a little quicker (default is 0.9s)
+  (setq flycheck-display-errors-delay 0.25)
+
+  (require 'flycheck-posframe)
+  (set-face-attribute 'flycheck-posframe-error-face nil :inherit 'error)
+  (set-face-attribute 'flycheck-posframe-warning-face nil :inherit 'warning)
+  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
+
+(with-eval-after-load 'company
+  (add-hook 'flycheck-posframe-inhibit-functions #'company--active-p))
 
 (global-flycheck-mode +1)
 
@@ -554,9 +668,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
 
-(straight-use-package 'monokai-theme)
+(straight-use-package 'dracula-theme)
+(straight-use-package 'doom-themes)
+(straight-use-package 'gruvbox-theme)
 
-(load-theme 'monokai t)
+(set-frame-parameter nil 'alpha 100)
+
+(load-theme 'dracula t)
+
+(with-eval-after-load 'dracula-theme
+  (set-face-attribute 'selectrum-current-candidate nil :inherit 'highlight))
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -621,7 +742,10 @@
 
 (straight-use-package 'gcmh)
 
-(setq garbage-collection-messages t)
+(setq garbage-collection-messages t
+      gcmh-idle-delay 'auto
+      gcmh-auto-idle-delay-factor 10
+      gcmh-high-cons-threshold (* 16 1024 1024))
 
 (gcmh-mode +1)
 
@@ -711,7 +835,6 @@
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
 (straight-use-package '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
-(straight-use-package 'orderless)
 
 (require 'fussy)
 
