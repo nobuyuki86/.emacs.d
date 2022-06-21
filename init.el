@@ -90,7 +90,7 @@
 (global-hl-line-mode +1)
 (global-display-line-numbers-mode +1)
 (which-function-mode +1)
-(electric-pair-mode +1)
+;; (electric-pair-mode +1)
 (pixel-scroll-mode +1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -639,6 +639,26 @@
     (kbd "SPC u") 'undo-tree-visualize))
 
 (global-undo-tree-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #smartparens
+
+(straight-use-package 'smartparens)
+
+(require 'smartparens-config)
+
+(defun indent-between-pair (&rest _ignored)
+  (newline)
+  (indent-according-to-mode)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(sp-local-pair 'prog-mode "{" nil :post-handlers '((indent-between-pair "RET")))
+(sp-local-pair 'prog-mode "[" nil :post-handlers '((indent-between-pair "RET")))
+(sp-local-pair 'prog-mode "(" nil :post-handlers '((indent-between-pair "RET")))
+
+(smartparens-global-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
