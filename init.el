@@ -77,17 +77,6 @@
 ;; `company-box', and `posframe') feel much snappier. See emacs-lsp/lsp-ui#613.
 (setq pgtk-wait-for-event-timeout 0.001)
 
-;; Performance on Windows is considerably worse than elsewhere. We'll need
-;; everything we can get.
-(when (boundp 'w32-get-true-file-attributes)
-  (setq w32-get-true-file-attributes nil   ; decrease file IO workload
-        w32-pipe-read-delay 0              ; faster IPC
-        w32-pipe-buffer-size (* 64 1024))  ; read more at a time (was 4K)
-
-  ;; The clipboard on Windows could be in another encoding (likely utf-16), so
-  ;; let Emacs/the OS decide what to use there.
-  (setq selection-coding-system 'utf-8))
-
 ;; Reduce debug output, well, unless we've asked for it.
 (setq debug-on-error init-file-debug
       jka-compr-verbose init-file-debug)
@@ -111,6 +100,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; emacs-ui
 
+;; The blinking cursor is distracting, but also interferes with cursor settings
+;; in some minor modes that try to change it buffer-locally (like treemacs) and
+;; can cause freezing for folks (esp on macOS) with customized & color cursors.
+(blink-cursor-mode -1)
+
+;; Don't blink the paren matching the one at point, it's too distracting.
+(setq blink-matching-paren nil)
+
 ;; Reduce the clutter in the fringes; we'd like to reserve that space for more
 ;; useful information, like git-gutter and flycheck.
 (setq indicate-buffer-boundaries nil
@@ -129,6 +126,7 @@
 (setq window-divider-default-places t
       window-divider-default-bottom-width 1
       window-divider-default-right-width 1)
+(window-divider-mode +1)
 
 ;; GUIs are inconsistent across systems and themes (and will rarely match our
 ;; active Emacs theme). They impose inconsistent shortcut key paradigms too.
@@ -146,6 +144,14 @@
 ;; Show current key-sequence in minibuffer ala 'set showcmd' in vim. Any
 ;; feedback after typing is better UX than no feedback at all.
 (setq echo-keystrokes 0.02)
+
+;; Expand the minibuffer to fit multi-line text displayed in the echo-area. This
+;; doesn't look too great with direnv, however...
+(setq resize-mini-windows 'grow-only)
+
+;; Try to keep the cursor out of the read-only portions of the minibuffer.
+(setq minibuffer-prompt-properties '(read-only t intangible t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -671,13 +677,37 @@
 (straight-use-package 'dracula-theme)
 (straight-use-package 'doom-themes)
 (straight-use-package 'gruvbox-theme)
+(straight-use-package 'solarized-theme)
 
-(set-frame-parameter nil 'alpha 100)
+;; make the fringe stand out from the background
+(setq solarized-distinct-fringe-background t)
 
-(load-theme 'dracula t)
+;; Don't change the font for some headings and titles
+(setq solarized-use-variable-pitch nil)
 
-(with-eval-after-load 'dracula-theme
-  (set-face-attribute 'selectrum-current-candidate nil :inherit 'highlight))
+;; Use less bolding
+(setq solarized-use-less-bold t)
+
+;; Use more italics
+(setq solarized-use-more-italic t)
+
+;; Use less colors for indicators such as git:gutter, flycheck and similar
+(setq solarized-emphasize-indicators nil)
+
+;; Don't change size of org-mode headlines (but keep other size-changes)
+(setq solarized-scale-org-headlines nil)
+
+;; Change the size of markdown-mode headlines (off by default)
+(setq solarized-scale-markdown-headlines t)
+
+;; Avoid all font-size changes
+(setq solarized-height-minus-1 1.0)
+(setq solarized-height-plus-1 1.0)
+(setq solarized-height-plus-2 1.0)
+(setq solarized-height-plus-3 1.0)
+(setq solarized-height-plus-4 1.0)
+
+(load-theme 'solarized-dark t)
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -745,7 +775,7 @@
 (setq garbage-collection-messages t
       gcmh-idle-delay 'auto
       gcmh-auto-idle-delay-factor 10
-      gcmh-high-cons-threshold (* 16 1024 1024))
+      gcmh-high-cons-threshold (* 128 1024 1024))
 
 (gcmh-mode +1)
 
