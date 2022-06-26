@@ -12,9 +12,9 @@
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -90,7 +90,6 @@
 (global-hl-line-mode +1)
 (global-display-line-numbers-mode +1)
 (which-function-mode +1)
-;; (electric-pair-mode +1)
 (pixel-scroll-mode +1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -165,16 +164,16 @@
   (set-keyboard-coding-system 'cp932)
   (set-terminal-coding-system 'cp932)
   (set-charset-priority 'ascii
-			'japanese-jisx0208
-			'latin-jisx0201
-			'katakana-jisx0201
-			'iso-8859-1
-			'cp1252
-			'unicode)
+                        'japanese-jisx0208
+                        'latin-jisx0201
+                        'katakana-jisx0201
+                        'iso-8859-1
+                        'cp1252
+                        'unicode)
   (set-coding-system-priority 'utf-8
-			      'euc-jp
-			      'iso-2022-jp
-			      'cp932))
+                              'euc-jp
+                              'iso-2022-jp
+                              'cp932))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -198,18 +197,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #modeline
 
-(straight-use-package 'moody)
-(straight-use-package 'minions)
+(straight-use-package 'doom-modeline)
 (straight-use-package 'nyan-mode)
 
-(setq x-underline-at-descent-line t
-      nyan-animate-nyancat t
+(setq nyan-animate-nyancat t
       nyan-bar-length 24)
 
-(moody-replace-mode-line-buffer-identification)
-(moody-replace-vc-mode)
-(moody-replace-eldoc-minibuffer-message-function)
-(minions-mode +1)
+(doom-modeline-mode +1)
 (nyan-mode +1)
 
 
@@ -331,8 +325,6 @@
 
 (setq company-idle-delay 0
       company-minimum-prefix-length 1
-      company-dabbrev-ignore-case nil
-      company-dabbrev-other-buffers nil
       company-dabbrev-downcase nil
       company-require-match 'never
       company-auto-complete nil)
@@ -341,7 +333,7 @@
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
 
-  (add-to-list 'company-backends '(company-capf :separate company-yasnippet company-tabnine))
+  (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine))
 
   (require 'company-dwim)
   (define-key company-active-map (kbd "TAB") #'company-dwim)
@@ -537,9 +529,9 @@
 
 (with-eval-after-load 'embark
   (add-to-list 'display-buffer-alist
-	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-		 nil
-		 (window-parameters (mode-line-format . none))))
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none))))
 
   (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode))
 
@@ -616,8 +608,6 @@
   (setq flycheck-display-errors-delay 0.25)
 
   (require 'flycheck-posframe)
-  (set-face-attribute 'flycheck-posframe-error-face nil :inherit 'error)
-  (set-face-attribute 'flycheck-posframe-warning-face nil :inherit 'warning)
   (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
 
 (with-eval-after-load 'company
@@ -694,40 +684,55 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
 
+(add-to-list 'load-path (expand-file-name "my-color" user-emacs-directory))
+
 (straight-use-package 'dracula-theme)
 (straight-use-package 'doom-themes)
 (straight-use-package 'gruvbox-theme)
 (straight-use-package 'solarized-theme)
+(straight-use-package 'moe-theme)
 
-;; make the fringe stand out from the background
-(setq solarized-distinct-fringe-background t)
+(require 'moe-theme)
 
-;; Don't change the font for some headings and titles
-(setq solarized-use-variable-pitch nil)
+(setq moe-theme-mode-line-color 'red)
 
-;; Use less bolding
-(setq solarized-use-less-bold t)
+(moe-light)
 
-;; Use more italics
-(setq solarized-use-more-italic t)
+(defvar default-bg "#fdeeef")
 
-;; Use less colors for indicators such as git:gutter, flycheck and similar
-(setq solarized-emphasize-indicators nil)
+(set-face-background 'default default-bg)
 
-;; Don't change size of org-mode headlines (but keep other size-changes)
-(setq solarized-scale-org-headlines nil)
+(set-face-foreground 'company-box-background (face-foreground 'mode-line))
+(set-face-background 'company-box-background (face-background 'mode-line))
 
-;; Change the size of markdown-mode headlines (off by default)
-(setq solarized-scale-markdown-headlines t)
+(set-face-foreground 'company-box-candidate (face-foreground 'mode-line))
+(set-face-background 'company-box-candidate (face-background 'mode-line))
 
-;; Avoid all font-size changes
-(setq solarized-height-minus-1 1.0)
-(setq solarized-height-plus-1 1.0)
-(setq solarized-height-plus-2 1.0)
-(setq solarized-height-plus-3 1.0)
-(setq solarized-height-plus-4 1.0)
+(set-face-foreground 'company-box-selection (face-foreground 'highlight))
+(set-face-background 'company-box-selection (face-background 'highlight))
 
-(load-theme 'solarized-dark t)
+(set-face-foreground 'company-box-annotation (face-foreground 'mode-line))
+(set-face-background 'company-box-annotation (face-background 'mode-line))
+
+(set-face-background 'company-tooltip-common-selection (face-background 'match))
+(set-face-foreground 'company-tooltip-common-selection (face-foreground 'match))
+
+(set-face-background 'company-tooltip-common (face-background 'match))
+(set-face-foreground 'company-tooltip-common (face-foreground 'match))
+
+(set-face-foreground 'company-preview (face-foreground 'mode-line))
+(set-face-background 'company-preview (face-background 'mode-line))
+
+(set-face-background 'company-preview-common (face-background 'match))
+(set-face-foreground 'company-preview-common (face-foreground 'match))
+
+(set-face-foreground 'minibuffer-prompt (face-foreground 'mode-line))
+(set-face-background 'minibuffer-prompt (face-background 'mode-line))
+
+(set-face-background 'doom-modeline-info (face-background 'mode-line))
+(set-face-foreground 'doom-modeline-info (face-foreground 'mode-line))
+
+(set-face-background 'flycheck-posframe-face (face-background 'highlight))
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -837,15 +842,15 @@
 (straight-use-package 'org-pomodoro)
 
 (setq org-tag-alist '(("@Sample1" . nil)
-		      ("@Test" . nil))
+                      ("@Test" . nil))
       org-directory "~/org/"
       org-default-notes-file (concat org-directory "/notes.org")
       org-capture-templates '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
-			       "* TODO %?\n  %i\n  %a")
-			      ("j" "Journal" entry (file+datetree "~/org/journal.org")
-			       "* %?\nEntered on %U\n  %i\n  %a"))
+                               "* TODO %?\n  %i\n  %a")
+                              ("j" "Journal" entry (file+datetree "~/org/journal.org")
+                               "* %?\nEntered on %U\n  %i\n  %a"))
       org-agenda-files '("~/org/notes.org"
-			 "~/org/journal.org"))
+                         "~/org/journal.org"))
 
 (global-set-key (kbd "C-c c") #'org-capture)
 (global-set-key (kbd "C-c a") #'org-agenda)
@@ -916,6 +921,40 @@ https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #dtrt-indent
+
+(straight-use-package 'dtrt-indent)
+
+(dtrt-indent-global-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #copilot
+
+(straight-use-package
+ '(copilot :type git :host github :repo "zerolfx/copilot.el" :files ("dist" "*.el")))
+
+(setq copilot-node-executable "~/.nvm/versions/node/v17.9.1/bin/node")
+
+(add-hook 'prog-mode-hook 'copilot-mode)
+
+;; accept completion from copilot and fallback to company
+(defun my-tab ()
+  (interactive)
+  (or (copilot-accept-completion)
+      (company-indent-or-complete-common nil)))
+
+(global-set-key (kbd "C-TAB") #'my-tab)
+(global-set-key (kbd "C-<tab>") #'my-tab)
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "C-TAB") #'my-tab)
+  (define-key company-active-map (kbd "C-<tab>") #'my-tab)
+  (define-key company-mode-map (kbd "C-TAB") #'my-tab)
+  (define-key company-mode-map (kbd "C-<tab>") #'my-tab))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
@@ -931,27 +970,35 @@ https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html"
       lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
 
 (add-hook 'lsp-mode-hook (lambda ()
-			   (with-eval-after-load 'evil
-			     (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
+                           (with-eval-after-load 'evil
+                             (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
 
 (add-hook 'web-mode-hook #'lsp)
 (add-hook 'css-mode-hook #'lsp)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'java-mode-hook (lambda ()
-			    (require 'lsp-java)
-			    (lsp)))
+                            (require 'lsp-java)
+                            (lsp)))
 (add-hook 'python-mode-hook (lambda ()
-			      (require 'lsp-pyright)
-			      (lsp)))
+                              (require 'lsp-pyright)
+                              (lsp)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #highlight-quotes
+
+(straight-use-package 'highlight-quoted)
+
+(add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #java
 
 (add-hook 'java-mode-hook (lambda ()
-			    (setq-local tab-width 2
-					c-basic-offset 2
-					indent-tabs-mode t)))
+                            (setq-local tab-width 2
+                                        c-basic-offset 2
+                                        indent-tabs-mode t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -965,12 +1012,12 @@ https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html"
 (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
 
 (add-hook 'web-mode-hook (lambda ()
-			   (setq-local tab-width 2)
-			   (emmet-mode +1)))
+                           (setq-local tab-width 2)
+                           (emmet-mode +1)))
 
 (add-hook 'css-mode-hook (lambda ()
-			   (setq-local tab-width 2)
-			   (emmet-mode +1)))
+                           (setq-local tab-width 2)
+                           (emmet-mode +1)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -980,9 +1027,9 @@ https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html"
 (straight-use-package 'cargo)
 
 (add-hook 'rust-mode-hook (lambda ()
-			    (setq-local tab-width 4
-					indent-tabs-mode nil)
-			    (cargo-minor-mode +1)))
+                            (setq-local tab-width 4
+                                        indent-tabs-mode nil)
+                            (cargo-minor-mode +1)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
