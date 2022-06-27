@@ -1,6 +1,8 @@
 .cache/
 .dap-breakpoints
+.local/
 .lsp-session-v1
+README.org
 auto-save-list/
 backup/
 bookmarks
@@ -17,6 +19,7 @@ projectile-bookmarks.eld
 recentf
 session.2c69e30f4-0d2d-4645-9025-10d4a3acd836
 straight/
+themes/
 transient/
 undo-history/
 var/
