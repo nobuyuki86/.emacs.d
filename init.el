@@ -86,6 +86,7 @@
 (save-place-mode +1)
 (recentf-mode +1)
 (show-paren-mode +1)
+(electric-pair-mode +1)
 (global-auto-revert-mode +1)
 (global-hl-line-mode +1)
 (global-display-line-numbers-mode +1)
@@ -197,13 +198,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #modeline
 
-(straight-use-package 'doom-modeline)
+(straight-use-package 'moody)
+(straight-use-package 'minions)
 (straight-use-package 'nyan-mode)
 
-(setq nyan-animate-nyancat t
+(setq x-underline-at-descent-line t
+      nyan-animate-nyancat t
       nyan-bar-length 24)
 
-(doom-modeline-mode +1)
+(moody-replace-mode-line-buffer-identification)
+(moody-replace-vc-mode)
+(moody-replace-eldoc-minibuffer-message-function)
+(minions-mode +1)
 (nyan-mode +1)
 
 
@@ -325,6 +331,9 @@
 
 (setq company-idle-delay 0
       company-minimum-prefix-length 1
+      company-tooltip-align-annotations t
+      company-dabbrev-other-buffers nil
+      company-dabbrev-ignore-case nil
       company-dabbrev-downcase nil
       company-require-match 'never
       company-auto-complete nil)
@@ -334,6 +343,11 @@
   (define-key company-active-map (kbd "<return>") nil)
 
   (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine))
+
+  (require 'company-box)
+  (delq 'company-preview-if-just-one-frontend company-frontends)
+  (delq 'company-echo-metadata-frontend company-frontends)
+  (add-to-list 'company-box-frame-parameters '(tab-bar-lines . 0))
 
   (require 'company-dwim)
   (define-key company-active-map (kbd "TAB") #'company-dwim)
@@ -485,7 +499,7 @@
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
    consult-theme
-   :preview-key '(:debounce 0.2 any)
+   :preview-key '(:debounce 0.5 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-recent-file
@@ -632,26 +646,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #smartparens
-
-(straight-use-package 'smartparens)
-
-(require 'smartparens-config)
-
-(defun indent-between-pair (&rest _ignored)
-  (newline)
-  (indent-according-to-mode)
-  (forward-line -1)
-  (indent-according-to-mode))
-
-(sp-local-pair 'prog-mode "{" nil :post-handlers '((indent-between-pair "RET")))
-(sp-local-pair 'prog-mode "[" nil :post-handlers '((indent-between-pair "RET")))
-(sp-local-pair 'prog-mode "(" nil :post-handlers '((indent-between-pair "RET")))
-
-(smartparens-global-mode +1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #rg
 
 (straight-use-package 'rg)
@@ -684,55 +678,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
 
-(add-to-list 'load-path (expand-file-name "my-color" user-emacs-directory))
-
-(straight-use-package 'dracula-theme)
 (straight-use-package 'doom-themes)
-(straight-use-package 'gruvbox-theme)
-(straight-use-package 'solarized-theme)
-(straight-use-package 'moe-theme)
+(straight-use-package 'base16-theme)
 
-(require 'moe-theme)
-
-(setq moe-theme-mode-line-color 'red)
-
-(moe-light)
-
-(defvar default-bg "#fdeeef")
-
-(set-face-background 'default default-bg)
-
-(set-face-foreground 'company-box-background (face-foreground 'mode-line))
-(set-face-background 'company-box-background (face-background 'mode-line))
-
-(set-face-foreground 'company-box-candidate (face-foreground 'mode-line))
-(set-face-background 'company-box-candidate (face-background 'mode-line))
-
-(set-face-foreground 'company-box-selection (face-foreground 'highlight))
-(set-face-background 'company-box-selection (face-background 'highlight))
-
-(set-face-foreground 'company-box-annotation (face-foreground 'mode-line))
-(set-face-background 'company-box-annotation (face-background 'mode-line))
-
-(set-face-background 'company-tooltip-common-selection (face-background 'match))
-(set-face-foreground 'company-tooltip-common-selection (face-foreground 'match))
-
-(set-face-background 'company-tooltip-common (face-background 'match))
-(set-face-foreground 'company-tooltip-common (face-foreground 'match))
-
-(set-face-foreground 'company-preview (face-foreground 'mode-line))
-(set-face-background 'company-preview (face-background 'mode-line))
-
-(set-face-background 'company-preview-common (face-background 'match))
-(set-face-foreground 'company-preview-common (face-foreground 'match))
-
-(set-face-foreground 'minibuffer-prompt (face-foreground 'mode-line))
-(set-face-background 'minibuffer-prompt (face-background 'mode-line))
-
-(set-face-background 'doom-modeline-info (face-background 'mode-line))
-(set-face-foreground 'doom-modeline-info (face-foreground 'mode-line))
-
-(set-face-background 'flycheck-posframe-face (face-background 'highlight))
+(load-theme 'base16-sakura t)
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -797,8 +746,7 @@
 
 (straight-use-package 'gcmh)
 
-(setq garbage-collection-messages t
-      gcmh-idle-delay 'auto
+(setq gcmh-idle-delay 'auto
       gcmh-auto-idle-delay-factor 10
       gcmh-high-cons-threshold (* 128 1024 1024))
 
@@ -828,17 +776,8 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #unicode-fonts
-
-(straight-use-package 'unicode-fonts)
-
-(unicode-fonts-setup)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #org
 
-(straight-use-package 'org-modern)
 (straight-use-package 'org-pomodoro)
 
 (setq org-tag-alist '(("@Sample1" . nil)
@@ -859,8 +798,6 @@
 (define-key my-org-map (kbd "o") #'org-open-at-point)
 (define-key my-org-map (kbd "l") #'org-link)
 (define-key my-org-map (kbd "p") #'org-pomodoro)
-
-(add-hook 'org-mode-hook 'org-modern-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -890,6 +827,7 @@
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
 (straight-use-package '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
+(straight-use-package '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
 
 (require 'fussy)
 
@@ -898,9 +836,11 @@
       compleiton-category-overrides nil
       fussy-filter-fn #'fussy-filter-fast
       fussy-score-fn #'fussy-fuz-bin-score
-      fussy-fuz-use-skim-p nil)
+      fussy-score-fn #'fussy-fzf-native-score
+      fussy-fuz-use-skim-p t)
 
 (fuz-bin-load-dyn)
+(fzf-native-load-dyn)
 
 (defmacro fussy--measure-time (&rest body)
   "Measure the time it takes to evaluate BODY.
