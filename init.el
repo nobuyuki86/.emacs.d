@@ -827,7 +827,6 @@
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
 (straight-use-package '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
-(straight-use-package '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
 
 (require 'fussy)
 
@@ -835,12 +834,9 @@
       completion-category-defaults nil
       compleiton-category-overrides nil
       fussy-filter-fn #'fussy-filter-fast
-      fussy-score-fn #'fussy-fuz-bin-score
-      fussy-score-fn #'fussy-fzf-native-score
-      fussy-fuz-use-skim-p t)
+      fussy-score-fn #'fussy-fuz-bin-score)
 
 (fuz-bin-load-dyn)
-(fzf-native-load-dyn)
 
 (defmacro fussy--measure-time (&rest body)
   "Measure the time it takes to evaluate BODY.
