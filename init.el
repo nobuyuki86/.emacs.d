@@ -342,7 +342,7 @@
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
 
-  (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine))
+  (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine company-dabbrev))
 
   (require 'company-box)
   (delq 'company-preview-if-just-one-frontend company-frontends)
@@ -680,6 +680,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
 
+(defun disable-all-themes ()
+  "Disable all active themes."
+  (dolist (theme custom-enabled-themes)
+    (disable-theme theme)))
+
+(defadvice load-theme (before disable-themes-first activate)
+  (disable-all-themes))
+
 (straight-use-package 'doom-themes)
 (straight-use-package 'base16-theme)
 
@@ -706,14 +714,6 @@
 
 (with-eval-after-load 'flycheck-posframe
   (set-face-background 'flycheck-posframe-face "#eddbd8"))
-
-(defun disable-all-themes ()
-  "Disable all active themes."
-  (dolist (theme custom-enabled-themes)
-    (disable-theme theme)))
-
-(defadvice load-theme (before disable-themes-first activate)
-  (disable-all-themes))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
