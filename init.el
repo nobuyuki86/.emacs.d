@@ -560,9 +560,9 @@
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
 
-  (require 'yasnippet-snippets)
+  (require 'yasnippet-snippets))
 
-  (yas-global-mode +1))
+(yas-global-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -635,7 +635,9 @@
 
 (straight-use-package 'undo-tree)
 
-(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
+(setq undo-tree-visualizer-diff t
+      undo-tree-enable-undo-in-region t
+      undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
 
 (with-eval-after-load 'evil
   (evil-set-undo-system 'undo-tree)
@@ -681,7 +683,29 @@
 (straight-use-package 'doom-themes)
 (straight-use-package 'base16-theme)
 
+(setq base16-sakura-theme-colors
+      '(:base00 "#FEEEED" ;; 桜色
+                :base01 "#E8D3D1" ;; 灰桜色
+                :base02 "#D8C6BC" ;; 桜鼠
+                :base03 "#9fa0a0" ;; 薄墨色
+                :base04 "#006543" ;; 柚葉色
+                :base05 "#2f2725" ;; 墨色
+                :base06 "#405C36" ;; 老緑
+                :base07 "#433D3C" ;; 檳榔子染
+                :base08 "#E9546B" ;; 梅重
+                :base09 "#E9546B" ;; 韓紅
+                :base0A "#0086AD" ;; 花色
+                :base0B "#7BAA17" ;; 柳緑
+                :base0C "#22825D" ;; 木賊色
+                :base0D "#5E3862" ;; 杜若
+                :base0E "#6967AB" ;; 竜胆色
+                :base0F "#6A1435" ;; 紫檀色
+                ))
+
 (load-theme 'base16-sakura t)
+
+(with-eval-after-load 'flycheck-posframe
+  (set-face-background 'flycheck-posframe-face "#eddbd8"))
 
 (defun disable-all-themes ()
   "Disable all active themes."
@@ -827,6 +851,7 @@
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
 (straight-use-package '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
+(straight-use-package '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
 
 (require 'fussy)
 
@@ -834,9 +859,11 @@
       completion-category-defaults nil
       compleiton-category-overrides nil
       fussy-filter-fn #'fussy-filter-fast
-      fussy-score-fn #'fussy-fuz-bin-score)
+      ;; fussy-score-fn #'fussy-fuz-bin-score
+      fussy-score-fn #'fussy-fzf-native-score)
 
-(fuz-bin-load-dyn)
+;; (fuz-bin-load-dyn)
+(fzf-native-load-dyn)
 
 (defmacro fussy--measure-time (&rest body)
   "Measure the time it takes to evaluate BODY.
