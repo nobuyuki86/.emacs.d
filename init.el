@@ -342,7 +342,7 @@
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
 
-  (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine company-dabbrev))
+  (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine))
 
   (require 'company-box)
   (delq 'company-preview-if-just-one-frontend company-frontends)
