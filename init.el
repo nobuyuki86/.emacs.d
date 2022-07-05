@@ -88,7 +88,7 @@
 (show-paren-mode +1)
 (electric-pair-mode +1)
 (global-auto-revert-mode +1)
-(global-hl-line-mode +1)
+;; (global-hl-line-mode +1)
 (global-display-line-numbers-mode +1)
 (which-function-mode +1)
 (pixel-scroll-mode +1)
@@ -180,11 +180,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #font
 
-(cond ((eq system-type 'windows-nt)
-       (add-to-list 'default-frame-alist '(font . "ＭＳ ゴシック-10")))
+(straight-use-package 'fontaine)
 
-      ((eq system-type 'gnu/linux)
-       (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
+(setq fontaine-presets
+      '((regular
+         :default-family "VLゴシック"
+         :default-height 90
+         :fixed-pitch-family "VLゴシック"
+         :variable-pitch-family "VLPゴシック"
+         :italic-family "VLゴシック"
+         :line-spacing 1)
+        (large
+         :default-family "VLゴシック"
+         :default-height 150
+         :variable-pitch-family "VLPゴシック"
+         :line-spacing 1)))
+
+;; Recover last preset or fall back to desired style from
+;; `fontaine-presets'.
+(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+
+;; The other side of `fontaine-restore-latest-preset'.
+(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+
+;; (cond ((eq system-type 'windows-nt)
+;;        (add-to-list 'default-frame-alist '(font . "ＭＳ ゴシック-10")))
+
+;;       ((eq system-type 'gnu/linux)
+;;        (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -758,11 +781,42 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #beacon
+;; #pulsar
 
-(straight-use-package 'beacon)
+(straight-use-package 'pulsar)
 
-(beacon-mode +1)
+(pulsar-global-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #lin
+
+(straight-use-package 'lin)
+
+(require 'lin)
+
+(setq lin-face 'lin-blue) ; check doc string for alternative styles
+
+(setq lin-mode-hooks
+      '(bongo-mode-hook
+        dired-mode-hook
+        elfeed-search-mode-hook
+        git-rebase-mode-hook
+        grep-mode-hook
+        ibuffer-mode-hook
+        ilist-mode-hook
+        ledger-report-mode-hook
+        log-view-mode-hook
+        magit-log-mode-hook
+        mu4e-headers-mode
+        notmuch-search-mode-hook
+        notmuch-tree-mode-hook
+        occur-mode-hook
+        org-agenda-mode-hook
+        proced-mode-hook
+        tabulated-list-mode-hook))
+
+(lin-global-mode 1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -851,7 +905,6 @@
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
 (straight-use-package '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
-(straight-use-package '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
 
 (require 'fussy)
 
@@ -859,11 +912,9 @@
       completion-category-defaults nil
       compleiton-category-overrides nil
       fussy-filter-fn #'fussy-filter-fast
-      ;; fussy-score-fn #'fussy-fuz-bin-score
-      fussy-score-fn #'fussy-fzf-native-score)
+      fussy-score-fn #'fussy-fuz-bin-score)
 
-;; (fuz-bin-load-dyn)
-(fzf-native-load-dyn)
+(fuz-bin-load-dyn)
 
 (defmacro fussy--measure-time (&rest body)
   "Measure the time it takes to evaluate BODY.
