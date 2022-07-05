@@ -658,9 +658,7 @@
 
 (straight-use-package 'undo-tree)
 
-(setq undo-tree-visualizer-diff t
-      undo-tree-enable-undo-in-region t
-      undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
 
 (with-eval-after-load 'evil
   (evil-set-undo-system 'undo-tree)
