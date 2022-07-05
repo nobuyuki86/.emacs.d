@@ -795,7 +795,7 @@
 
 (require 'lin)
 
-(setq lin-face 'lin-blue) ; check doc string for alternative styles
+(setq lin-face 'lin-red) ; check doc string for alternative styles
 
 (setq lin-mode-hooks
       '(bongo-mode-hook
