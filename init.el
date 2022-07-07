@@ -88,7 +88,6 @@
 (show-paren-mode +1)
 (electric-pair-mode +1)
 (global-auto-revert-mode +1)
-;; (global-hl-line-mode +1)
 (global-display-line-numbers-mode +1)
 (which-function-mode +1)
 (pixel-scroll-mode +1)
@@ -161,9 +160,6 @@
 (prefer-coding-system 'utf-8)
 
 (when (eq system-type 'windows-nt)
-  (set-file-name-coding-system 'cp932)
-  (set-keyboard-coding-system 'cp932)
-  (set-terminal-coding-system 'cp932)
   (set-charset-priority 'ascii
                         'japanese-jisx0208
                         'latin-jisx0201
@@ -202,12 +198,6 @@
 
 ;; The other side of `fontaine-restore-latest-preset'.
 (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
-
-;; (cond ((eq system-type 'windows-nt)
-;;        (add-to-list 'default-frame-alist '(font . "ＭＳ ゴシック-10")))
-
-;;       ((eq system-type 'gnu/linux)
-;;        (add-to-list 'default-frame-alist '(font . "VLゴシック 9"))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -570,7 +560,8 @@
                  nil
                  (window-parameters (mode-line-format . none))))
 
-  (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode))
+  (with-eval-after-load 'consult
+    (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -582,7 +573,6 @@
 (with-eval-after-load 'yasnippet
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
-
   (require 'yasnippet-snippets))
 
 (yas-global-mode +1)
@@ -645,10 +635,11 @@
   (setq flycheck-display-errors-delay 0.25)
 
   (require 'flycheck-posframe)
-  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
+  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
 
-(with-eval-after-load 'company
-  (add-hook 'flycheck-posframe-inhibit-functions #'company--active-p))
+  (with-eval-after-load 'company
+    (add-hook 'flycheck-posframe-inhibit-functions #'company--active-p)))
+
 
 (global-flycheck-mode +1)
 
@@ -709,7 +700,6 @@
 (defadvice load-theme (before disable-themes-first activate)
   (disable-all-themes))
 
-(straight-use-package 'doom-themes)
 (straight-use-package 'base16-theme)
 
 (setq base16-sakura-theme-colors
@@ -791,28 +781,24 @@
 
 (straight-use-package 'lin)
 
-(require 'lin)
-
-(setq lin-face 'lin-red) ; check doc string for alternative styles
-
-(setq lin-mode-hooks
-      '(bongo-mode-hook
-        dired-mode-hook
-        elfeed-search-mode-hook
-        git-rebase-mode-hook
-        grep-mode-hook
-        ibuffer-mode-hook
-        ilist-mode-hook
-        ledger-report-mode-hook
-        log-view-mode-hook
-        magit-log-mode-hook
-        mu4e-headers-mode
-        notmuch-search-mode-hook
-        notmuch-tree-mode-hook
-        occur-mode-hook
-        org-agenda-mode-hook
-        proced-mode-hook
-        tabulated-list-mode-hook))
+(setq lin-face 'lin-red
+      lin-mode-hooks '(bongo-mode-hook
+                       dired-mode-hook
+                       elfeed-search-mode-hook
+                       git-rebase-mode-hook
+                       grep-mode-hook
+                       ibuffer-mode-hook
+                       ilist-mode-hook
+                       ledger-report-mode-hook
+                       log-view-mode-hook
+                       magit-log-mode-hook
+                       mu4e-headers-mode
+                       notmuch-search-mode-hook
+                       notmuch-tree-mode-hook
+                       occur-mode-hook
+                       org-agenda-mode-hook
+                       proced-mode-hook
+                       tabulated-list-mode-hook))
 
 (lin-global-mode 1)
 
@@ -902,17 +888,18 @@
 ;; #fussy
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
-(straight-use-package '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
+(straight-use-package '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
+(straight-use-package 'orderless)
 
 (require 'fussy)
 
 (setq completion-styles '(fussy)
       completion-category-defaults nil
       compleiton-category-overrides nil
-      fussy-filter-fn #'fussy-filter-fast
-      fussy-score-fn #'fussy-fuz-bin-score)
+      fussy-filter-fn #'fussy-filter-orderless-flex
+      fussy-score-fn #'fussy-fzf-native-score)
 
-(fuz-bin-load-dyn)
+(fzf-native-load-dyn)
 
 (defmacro fussy--measure-time (&rest body)
   "Measure the time it takes to evaluate BODY.
