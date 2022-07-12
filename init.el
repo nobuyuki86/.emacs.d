@@ -160,6 +160,10 @@
 (prefer-coding-system 'utf-8)
 
 (when (eq system-type 'windows-nt)
+  (set-file-name-coding-system 'cp932)
+  (set-keyboard-coding-system 'cp932)
+  (set-terminal-coding-system 'cp932)
+
   (set-charset-priority 'ascii
                         'japanese-jisx0208
                         'latin-jisx0201
@@ -178,19 +182,35 @@
 
 (straight-use-package 'fontaine)
 
-(setq fontaine-presets
-      '((regular
-         :default-family "VLゴシック"
-         :default-height 90
-         :fixed-pitch-family "VLゴシック"
-         :variable-pitch-family "VLPゴシック"
-         :italic-family "VLゴシック"
-         :line-spacing 1)
-        (large
-         :default-family "VLゴシック"
-         :default-height 150
-         :variable-pitch-family "VLPゴシック"
-         :line-spacing 1)))
+(cond ((eq system-type 'gnu/linux)
+       (setq fontaine-presets
+             '((regular
+                :default-family "VLゴシック"
+                :default-height 90
+                :fixed-pitch-family "VLゴシック"
+                :variable-pitch-family "VLPゴシック"
+                :italic-family "VLゴシック"
+                :line-spacing 1)
+               (large
+                :default-family "VLゴシック"
+                :default-height 150
+                :variable-pitch-family "VLPゴシック"
+                :line-spacing 1))))
+
+      ((eq system-type 'windows-nt)
+       (setq fontaine-presets
+             '((regular
+                :default-family "BIZ UDゴシック"
+                :default-height 90
+                :fixed-pitch-family "BIZ UDゴシック"
+                :variable-pitch-family "BIZ UDPゴシック"
+                :italic-family "BIZ UDゴシック"
+                :line-spacing 1)
+               (large
+                :default-family "BIZ UDゴシック"
+                :default-height 150
+                :variable-pitch-family "BIZ UDPゴシック"
+                :line-spacing 1)))))
 
 ;; Recover last preset or fall back to desired style from
 ;; `fontaine-presets'.
@@ -287,6 +307,7 @@
 (straight-use-package 'evil-surround)
 (straight-use-package 'evil-matchit)
 (straight-use-package 'evil-org)
+(straight-use-package 'evil-lion)
 
 (setq evil-want-keybinding nil
       evil-symbol-word-search t)
@@ -298,6 +319,7 @@
   (evil-commentary-mode +1)
   (global-evil-surround-mode +1)
   (global-evil-matchit-mode +1)
+  (evil-lion-mode +1)
 
   (dolist (state '(normal visual insert))
     (evil-make-intercept-map
@@ -315,13 +337,13 @@
     (kbd "SPC e") `("error" . ,my-error-map)
     (kbd "SPC t") `("toggle" . ,my-toggle-map)
     (kbd "SPC o") `("org" . ,my-org-map)
-    (kbd "SPC 0") 'delete-window
-    (kbd "SPC 1") 'delete-other-windows
-    (kbd "SPC 2") 'split-window-below
-    (kbd "SPC 3") 'split-window-right
-    (kbd "SPC 4") 'switch-to-buffer-other-window
-    (kbd "SPC 5") 'switch-to-buffer-other-frame
-    (kbd "SPC w") 'evil-window-next))
+    (kbd "SPC 0") #'delete-window
+    (kbd "SPC 1") #'delete-other-windows
+    (kbd "SPC 2") #'split-window-below
+    (kbd "SPC 3") #'split-window-right
+    (kbd "SPC 4") #'switch-to-buffer-other-window
+    (kbd "SPC 5") #'ctl-x-5-prefix
+    (kbd "SPC w") #'evil-window-next))
 
 (with-eval-after-load 'evil-org
   (require 'evil-org-agenda)
@@ -352,17 +374,11 @@
       company-auto-complete nil)
 
 (with-eval-after-load 'company
-  (define-key company-active-map (kbd "RET") nil)
-  (define-key company-active-map (kbd "<return>") nil)
-
-  (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine))
-
-  (require 'company-box)
-  (delq 'company-preview-if-just-one-frontend company-frontends)
-  (delq 'company-echo-metadata-frontend company-frontends)
-  (add-to-list 'company-box-frame-parameters '(tab-bar-lines . 0))
+  (add-to-list 'company-backends '(company-capf company-yasnippet company-tabnine :separate))
 
   (require 'company-dwim)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "<return>") nil)
   (define-key company-active-map (kbd "TAB") #'company-dwim)
   (define-key company-active-map (kbd "<tab>") #'company-dwim)
   (define-key company-active-map (kbd "S-TAB") #'company-dwim-select-previous)
@@ -640,7 +656,6 @@
   (with-eval-after-load 'company
     (add-hook 'flycheck-posframe-inhibit-functions #'company--active-p)))
 
-
 (global-flycheck-mode +1)
 
 
@@ -692,6 +707,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #theme
 
+(straight-use-package 'base16-theme)
+
 (defun disable-all-themes ()
   "Disable all active themes."
   (dolist (theme custom-enabled-themes)
@@ -699,8 +716,6 @@
 
 (defadvice load-theme (before disable-themes-first activate)
   (disable-all-themes))
-
-(straight-use-package 'base16-theme)
 
 (setq base16-sakura-theme-colors
       '(:base00 "#FEEEED" ;; 桜色
@@ -724,7 +739,7 @@
 (load-theme 'base16-sakura t)
 
 (with-eval-after-load 'flycheck-posframe
-  (set-face-background 'flycheck-posframe-face "#eddbd8"))
+  (set-face-background 'flycheck-posframe-face (face-background 'tooltip)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -782,7 +797,9 @@
 (straight-use-package 'lin)
 
 (setq lin-face 'lin-red
-      lin-mode-hooks '(bongo-mode-hook
+      lin-mode-hooks '(prog-mode-hook
+		       text-mode-hook
+		       bongo-mode-hook
                        dired-mode-hook
                        elfeed-search-mode-hook
                        git-rebase-mode-hook
@@ -889,25 +906,14 @@
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
 (straight-use-package '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
-(straight-use-package 'orderless)
-
-(require 'fussy)
 
 (setq completion-styles '(fussy)
       completion-category-defaults nil
       compleiton-category-overrides nil
-      fussy-filter-fn #'fussy-filter-orderless-flex
-      fussy-score-fn #'fussy-fzf-native-score)
+      fussy-score-fn 'fussy-fzf-native-score
+      fussy-filter-fn #'fussy-filter-fast)
 
 (fzf-native-load-dyn)
-
-(defmacro fussy--measure-time (&rest body)
-  "Measure the time it takes to evaluate BODY.
-https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html"
-  `(let ((time (current-time)))
-     (let ((result ,@body))
-       (message "%.06f" (float-time (time-since time)))
-       result)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -989,6 +995,19 @@ https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html"
 (straight-use-package 'highlight-quoted)
 
 (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #sidekick
+
+(straight-use-package '(sidekick :type git :host github :repo "VernonGrant/sidekick.el"))
+
+(require 'sidekick)
+(define-key search-map (kbd "k") #'sidekick-at-point)
+(define-key search-map (kbd "K") #'sidekick-search-for-literal)
+
+(with-eval-after-load 'sidekick
+  (require 'sidekick-evil))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
