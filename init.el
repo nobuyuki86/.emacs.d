@@ -891,8 +891,7 @@
       completion-category-defaults nil
       compleiton-category-overrides nil
       fussy-score-fn 'fussy-fzf-native-score
-      fussy-filter-fn #'fussy-filter-default
-      fussy-default-regex-fn #'fussy-pattern-default)
+      fussy-filter-fn #'fussy-filter-default)
 
 (with-eval-after-load 'company
   (defun j-company-capf (f &rest args)
