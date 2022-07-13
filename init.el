@@ -12,9 +12,9 @@
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -26,7 +26,9 @@
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
       completion-ignore-case t
       read-process-output-max (* 1024 1024)
-      use-short-answers t)
+      use-short-answers t
+      recentf-auto-cleanup nil
+      recentf-max-saved-items 200)
 
 ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted, and
 ;; indicates misconfiguration (don't rely on case insensitivity for file names).
@@ -41,7 +43,7 @@
 ;; this to `nil' in the past, but the `bidi-display-reordering's docs say that
 ;; is an undefined state and suggest this to be just as good:
 (setq-default bidi-display-reordering 'left-to-right
-              bidi-paragraph-direction 'left-to-right)
+	      bidi-paragraph-direction 'left-to-right)
 
 ;; Reduce rendering/line scan work for Emacs by not rendering cursors or regions
 ;; in non-focused windows.
@@ -89,6 +91,7 @@
 (electric-pair-mode +1)
 (global-auto-revert-mode +1)
 (global-display-line-numbers-mode +1)
+(global-hl-line-mode +1)
 (which-function-mode +1)
 (pixel-scroll-mode +1)
 (menu-bar-mode -1)
@@ -165,16 +168,16 @@
   (set-terminal-coding-system 'cp932)
 
   (set-charset-priority 'ascii
-                        'japanese-jisx0208
-                        'latin-jisx0201
-                        'katakana-jisx0201
-                        'iso-8859-1
-                        'cp1252
-                        'unicode)
+			'japanese-jisx0208
+			'latin-jisx0201
+			'katakana-jisx0201
+			'iso-8859-1
+			'cp1252
+			'unicode)
   (set-coding-system-priority 'utf-8
-                              'euc-jp
-                              'iso-2022-jp
-                              'cp932))
+			      'euc-jp
+			      'iso-2022-jp
+			      'cp932))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -184,33 +187,33 @@
 
 (cond ((eq system-type 'gnu/linux)
        (setq fontaine-presets
-             '((regular
-                :default-family "VLゴシック"
-                :default-height 90
-                :fixed-pitch-family "VLゴシック"
-                :variable-pitch-family "VLPゴシック"
-                :italic-family "VLゴシック"
-                :line-spacing 1)
-               (large
-                :default-family "VLゴシック"
-                :default-height 150
-                :variable-pitch-family "VLPゴシック"
-                :line-spacing 1))))
+	     '((regular
+		:default-family "VLゴシック"
+		:default-height 90
+		:fixed-pitch-family "VLゴシック"
+		:variable-pitch-family "VLPゴシック"
+		:italic-family "VLゴシック"
+		:line-spacing 1)
+	       (large
+		:default-family "VLゴシック"
+		:default-height 150
+		:variable-pitch-family "VLPゴシック"
+		:line-spacing 1))))
 
       ((eq system-type 'windows-nt)
        (setq fontaine-presets
-             '((regular
-                :default-family "BIZ UDゴシック"
-                :default-height 90
-                :fixed-pitch-family "BIZ UDゴシック"
-                :variable-pitch-family "BIZ UDPゴシック"
-                :italic-family "BIZ UDゴシック"
-                :line-spacing 1)
-               (large
-                :default-family "BIZ UDゴシック"
-                :default-height 150
-                :variable-pitch-family "BIZ UDPゴシック"
-                :line-spacing 1)))))
+	     '((regular
+		:default-family "BIZ UDゴシック"
+		:default-height 90
+		:fixed-pitch-family "BIZ UDゴシック"
+		:variable-pitch-family "BIZ UDPゴシック"
+		:italic-family "BIZ UDゴシック"
+		:line-spacing 1)
+	       (large
+		:default-family "BIZ UDゴシック"
+		:default-height 150
+		:variable-pitch-family "BIZ UDPゴシック"
+		:line-spacing 1)))))
 
 ;; Recover last preset or fall back to desired style from
 ;; `fontaine-presets'.
@@ -337,13 +340,15 @@
     (kbd "SPC e") `("error" . ,my-error-map)
     (kbd "SPC t") `("toggle" . ,my-toggle-map)
     (kbd "SPC o") `("org" . ,my-org-map)
+    (kbd "SPC 5") `("C-x 5" . ,ctl-x-5-map)
     (kbd "SPC 0") #'delete-window
     (kbd "SPC 1") #'delete-other-windows
     (kbd "SPC 2") #'split-window-below
     (kbd "SPC 3") #'split-window-right
     (kbd "SPC 4") #'switch-to-buffer-other-window
     (kbd "SPC 5") #'ctl-x-5-prefix
-    (kbd "SPC w") #'evil-window-next))
+    (kbd "SPC w") #'evil-window-next
+    (kbd "SPC W") #'other-frame))
 
 (with-eval-after-load 'evil-org
   (require 'evil-org-agenda)
@@ -383,7 +388,8 @@
   (define-key company-active-map (kbd "<tab>") #'company-dwim)
   (define-key company-active-map (kbd "S-TAB") #'company-dwim-select-previous)
   (define-key company-active-map (kbd "<backtab>") #'company-dwim-select-previous)
-  (define-key company-active-map (kbd "C-j") #'company-complete-selection)
+  (define-key company-active-map (kbd "C-TAB") #'company-complete-selection)
+  (define-key company-active-map (kbd "C-<tab>") #'company-complete-selection)
   (add-to-list 'company-frontends 'company-dwim-frontend t)
 
   (require 'company-anywhere))
@@ -572,9 +578,9 @@
 
 (with-eval-after-load 'embark
   (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none))))
+	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		 nil
+		 (window-parameters (mode-line-format . none))))
 
   (with-eval-after-load 'consult
     (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)))
@@ -589,6 +595,8 @@
 (with-eval-after-load 'yasnippet
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-keymap (kbd "C-TAB") 'yas-next-field-or-maybe-expand)
+  (define-key yas-keymap (kbd "C-<tab>") 'yas-next-field-or-maybe-expand)
   (require 'yasnippet-snippets))
 
 (yas-global-mode +1)
@@ -718,23 +726,23 @@
   (disable-all-themes))
 
 (setq base16-sakura-theme-colors
-      '(:base00 "#FEEEED" ;; 桜色
-                :base01 "#E8D3D1" ;; 灰桜色
-                :base02 "#D8C6BC" ;; 桜鼠
-                :base03 "#9fa0a0" ;; 薄墨色
-                :base04 "#006543" ;; 柚葉色
-                :base05 "#2f2725" ;; 墨色
-                :base06 "#405C36" ;; 老緑
-                :base07 "#433D3C" ;; 檳榔子染
-                :base08 "#E9546B" ;; 梅重
-                :base09 "#E9546B" ;; 韓紅
-                :base0A "#0086AD" ;; 花色
-                :base0B "#7BAA17" ;; 柳緑
-                :base0C "#22825D" ;; 木賊色
-                :base0D "#5E3862" ;; 杜若
-                :base0E "#6967AB" ;; 竜胆色
-                :base0F "#6A1435" ;; 紫檀色
-                ))
+      '(:base00 "#FCF5F7" ;; 薄桜
+		:base01 "#FEEEED" ;; 桜色
+		:base02 "#E8D3D1" ;; 灰桜色
+		:base03 "#9fa0a0" ;; 薄墨色
+		:base04 "#006543" ;; 柚葉色
+		:base05 "#2f2725" ;; 墨色
+		:base06 "#405C36" ;; 老緑
+		:base07 "#EEBBCB" ;; 撫子色
+		:base08 "#E9546B" ;; 梅重
+		:base09 "#C92E36" ;; 柘榴色
+		:base0A "#0086AD" ;; 花色
+		:base0B "#7BAA17" ;; 柳緑
+		:base0C "#22825D" ;; 木賊色
+		:base0D "#E73275" ;; 薔薇色
+		:base0E "#6967AB" ;; 竜胆色
+		:base0F "#6A1435" ;; 紫檀色
+		))
 
 (load-theme 'base16-sakura t)
 
@@ -792,35 +800,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #lin
-
-(straight-use-package 'lin)
-
-(setq lin-face 'lin-red
-      lin-mode-hooks '(prog-mode-hook
-		       text-mode-hook
-		       bongo-mode-hook
-                       dired-mode-hook
-                       elfeed-search-mode-hook
-                       git-rebase-mode-hook
-                       grep-mode-hook
-                       ibuffer-mode-hook
-                       ilist-mode-hook
-                       ledger-report-mode-hook
-                       log-view-mode-hook
-                       magit-log-mode-hook
-                       mu4e-headers-mode
-                       notmuch-search-mode-hook
-                       notmuch-tree-mode-hook
-                       occur-mode-hook
-                       org-agenda-mode-hook
-                       proced-mode-hook
-                       tabulated-list-mode-hook))
-
-(lin-global-mode 1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #gcmh
 
 (straight-use-package 'gcmh)
@@ -860,15 +839,15 @@
 (straight-use-package 'org-pomodoro)
 
 (setq org-tag-alist '(("@Sample1" . nil)
-                      ("@Test" . nil))
+		      ("@Test" . nil))
       org-directory "~/org/"
       org-default-notes-file (concat org-directory "/notes.org")
       org-capture-templates '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
-                               "* TODO %?\n  %i\n  %a")
-                              ("j" "Journal" entry (file+datetree "~/org/journal.org")
-                               "* %?\nEntered on %U\n  %i\n  %a"))
+			       "* TODO %?\n  %i\n  %a")
+			      ("j" "Journal" entry (file+datetree "~/org/journal.org")
+			       "* %?\nEntered on %U\n  %i\n  %a"))
       org-agenda-files '("~/org/notes.org"
-                         "~/org/journal.org"))
+			 "~/org/journal.org"))
 
 (global-set-key (kbd "C-c c") #'org-capture)
 (global-set-key (kbd "C-c a") #'org-agenda)
@@ -889,6 +868,7 @@
        (setq alert-default-style 'libnotify))
 
       ((eq system-type 'windows-nt)
+       (require 'alert-toast)
        (setq alert-default-style 'toast)))
 
 
@@ -911,7 +891,18 @@
       completion-category-defaults nil
       compleiton-category-overrides nil
       fussy-score-fn 'fussy-fzf-native-score
-      fussy-filter-fn #'fussy-filter-fast)
+      fussy-filter-fn #'fussy-filter-default
+      fussy-default-regex-fn #'fussy-pattern-default)
+
+(with-eval-after-load 'company
+  (defun j-company-capf (f &rest args)
+    "Manage `completion-styles'."
+    (let ((fussy-max-candidate-limit 5000)
+	  (fussy-default-regex-fn 'fussy-pattern-first-letter)
+	  (fussy-prefer-prefix nil))
+      (apply f args)))
+
+  (advice-add 'company-capf :around 'j-company-capf))
 
 (fzf-native-load-dyn)
 
@@ -975,18 +966,18 @@
       lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
 
 (add-hook 'lsp-mode-hook (lambda ()
-                           (with-eval-after-load 'evil
-                             (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
+			   (with-eval-after-load 'evil
+			     (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
 
 (add-hook 'web-mode-hook #'lsp)
 (add-hook 'css-mode-hook #'lsp)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'java-mode-hook (lambda ()
-                            (require 'lsp-java)
-                            (lsp)))
+			    (require 'lsp-java)
+			    (lsp)))
 (add-hook 'python-mode-hook (lambda ()
-                              (require 'lsp-pyright)
-                              (lsp)))
+			      (require 'lsp-pyright)
+			      (lsp)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1014,9 +1005,9 @@
 ;; #java
 
 (add-hook 'java-mode-hook (lambda ()
-                            (setq-local tab-width 2
-                                        c-basic-offset 2
-                                        indent-tabs-mode t)))
+			    (setq-local tab-width 2
+					c-basic-offset 2
+					indent-tabs-mode t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1030,12 +1021,12 @@
 (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
 
 (add-hook 'web-mode-hook (lambda ()
-                           (setq-local tab-width 2)
-                           (emmet-mode +1)))
+			   (setq-local tab-width 2)
+			   (emmet-mode +1)))
 
 (add-hook 'css-mode-hook (lambda ()
-                           (setq-local tab-width 2)
-                           (emmet-mode +1)))
+			   (setq-local tab-width 2)
+			   (emmet-mode +1)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1045,9 +1036,9 @@
 (straight-use-package 'cargo)
 
 (add-hook 'rust-mode-hook (lambda ()
-                            (setq-local tab-width 4
-                                        indent-tabs-mode nil)
-                            (cargo-minor-mode +1)))
+			    (setq-local tab-width 4
+					indent-tabs-mode nil)
+			    (cargo-minor-mode +1)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
