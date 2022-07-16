@@ -91,7 +91,6 @@
 (electric-pair-mode +1)
 (global-auto-revert-mode +1)
 (global-display-line-numbers-mode +1)
-(global-hl-line-mode +1)
 (which-function-mode +1)
 (pixel-scroll-mode +1)
 (menu-bar-mode -1)
@@ -744,6 +743,13 @@
 		:base0F "#6A1435" ;; 紫檀色
 		))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(highlight ((t (:background "#FEEEED" :underline t)))))
+
 (load-theme 'base16-sakura t)
 
 (with-eval-after-load 'flycheck-posframe
@@ -847,7 +853,8 @@
 			      ("j" "Journal" entry (file+datetree "~/org/journal.org")
 			       "* %?\nEntered on %U\n  %i\n  %a"))
       org-agenda-files '("~/org/notes.org"
-			 "~/org/journal.org"))
+			 "~/org/journal.org")
+      org-fontify-quote-and-verse-blocks t)
 
 (global-set-key (kbd "C-c c") #'org-capture)
 (global-set-key (kbd "C-c a") #'org-agenda)
@@ -893,6 +900,8 @@
       fussy-score-fn 'fussy-fzf-native-score
       fussy-filter-fn #'fussy-filter-default)
 
+(fzf-native-load-dyn)
+
 (with-eval-after-load 'company
   (defun j-company-capf (f &rest args)
     "Manage `completion-styles'."
@@ -902,8 +911,6 @@
       (apply f args)))
 
   (advice-add 'company-capf :around 'j-company-capf))
-
-(fzf-native-load-dyn)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -921,6 +928,36 @@
 (straight-use-package 'dtrt-indent)
 
 (dtrt-indent-global-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #lin
+
+(straight-use-package 'lin)
+
+(setq lin-face 'lin-red
+      lin-mode-hooks '(prog-mode-hook
+		       text-mode-hook
+		       bongo-mode-hook
+		       dired-mode-hook
+		       elfeed-search-mode-hook
+		       git-rebase-mode-hook
+		       grep-mode-hook
+		       ibuffer-mode-hook
+		       ilist-mode-hook
+		       ledger-report-mode-hook
+		       log-view-mode-hook
+		       magit-log-mode-hook
+		       mu4e-headers-mode
+		       notmuch-search-mode-hook
+		       notmuch-tree-mode-hook
+		       occur-mode-hook
+		       org-agenda-mode-hook
+		       pdf-outline-buffer-mode-hook
+		       proced-mode-hook
+		       tabulated-list-mode-hook))
+
+(lin-global-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -947,6 +984,18 @@
   (define-key company-active-map (kbd "C-<tab>") #'my-tab)
   (define-key company-mode-map (kbd "C-TAB") #'my-tab)
   (define-key company-mode-map (kbd "C-<tab>") #'my-tab))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #tree-sitter
+
+(straight-use-package 'tree-sitter)
+(straight-use-package 'tree-sitter-langs)
+
+(require 'tree-sitter)
+(require 'tree-sitter-langs)
+
+(global-tree-sitter-mode)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
