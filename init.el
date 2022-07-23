@@ -537,7 +537,7 @@
 
 (straight-use-package 'undo-tree)
 
-(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-history")))
+(setq undo-tree-auto-save-history nil)
 
 (with-eval-after-load 'evil
   (evil-set-undo-system 'undo-tree)
@@ -749,15 +749,11 @@
 ;; #fussy
 
 (straight-use-package '(fussy :type git :host github :repo "jojojames/fussy"))
-(straight-use-package '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
 
 (setq completion-styles '(fussy)
       completion-category-defaults nil
       compleiton-category-overrides nil
-      fussy-score-fn 'fussy-fzf-native-score
       fussy-filter-fn #'fussy-filter-default)
-
-(fzf-native-load-dyn)
 
 (with-eval-after-load 'company
   (defun j-company-capf (f &rest args)
