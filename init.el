@@ -52,10 +52,6 @@
 (prefer-coding-system 'utf-8)
 
 (when (eq system-type 'windows-nt)
-  (set-file-name-coding-system 'cp932)
-  (set-keyboard-coding-system 'cp932)
-  (set-terminal-coding-system 'cp932)
-
   (set-coding-system-priority 'utf-8
 			      'euc-jp
 			      'iso-2022-jp
@@ -71,7 +67,7 @@
        (setq fontaine-presets
 	     '((regular
 		:default-family "VLゴシック"
-		:default-height 90
+		:default-height 100
 		:fixed-pitch-family "VLゴシック"
 		:variable-pitch-family "VLPゴシック"
 		:italic-family "VLゴシック"
@@ -86,7 +82,7 @@
        (setq fontaine-presets
 	     '((regular
 		:default-family "BIZ UDゴシック"
-		:default-height 90
+		:default-height 100
 		:fixed-pitch-family "BIZ UDゴシック"
 		:variable-pitch-family "BIZ UDPゴシック"
 		:italic-family "BIZ UDゴシック"
@@ -102,7 +98,7 @@
 (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
 
 ;; The other side of `fontaine-restore-latest-preset'.
-(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+(add-hook 'kill-emacs-hook 'fontaine-store-latest-preset)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -111,19 +107,6 @@
 (setq whitespace-style '(face trailing))
 
 (global-whitespace-mode +1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #modeline
-
-(straight-use-package 'doom-modeline)
-(straight-use-package 'nyan-mode)
-
-(setq nyan-animate-nyancat t
-      nyan-bar-length 24)
-
-(doom-modeline-mode +1)
-(nyan-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -139,6 +122,19 @@
 
       ((eq system-type 'gnu/linux)
        (setq default-input-method "japanese-mozc")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #modeline
+
+(straight-use-package 'doom-modeline)
+(straight-use-package 'nyan-mode)
+
+(setq nyan-animate-nyancat t
+      nyan-bar-length 24)
+
+(doom-modeline-mode +1)
+(nyan-mode +1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -193,7 +189,7 @@
       evil-symbol-word-search t
       evil-kill-on-visual-paste nil)
 
-(define-key my-buffer-map (kbd "d") #'evil-delete-buffer)
+(define-key my-buffer-map (kbd "d") 'kill-this-buffer)
 
 (with-eval-after-load 'evil
   (evil-collection-init)
@@ -219,14 +215,14 @@
     (kbd "SPC t") `("toggle" . ,my-toggle-map)
     (kbd "SPC o") `("org" . ,my-org-map)
     (kbd "SPC 5") `("C-x 5" . ,ctl-x-5-map)
-    (kbd "SPC 0") #'delete-window
-    (kbd "SPC 1") #'delete-other-windows
-    (kbd "SPC 2") #'split-window-below
-    (kbd "SPC 3") #'split-window-right
-    (kbd "SPC 4") #'switch-to-buffer-other-window
-    (kbd "SPC 5") #'ctl-x-5-prefix
-    (kbd "SPC w") #'evil-window-next
-    (kbd "SPC W") #'other-frame))
+    (kbd "SPC 0") 'delete-window
+    (kbd "SPC 1") 'delete-other-windows
+    (kbd "SPC 2") 'split-window-below
+    (kbd "SPC 3") 'split-window-right
+    (kbd "SPC 4") 'switch-to-buffer-other-window
+    (kbd "SPC 5") 'ctl-x-5-prefix
+    (kbd "SPC w") 'evil-window-next
+    (kbd "SPC W") 'other-frame))
 
 (with-eval-after-load 'evil-org
   (require 'evil-org-agenda)
@@ -255,18 +251,19 @@
 
   (add-to-list 'company-backends '(company-capf company-yasnippet company-tabnine :separate))
   (add-to-list 'company-frontends 'company-dwim-frontend t)
+  (delq 'company-preview-if-just-one-frontend company-frontends)
 
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<return>") nil)
-  (define-key company-active-map (kbd "TAB") #'company-dwim)
-  (define-key company-active-map (kbd "<tab>") #'company-dwim)
-  (define-key company-active-map (kbd "S-TAB") #'company-dwim-select-previous)
-  (define-key company-active-map (kbd "<backtab>") #'company-dwim-select-previous)
-  (define-key company-active-map (kbd "C-TAB") #'company-complete-selection)
-  (define-key company-active-map (kbd "C-<tab>") #'company-complete-selection))
+  (define-key company-active-map (kbd "TAB") 'company-dwim)
+  (define-key company-active-map (kbd "<tab>") 'company-dwim)
+  (define-key company-active-map (kbd "S-TAB") 'company-dwim-select-previous)
+  (define-key company-active-map (kbd "<backtab>") 'company-dwim-select-previous)
+  (define-key company-active-map (kbd "C-TAB") 'company-complete-selection)
+  (define-key company-active-map (kbd "C-<tab>") 'company-complete-selection))
 
-(global-set-key [remap indent-for-tab-command] #'company-indent-or-complete-common)
-(global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
+(global-set-key [remap indent-for-tab-command] 'company-indent-or-complete-common)
+(global-set-key [remap c-indent-line-or-region] 'company-indent-or-complete-common)
 
 (add-hook 'company-mode-hook 'company-box-mode)
 
@@ -278,7 +275,7 @@
 
 (straight-use-package 'selectrum)
 
-(global-set-key (kbd "C-x C-z") #'selectrum-repeat)
+(global-set-key (kbd "C-x C-z") 'selectrum-repeat)
 
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) my-intercept-mode-map
@@ -310,7 +307,7 @@
 
 (setq ctrlf-default-search-style 'fuzzy)
 
-(define-key search-map (kbd "s") #'ctrlf-forward-default)
+(define-key search-map (kbd "s") 'ctrlf-forward-default)
 
 (ctrlf-mode +1)
 
@@ -331,47 +328,47 @@
 (require 'consult)
 
 ;; C-c bindings (mode-specific-map)
-(global-set-key (kbd "C-c h") #'consult-history)
-(global-set-key (kbd "C-c m") #'consult-mode-command)
-(global-set-key (kbd "C-c k") #'consult-kmacro)
+(global-set-key (kbd "C-c h") 'consult-history)
+(global-set-key (kbd "C-c m") 'consult-mode-command)
+(global-set-key (kbd "C-c k") 'consult-kmacro)
 ;; C-x bindings (ctl-x-map)
-(global-set-key (kbd "C-x M-:") #'consult-complex-command) ;; orig. repeat-complex-command
-(global-set-key [remap switch-to-buffer] #'consult-buffer) ;; orig. switch-to-buffer
-(global-set-key [remap switch-to-buffer-other-window] #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-(global-set-key [remap switch-to-buffer-other-frame] #'consult-buffer-other-frame) ;; orig. switch-to-buffer-other-frame
-(global-set-key [remap bookmark-jump] #'consult-bookmark) ;; orig. bookmark-jump
-(global-set-key [remap project-switch-to-buffer] #'consult-project-buffer) ;; orig. project-switch-to-buffer
+(global-set-key (kbd "C-x M-:") 'consult-complex-command) ;; orig. repeat-complex-command
+(global-set-key [remap switch-to-buffer] 'consult-buffer) ;; orig. switch-to-buffer
+(global-set-key [remap switch-to-buffer-other-window] 'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+(global-set-key [remap switch-to-buffer-other-frame] 'consult-buffer-other-frame) ;; orig. switch-to-buffer-other-frame
+(global-set-key [remap bookmark-jump] 'consult-bookmark) ;; orig. bookmark-jump
+(global-set-key [remap project-switch-to-buffer] 'consult-project-buffer) ;; orig. project-switch-to-buffer
 ;; Custom M-# bindings for fast register access
-(global-set-key (kbd "M-#") #'consult-register-load)
-(global-set-key (kbd "M-'") #'consult-register-store) ;; orig. abbrev-prefix-mark (unrelated)
-(global-set-key (kbd "C-M-#") #'consult-register)
+(global-set-key (kbd "M-#") 'consult-register-load)
+(global-set-key (kbd "M-'") 'consult-register-store) ;; orig. abbrev-prefix-mark (unrelated)
+(global-set-key (kbd "C-M-#") 'consult-register)
 ;; Other custom bindings
-(global-set-key (kbd "M-y") #'consult-yank-pop) ;; orig. yank-pop
-(global-set-key (kbd "<help> a") #'consult-apropos) ;; orig. apropos-command
-(define-key my-buffer-map (kbd "4") #'consult-buffer-other-window)
-(define-key my-buffer-map (kbd "5") #'consult-buffer-other-frame)
+(global-set-key (kbd "M-y") 'consult-yank-pop) ;; orig. yank-pop
+(global-set-key (kbd "<help> a") 'consult-apropos) ;; orig. apropos-command
+(define-key my-buffer-map (kbd "4") 'consult-buffer-other-window)
+(define-key my-buffer-map (kbd "5") 'consult-buffer-other-frame)
 ;; M-g bindings (goto-map)
-(define-key goto-map (kbd "e") #'consult-compile-error)
-(define-key goto-map (kbd "g") #'consult-goto-line) ;; orig. goto-line
-(define-key goto-map (kbd "o") #'consult-outline) ;; Alternative: consult-org-heading
-(define-key goto-map (kbd "m") #'consult-mark)
-(define-key goto-map (kbd "k") #'consult-global-mark)
-(define-key goto-map (kbd "i") #'consult-imenu)
-(define-key goto-map (kbd "I") #'consult-imenu-multi)
+(define-key goto-map (kbd "e") 'consult-compile-error)
+(define-key goto-map (kbd "g") 'consult-goto-line) ;; orig. goto-line
+(define-key goto-map (kbd "o") 'consult-outline) ;; Alternative: consult-org-heading
+(define-key goto-map (kbd "m") 'consult-mark)
+(define-key goto-map (kbd "k") 'consult-global-mark)
+(define-key goto-map (kbd "i") 'consult-imenu)
+(define-key goto-map (kbd "I") 'consult-imenu-multi)
 ;; M-s bindings (search-map)
-(define-key search-map (kbd "d") #'consult-find)
-(define-key search-map (kbd "D") #'consult-locate)
-(define-key search-map (kbd "g") #'consult-grep)
-(define-key search-map (kbd "G") #'consult-git-grep)
-(define-key search-map (kbd "r") #'consult-ripgrep)
-(define-key search-map (kbd "l") #'consult-line)
-(define-key search-map (kbd "L") #'consult-line-multi)
-(define-key search-map (kbd "m") #'consult-multi-occur)
-(define-key search-map (kbd "k") #'consult-keep-lines)
-(define-key search-map (kbd "u") #'consult-focus-lines)
+(define-key search-map (kbd "d") 'consult-find)
+(define-key search-map (kbd "D") 'consult-locate)
+(define-key search-map (kbd "g") 'consult-grep)
+(define-key search-map (kbd "G") 'consult-git-grep)
+(define-key search-map (kbd "r") 'consult-ripgrep)
+(define-key search-map (kbd "l") 'consult-line)
+(define-key search-map (kbd "L") 'consult-line-multi)
+(define-key search-map (kbd "m") 'consult-multi-occur)
+(define-key search-map (kbd "k") 'consult-keep-lines)
+(define-key search-map (kbd "u") 'consult-focus-lines)
 ;; Minibuffer history
-(define-key minibuffer-local-map (kbd "M-s") #'consult-history) ;; orig. next-matching-history-element
-(define-key minibuffer-local-map (kbd "M-r") #'consult-history) ;; orig. previous-matching-history-element
+(define-key minibuffer-local-map (kbd "M-s") 'consult-history) ;; orig. next-matching-history-element
+(define-key minibuffer-local-map (kbd "M-r") 'consult-history) ;; orig. previous-matching-history-element
 
 ;; Enable automatic preview at point in the *Completions* buffer. This is
 ;; relevant when you use the default completion UI.
@@ -381,15 +378,15 @@
 ;; preview for `consult-register', `consult-register-load',
 ;; `consult-register-store' and the Emacs built-ins.
 (setq register-preview-delay 0.5
-      register-preview-function #'consult-register-format)
+      register-preview-function 'consult-register-format)
 
 ;; Optionally tweak the register preview window.
 ;; This adds thin lines, sorting and hides the mode line of the window.
-(advice-add #'register-preview :override #'consult-register-window)
+(advice-add 'register-preview :override 'consult-register-window)
 
 ;; Use Consult to select xref locations with preview
-(setq xref-show-xrefs-function #'consult-xref
-      xref-show-definitions-function #'consult-xref)
+(setq xref-show-xrefs-function 'consult-xref
+      xref-show-definitions-function 'consult-xref)
 
 ;; Configure other variables and modes in the :config section,
 ;; after lazily loading the package.
@@ -416,13 +413,13 @@
 
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") 'consult-narrow-help)
 
   ;; By default `consult-project-function' uses `project-root' from project.el.
   ;; Optionally configure a different project root function.
   ;; There are multiple reasonable alternatives to chose from.
   ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
+  ;; (setq consult-project-function 'consult--default-project--function)
   ;;;; 2. projectile.el (projectile-project-root)
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-function (lambda (_) (projectile-project-root)))
@@ -439,11 +436,11 @@
 (straight-use-package 'embark)
 (straight-use-package 'embark-consult)
 
-(global-set-key (kbd "C-.") #'embark-act) ;; pick some comfortable binding
-(global-set-key (kbd "C-;") #'embark-dwim) ;; good alternative: M-.
-(global-set-key (kbd "C-h B") #'embark-bindings) ;; alternative for `describe-bindings'
+(global-set-key (kbd "C-.") 'embark-act) ;; pick some comfortable binding
+(global-set-key (kbd "C-;") 'embark-dwim) ;; good alternative: M-.
+(global-set-key (kbd "C-h B") 'embark-bindings) ;; alternative for `describe-bindings'
 
-(setq prefix-help-command #'embark-prefix-help-command)
+(setq prefix-help-command 'embark-prefix-help-command)
 
 (with-eval-after-load 'embark
   (add-to-list 'display-buffer-alist
@@ -463,7 +460,6 @@
 
 (with-eval-after-load 'yasnippet
   (require 'yasnippet-snippets)
-
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-keymap (kbd "C-TAB") 'yas-next-field-or-maybe-expand)
@@ -495,7 +491,7 @@
 (straight-use-package 'projectile)
 
 (with-eval-after-load 'projectile
-  (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map))
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 (with-eval-after-load 'evil
   (evil-define-key 'normal my-intercept-mode-map
@@ -511,23 +507,15 @@
 (straight-use-package 'consult-flycheck)
 (straight-use-package 'flycheck-posframe)
 
-(define-key my-error-map (kbd "l") #'flycheck-list-errors)
-(define-key my-error-map (kbd "n") #'flycheck-next-error)
-(define-key my-error-map (kbd "p") #'flycheck-previous-error)
-(define-key my-error-map (kbd "e") #'consult-flycheck)
+(define-key my-error-map (kbd "l") 'flycheck-list-errors)
+(define-key my-error-map (kbd "n") 'flycheck-next-error)
+(define-key my-error-map (kbd "p") 'flycheck-previous-error)
+(define-key my-error-map (kbd "e") 'consult-flycheck)
 
-(add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
-
-(with-eval-after-load 'flycheck
-  (require 'flycheck-posframe)
-  ;; (delq 'new-line flycheck-check-syntax-automatically)
-  ;; (setq flycheck-idle-change-delay 1.0
-  ;; 	flycheck-buffer-switch-check-intermediate-buffers t
-  ;; 	flycheck-display-errors-delay 0.25)
-  )
+(add-hook 'flycheck-mode-hook 'flycheck-posframe-mode)
 
 (with-eval-after-load 'company
-  (add-hook 'flycheck-posframe-inhibit-functions #'company--active-p))
+  (add-hook 'flycheck-posframe-inhibit-functions 'company--active-p))
 
 (global-flycheck-mode +1)
 
@@ -558,7 +546,7 @@
 
 (straight-use-package 'rainbow-delimiters)
 
-(define-key my-toggle-map (kbd "r") #'rainbow-delimiters-mode)
+(define-key my-toggle-map (kbd "r") 'rainbow-delimiters-mode)
 
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
@@ -568,8 +556,7 @@
 
 (straight-use-package 'highlight-indent-guides)
 
-(setq highlight-indent-guides-method 'character
-      highlight-indent-guides-character 124
+(setq highlight-indent-guides-method 'bitmap
       highlight-indent-guides-responsive 'top)
 
 (define-key my-toggle-map (kbd "h") 'highlight-indent-guides-mode)
@@ -599,7 +586,7 @@
 		:base05 "#2f2725" ;; 墨色
 		:base06 "#405C36" ;; 老緑
 		:base07 "#EEBBCB" ;; 撫子色
-		:base08 "#EA0032" ;; 唐紅
+		:base08 "#E9546B" ;; 梅重
 		:base09 "#C92E36" ;; 柘榴色
 		:base0A "#0086AD" ;; 花色
 		:base0B "#7BAA17" ;; 柳緑
@@ -623,7 +610,7 @@
 
 (straight-use-package 'restart-emacs)
 
-(define-key my-quit-map (kbd "r") #'restart-emacs)
+(define-key my-quit-map (kbd "r") 'restart-emacs)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -633,8 +620,7 @@
 (straight-use-package 'all-the-icons-dired)
 
 (when (display-graphic-p)
-  (require 'all-the-icons)
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+  (require 'all-the-icons))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -642,7 +628,7 @@
 
 (straight-use-package 'expand-region)
 
-(global-set-key (kbd "C-=") #'er/expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
 
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) my-intercept-mode-map
@@ -670,6 +656,9 @@
 ;; #gcmh
 
 (straight-use-package 'gcmh)
+
+(setq gcmh-auto-idle-delay-factor 'auto
+      gcmh-high-cons-threshold (* 128 1024 1024))
 
 (gcmh-mode +1)
 
@@ -711,15 +700,16 @@
 			       "* %?\nEntered on %U\n  %i\n  %a"))
       org-agenda-files '("~/org/notes.org"
 			 "~/org/journal.org")
-      org-fontify-quote-and-verse-blocks t)
+      org-fontify-quote-and-verse-blocks t
+      org-startup-folded 'content)
 
-(global-set-key (kbd "C-c c") #'org-capture)
-(global-set-key (kbd "C-c a") #'org-agenda)
-(define-key my-org-map (kbd "c") #'org-capture)
-(define-key my-org-map (kbd "a") #'org-agenda)
-(define-key my-org-map (kbd "o") #'org-open-at-point)
-(define-key my-org-map (kbd "l") #'org-link)
-(define-key my-org-map (kbd "p") #'org-pomodoro)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(define-key my-org-map (kbd "c") 'org-capture)
+(define-key my-org-map (kbd "a") 'org-agenda)
+(define-key my-org-map (kbd "o") 'org-open-at-point)
+(define-key my-org-map (kbd "l") 'org-link)
+(define-key my-org-map (kbd "p") 'org-pomodoro)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -752,18 +742,7 @@
 
 (setq completion-styles '(fussy)
       completion-category-defaults nil
-      compleiton-category-overrides nil
-      fussy-filter-fn #'fussy-filter-default)
-
-(with-eval-after-load 'company
-  (defun j-company-capf (f &rest args)
-    "Manage `completion-styles'."
-    (let ((fussy-max-candidate-limit 5000)
-	  (fussy-default-regex-fn 'fussy-pattern-first-letter)
-	  (fussy-prefer-prefix nil))
-      (apply f args)))
-
-  (advice-add 'company-capf :around 'j-company-capf))
+      compleiton-category-overrides nil)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -788,27 +767,10 @@
 
 (straight-use-package 'lin)
 
-(setq lin-face 'lin-red
-      lin-mode-hooks '(prog-mode-hook
-		       text-mode-hook
-		       bongo-mode-hook
-		       dired-mode-hook
-		       elfeed-search-mode-hook
-		       git-rebase-mode-hook
-		       grep-mode-hook
-		       ibuffer-mode-hook
-		       ilist-mode-hook
-		       ledger-report-mode-hook
-		       log-view-mode-hook
-		       magit-log-mode-hook
-		       mu4e-headers-mode
-		       notmuch-search-mode-hook
-		       notmuch-tree-mode-hook
-		       occur-mode-hook
-		       org-agenda-mode-hook
-		       pdf-outline-buffer-mode-hook
-		       proced-mode-hook
-		       tabulated-list-mode-hook))
+(setq lin-face 'lin-red)
+(with-eval-after-load 'lin
+  (add-to-list 'lin-mode-hooks 'prog-mode-hook t)
+  (add-to-list 'lin-mode-hooks 'text-mode-hook t))
 
 (lin-global-mode +1)
 
@@ -829,14 +791,14 @@
   (or (copilot-accept-completion)
       (company-indent-or-complete-common nil)))
 
-(global-set-key (kbd "C-RET") #'my-tab)
-(global-set-key (kbd "C-<return>") #'my-tab)
+(global-set-key (kbd "C-RET") 'my-tab)
+(global-set-key (kbd "C-<return>") 'my-tab)
 
 (with-eval-after-load 'company
-  (define-key company-active-map (kbd "C-RET") #'my-tab)
-  (define-key company-active-map (kbd "C-<return>") #'my-tab)
-  (define-key company-mode-map (kbd "C-RET") #'my-tab)
-  (define-key company-mode-map (kbd "C-<return>") #'my-tab))
+  (define-key company-active-map (kbd "C-RET") 'my-tab)
+  (define-key company-active-map (kbd "C-<return>") 'my-tab)
+  (define-key company-mode-map (kbd "C-RET") 'my-tab)
+  (define-key company-mode-map (kbd "C-<return>") 'my-tab))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -854,6 +816,92 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #denote
+
+(straight-use-package 'denote)
+
+(with-eval-after-load 'org-capture
+  (require 'denote-org-capture)
+  (add-to-list 'org-capture-templates
+	       '("n" "New note (with Denote)" plain
+		 (file denote-last-path)
+		 'denote-org-capture
+		 :no-save t
+		 :immediate-finish nil
+		 :kill-buffer t
+		 :jump-to-captured t)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #emoji
+
+(straight-use-package 'emojify)
+
+(global-emojify-mode +1)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #mmm
+
+(straight-use-package 'mmm-mode)
+
+(require 'mmm-mode)
+(require 'mmm-auto)
+
+(setq mmm-global-mode 'maybe)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #treemacs
+
+(straight-use-package 'treemacs)
+(straight-use-package 'treemacs-evil)
+(straight-use-package 'treemacs-projectile)
+(straight-use-package 'treemacs-magit)
+(straight-use-package 'treemacs-icons-dired)
+(straight-use-package 'treemacs-persp)
+(straight-use-package 'treemacs-perspective)
+(straight-use-package 'treemacs-tab-bar)
+(straight-use-package 'treemacs-all-the-icons)
+
+(defvar my-treemacs-map (make-sparse-keymap)
+  "My file keymap.")
+
+(define-key my-treemacs-map (kbd "1") 'treemacs-select-window)
+(define-key my-treemacs-map (kbd "t") 'treemacs)
+(define-key my-treemacs-map (kbd "d") 'treemacs-select-directory)
+(define-key my-treemacs-map (kbd "B") 'treemacs-bookmark)
+(define-key my-treemacs-map (kbd "f") 'treemacs-find-file)
+(define-key my-treemacs-map (kbd "F") 'treemacs-find-tag)
+(define-key my-treemacs-map (kbd "c") 'treemacs-display-current-project-exclusively)
+
+(define-key my-file-map (kbd "t") `("treemacs" . ,my-treemacs-map))
+
+(with-eval-after-load 'treemacs
+  (treemacs-follow-mode +1)
+  (treemacs-filewatch-mode +1)
+  (treemacs-fringe-indicator-mode 'always)
+
+  (with-eval-after-load 'evil
+    (require 'treemacs-evil))
+
+  (with-eval-after-load 'projectile
+    (require 'treemacs-projectile))
+
+  (with-eval-after-load 'magit
+    (require 'treemacs-magit))
+
+  (with-eval-after-load 'persp
+    (require 'persp-mode)
+    (treemacs-set-scope-type 'Perspectives))
+
+  (require 'treemacs-tab-bar)
+  (treemacs-set-scope-type 'Tabs))
+
+(add-hook 'dired-mode-hook 'treemacs-icons-dired-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; #lsp-mode
 
 (straight-use-package 'lsp-mode)
@@ -861,20 +909,15 @@
 (straight-use-package 'lsp-java)
 (straight-use-package 'lsp-pyright)
 
-(setq lsp-keymap-prefix "M-l"
-      lsp-eldoc-enable-hover nil
-      lsp-enable-folding nil
-      lsp-headerline-breadcrumb-enable nil
-      lsp-headerline-breadcrumb-enable-diagnostics nil
-      lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms100m"))
+(setq lsp-keymap-prefix "M-l")
 
 (add-hook 'lsp-mode-hook (lambda ()
 			   (with-eval-after-load 'evil
 			     (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
 
-(add-hook 'html-mode-hook #'lsp)
-(add-hook 'css-mode-hook #'lsp)
-(add-hook 'rust-mode-hook #'lsp)
+(add-hook 'html-mode-hook 'lsp)
+(add-hook 'css-mode-hook 'lsp)
+(add-hook 'rust-mode-hook 'lsp)
 (add-hook 'java-mode-hook (lambda ()
 			    (require 'lsp-java)
 			    (lsp)))
@@ -884,10 +927,12 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; #highlight-quotes
+;; #elisp
 
+(straight-use-package 'highlight-defined)
 (straight-use-package 'highlight-quoted)
 
+(add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)
 (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
 
 
@@ -954,6 +999,14 @@
 (straight-use-package 'sqlformat)
 
 (add-hook 'sql-mode-hook 'sqlind-minor-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; #xml
+
+(add-hook 'nxml-mode-hook (lambda ()
+			    (setq tab-width 4)))
+
 
 (provide 'init)
 ;;; init.el ends here
