@@ -1013,6 +1013,8 @@ provide."
 
 (straight-use-package 'apheleia)
 
+(define-key my-toggle-map (kbd "f") 'apheleia-mode)
+
 (add-hook 'rust-mode-hook 'apheleia-mode)
 (add-hook 'python-mode-hook 'apheleia-mode)
 
@@ -1071,8 +1073,7 @@ provide."
                                "* TODO %?\n  %i\n  %a")
                               ("j" "Journal" entry (file+datetree "~/org/journal.org")
                                "* %?\nEntered on %U\n  %i\n  %a"))
-      org-agenda-files '("~/org/notes.org"
-                         "~/org/journal.org")
+      org-agenda-files (expand-file-name org-directory)
       org-fontify-quote-and-verse-blocks t
       org-startup-folded 'content)
 
