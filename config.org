@@ -74,8 +74,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'org)
-
 (setq org-tag-alist '(("Sample Tag1" . nil)
                       ("Sample Tag2" . nil))
       org-directory "~/org/"
