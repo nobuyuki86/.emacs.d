@@ -19,8 +19,8 @@
 
 (eval-when-compile
   (require 'org)
-  (org-babel-tangle-file (expand-file-name "early-init.org" user-emacs-directory))
-  (org-babel-tangle-file (expand-file-name "config.org" user-emacs-directory))
+  (org-babel-load-file (expand-file-name "early-init.org" user-emacs-directory))
+  (org-babel-load-file (expand-file-name "config.org" user-emacs-directory))
   (byte-compile-file (expand-file-name "early-init.el" user-emacs-directory))
   (byte-compile-file (expand-file-name "config.el" user-emacs-directory)))
 
