@@ -434,19 +434,6 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 ** modeline
 
-*** [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
-
-アイコンなどを活用して視認性が高いモードライン。
-最近は [[https://github.com/tarsius/moody][moody]] に移行中。
-
-#+begin_src emacs-lisp :tangle no
-  
-(straight-use-package 'doom-modeline)
-
-(doom-modeline-mode +1)
-
-#+end_src
-
 *** [[https://github.com/tarsius/moody][moody]]
 
 #+begin_src emacs-lisp :tangle yes
@@ -1041,27 +1028,6 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-*** fussy-filter-default
-
-~all-completions~ をフィルターに利用します。
-
-#+begin_src emacs-lisp :tangle no
-  
-(setq fussy-filter-fn #'fussy-filter-default)
-
-(with-eval-after-load 'company
-  (defun j-company-capf (f &rest args)
-    "Manage ~completion-styles'."
-    (let ((fussy-max-candidate-limit 5000)
-          (fussy-default-regex-fn 'fussy-pattern-first-letter)
-          (fussy-prefer-prefix nil))
-      (apply f args)))
-
-  (advice-add 'company-auto-begin :before 'fussy-wipe-cache)
-  (advice-add 'company-capf :around 'j-company-capf))
-
-#+end_src
-
 *** [[https://github.com/oantolin/orderless][orderless]]
 
 ~orderless~ をフィルターに利用します。
@@ -1090,17 +1056,6 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-*** [[https://github.com/lewang/flx][flx]]
-
-スコアリングに ~flx~ を利用します。
-
-#+begin_src emacs-lisp :tangle no
-  
-(with-eval-after-load 'fussy
-  (setq fussy-score-fn #'flx-score))
-
-#+end_src
-
 *** [[https://github.com/dangduc/fzf-native][fzf-native]]
 
 スコアリングに ~fzf-native~ を利用します。
@@ -1114,22 +1069,6 @@ vertico の候補等に様々なアクションを提供してくれます。
   (setq fussy-score-fn #'fussy-fzf-native-score))
 
 (fzf-native-load-dyn)
-
-#+end_src
-
-*** [[https://github.com/jcs-elpa/fuz-bin][fuz-bin]]
-
-スコアリングに ~fuz-bin~ を利用します。
-
-#+begin_src emacs-lisp :tangle no
-  
-(straight-use-package
- '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
-
-(with-eval-after-load 'fussy
-  (setq fussy-score-fn #'fussy-fuz-bin-score))
-
-(fuz-bin-load-dyn)
 
 #+end_src
 
