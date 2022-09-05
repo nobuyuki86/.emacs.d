@@ -525,15 +525,15 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
   (evil-define-key '(normal visual) my-intercept-mode-map
     (kbd "SPC SPC") 'execute-extended-command
-    (kbd "SPC s") ~("search" . ,search-map)
-    (kbd "SPC g") ~("goto" . ,goto-map)
-    (kbd "SPC q") ~("quit" . ,my-quit-map)
-    (kbd "SPC f") ~("file" . ,my-file-map)
-    (kbd "SPC b") ~("buffer" . ,my-buffer-map)
-    (kbd "SPC e") ~("error" . ,my-error-map)
-    (kbd "SPC t") ~("toggle" . ,my-toggle-map)
-    (kbd "SPC o") ~("org" . ,my-org-map)
-    (kbd "SPC 5") ~("C-x 5" . ,ctl-x-5-map)
+    (kbd "SPC s") `("search" . ,search-map)
+    (kbd "SPC g") `("goto" . ,goto-map)
+    (kbd "SPC q") `("quit" . ,my-quit-map)
+    (kbd "SPC f") `("file" . ,my-file-map)
+    (kbd "SPC b") `("buffer" . ,my-buffer-map)
+    (kbd "SPC e") `("error" . ,my-error-map)
+    (kbd "SPC t") `("toggle" . ,my-toggle-map)
+    (kbd "SPC o") `("org" . ,my-org-map)
+    (kbd "SPC 5") `("C-x 5" . ,ctl-x-5-map)
     (kbd "SPC 0") 'delete-window
     (kbd "SPC 1") 'delete-other-windows
     (kbd "SPC 2") 'split-window-below
@@ -1253,7 +1253,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
   (with-eval-after-load 'evil
     (evil-define-key 'normal my-intercept-mode-map
-      (kbd "SPC p") ~("projectile" . projectile-command-map))))
+      (kbd "SPC p") `("projectile" . projectile-command-map))))
 
 (projectile-mode +1)
 
@@ -2068,9 +2068,9 @@ Windows用の設定です。
 
   (pcase (cons (not (null (executable-find "git")))
                (not (null treemacs-python-executable)))
-    (~(t . t)
+    (`(t . t)
      (treemacs-git-mode 'deferred))
-    (~(t . _)
+    (`(t . _)
      (treemacs-git-mode 'simple)))
 
   (treemacs-hide-gitignored-files-mode nil))
@@ -2147,7 +2147,7 @@ EmacsでLSP機能が利用できるようになります。
 
 (add-hook 'lsp-mode-hook (lambda ()
                            (with-eval-after-load 'evil
-                             (evil-local-set-key 'normal (kbd "SPC m") ~("lsp" . ,lsp-command-map)))))
+                             (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
 (add-hook 'html-mode-hook #'lsp)
 (add-hook 'css-mode-hook #'lsp)
 (add-hook 'rust-mode-hook #'lsp)
