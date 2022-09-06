@@ -139,30 +139,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 ** Emacs標準機能の設定
 
-*** 最適化
-
-[[https://github.com/seagle0128/.emacs.d][Centaur Emacs]] を参考にしています。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(when (eq system-type 'windows-nt)
-  (setq w32-get-true-file-attributes nil   ; decrease file IO workload
-        w32-pipe-read-delay 0              ; faster IPC
-        w32-pipe-buffer-size (* 64 1024))) ; read more at a time (was 4K)
-(unless (eq system-type 'darwin)
-  (setq command-line-ns-option-alist nil))
-(unless (eq system-type 'gnu/linux)
-  (setq command-line-x-option-alist nil))
-
-(setq-default cursor-in-non-selected-windows nil)
-
-(setq idle-update-delay 1.0
-      highlight-nonselected-windows nil
-      fast-but-imprecise-scrolling t
-      redisplay-skip-fontification-on-input t)
-
-#+end_src
-
 *** 補完時に大文字小文字を区別しない
 
 #+begin_src emacs-lisp :tangle yes
@@ -1028,11 +1004,33 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
+*** fussy-filter-default
+
+#+begin_src emacs-lisp :tangle yes
+  
+(with-eval-after-load 'fussy
+  (setq fussy-filter-fn #'fussy-filter-default))
+
+(with-eval-after-load 'company
+  (defun bb-company-capf (f &rest args)
+    "Manage `completion-styles'."
+    (let ((fussy-max-candidate-limit 5000)
+          (fussy-default-regex-fn 'fussy-pattern-first-letter)
+          (fussy-prefer-prefix nil))
+      (apply f args)))
+
+  (advice-add 'company-capf :around 'bb-company-capf)
+
+  ;; For cache functionality.
+  (advice-add 'company-auto-begin :before 'fussy-wipe-cache))
+
+#+end_src
+
 *** [[https://github.com/oantolin/orderless][orderless]]
 
 ~orderless~ をフィルターに利用します。
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
   
 (straight-use-package 'orderless)
 
