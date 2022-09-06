@@ -13,6 +13,7 @@ config.elc
 config.md
 config.org~
 cursory-latest-state
+early-init.el
 early-init.elc
 early-init.md
 eclipse.jdt.ls/
