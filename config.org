@@ -1309,7 +1309,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
       ;; of padding and NATNUM), and a floating point for the height of
       ;; the text relative to the base font size (or a cons cell of
       ;; height and FLOAT)
-      modus-themes-mode-line '(accented)
+      modus-themes-mode-line '(accented borderless (padding . 4) (height . 0.9))
 
       ;; Options for ~modus-themes-markup' are either nil, or a list
       ;; that can combine any of ~bold', ~italic', ~background',
