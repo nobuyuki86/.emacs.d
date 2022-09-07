@@ -931,6 +931,18 @@ README に記載されている標準機能の設定です。
 
 #+end_src
 
+** その他
+
+#+begin_src emacs-lisp :tangle yes
+  
+(defun consult-ripgrep-current-directory ()
+  (interactive)
+  (consult-ripgrep default-directory))
+
+(define-key search-map (kbd "R") #'consult-ripgrep-current-directory)
+
+#+end_src
+
 * [[https://github.com/minad/marginalia][marginalia]]
 
 ~vertico~ の候補に情報を追加してくれます。
