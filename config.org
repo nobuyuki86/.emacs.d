@@ -1130,15 +1130,13 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/emacsorphanage/git-gutter][git-gutter]]
-
-変更箇所をわかりやすくしてくれます。
+* [[https://github.com/dgutov/diff-hl][diff-hl]]
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'git-gutter)
+(straight-use-package 'diff-hl)
 
-(global-git-gutter-mode +1)
+(global-diff-hl-mode +1)
 
 #+end_src
 
