@@ -597,22 +597,37 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/tumashu/company-posframe][company-posframe]]
-
-~company~ の表示にposframeを使用してくれるパッケージです。
-他にも見た目が綺麗な [[https://github.com/sebastiencs/company-box][company-box]] がありますが、テーマの切り替えがうまく反映されないので
-こちらのパッケージを使用しています。
+** company-box
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'company-posframe)
+(straight-use-package 'company-box)
 
-(with-eval-after-load 'company
-  (setq company-posframe-show-metadata nil
-        company-posframe-show-indicator nil
-        company-tooltip-minimum-width 40)
+(setq company-box-show-single-candidate t
+      company-box-backends-colors nil
+      company-box-max-candidates 50
+      company-box-icons-alist 'company-box-icons-images)
 
-  (company-posframe-mode +1))
+(setq x-gtk-resize-child-frames 'resize-mode)
+
+(add-hook 'company-mode-hook 'company-box-mode)
+
+(with-eval-after-load 'company-box
+  (delq 'company-echo-metadata-frontend company-frontends)
+  (add-to-list 'company-box-frame-parameters '(tab-bar-lines . 0))
+
+  (defun company-box-detect-deleted-frame-a (frame)
+    (if (frame-live-p frame) frame))
+
+  (advice-add #'company-box--get-frame :filter-return #'company-box-detect-deleted-frame-a)
+
+  (defun company-box-detect-deleted-doc-frame (_selection frame)
+    (and company-box-doc-enable
+         (frame-local-getq company-box-doc-frame frame)
+         (not (frame-live-p (frame-local-getq company-box-doc-frame frame)))
+         (frame-local-setq company-box-doc-frame nil frame)))
+
+  (advice-add #'company-box-doc :before #'company-box-detect-deleted-doc-frame))
 
 #+end_src
 
@@ -1021,34 +1036,6 @@ vertico の候補等に様々なアクションを提供してくれます。
 
   ;; For cache functionality.
   (advice-add 'company-auto-begin :before 'fussy-wipe-cache))
-
-#+end_src
-
-** [[https://github.com/oantolin/orderless][orderless]]
-
-~orderless~ をフィルターに利用します。
-
-#+begin_src emacs-lisp :tangle no
-  
-(straight-use-package 'orderless)
-
-(with-eval-after-load 'fussy
-  (setq fussy-filter-fn #'fussy-filter-orderless-flex))
-
-(with-eval-after-load 'company
-  (defun just-one-face (fn &rest args)
-    (let ((orderless-match-faces [completions-common-part]))
-      (apply fn args)))
-
-  (advice-add 'company-capf--candidates :around #'just-one-face)
-
-  (defun j-company-capf (f &rest args)
-    "Manage ~completion-styles'."
-    (let ((fussy-max-candidate-limit 5000))
-      (apply f args)))
-
-  (advice-add 'company-auto-begin :before 'fussy-wipe-cache)
-  (advice-add 'company-capf :around 'j-company-capf))
 
 #+end_src
 
