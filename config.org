@@ -931,6 +931,16 @@ README に記載されている標準機能の設定です。
 
 #+end_src
 
+** consult-dir
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'consult-dir)
+
+(define-key my-file-map (kbd "d") #'consult-dir)
+
+#+end_src
+
 ** その他
 
 #+begin_src emacs-lisp :tangle yes
