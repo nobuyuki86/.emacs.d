@@ -931,7 +931,7 @@ README に記載されている標準機能の設定です。
 
 #+end_src
 
-** consult-dir
+** [[https://github.com/karthink/consult-dir][consult-dir]]
 
 #+begin_src emacs-lisp :tangle yes
   
