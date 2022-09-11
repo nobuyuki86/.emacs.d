@@ -585,6 +585,7 @@ aaa -> (aaa)
 
 (setq company-minimum-prefix-length 1
       company-idle-delay 0
+      company-require-match nil
       company-tooltip-align-annotations t
       company-dabbrev-other-buffers nil
       company-dabbrev-downcase nil
@@ -677,6 +678,9 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
   
 (straight-use-package 'company-tabnine)
+
+(setq company-idle-delay 0.2
+      company-tabnine-no-continue t)
 
 (with-eval-after-load 'company
   (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine company-dabbrev)))
@@ -1011,8 +1015,8 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 (require 'fussy)
 
-(setq completion-styles '(fussy)
-      completion-category-defaults nil
+(push 'fussy completion-styles)
+(setq completion-category-defaults nil
       completion-category-overrides nil)
 
 #+end_src
@@ -1027,25 +1031,33 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-** fussy-filter-default
+** fussy-filter-orderless
 
 #+begin_src emacs-lisp :tangle yes
   
+(straight-use-package 'orderless)
+
 (with-eval-after-load 'fussy
-  (setq fussy-filter-fn #'fussy-filter-default))
+  (setq fussy-filter-fn #'fussy-filter-orderless-flex))
 
 (with-eval-after-load 'company
-  (defun bb-company-capf (f &rest args)
+  (defun just-one-face (fn &rest args)
+    (let ((orderless-match-faces [completions-common-part]))
+      (apply fn args)))
+
+  (advice-add 'company-capf--candidates :around #'just-one-face)
+
+  (defun j-company-capf (f &rest args)
     "Manage `completion-styles'."
-    (let ((fussy-max-candidate-limit 5000)
-          (fussy-default-regex-fn 'fussy-pattern-first-letter)
-          (fussy-prefer-prefix nil))
-      (apply f args)))
+    (if (length= company-prefix 2)
+        ;; Don't use `company' for 2 length prefixes.
+        (let ((completion-styles (remq 'fussy completion-styles)))
+          (apply f args))
+      (let ((fussy-max-candidate-limit 5000))
+        (apply f args))))
 
-  (advice-add 'company-capf :around 'bb-company-capf)
-
-  ;; For cache functionality.
-  (advice-add 'company-auto-begin :before 'fussy-wipe-cache))
+  (advice-add 'company-auto-begin :before 'fussy-wipe-cache)
+  (advice-add 'company-capf :around 'j-company-capf))
 
 #+end_src
 
@@ -1509,7 +1521,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
               (green-alt-other-faint . "#20885c")
               (yellow . "#b06202")
               (yellow-alt . "#a95642")
-              (yellow-alt-other . "#a06f42")
+              (yellow-alt-other . "#(and )06f42")
               (yellow-faint . "#b07232")
               (yellow-alt-faint . "#a96642")
               (yellow-alt-other-faint . "#a08042")
