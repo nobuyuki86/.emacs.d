@@ -598,7 +598,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** company-box
+** [[https://github.com/sebastiencs/company-box][company-box]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -677,10 +677,7 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'company-tabnine)
-
-(setq company-idle-delay 0.2
-      company-tabnine-no-continue t)
+(straight-use-package '(company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
 
 (with-eval-after-load 'company
   (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine company-dabbrev)))
