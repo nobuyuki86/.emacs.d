@@ -113,7 +113,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
                                   (setq org-agenda-files (directory-files org-directory))))
 #+end_src
 
-** org-pomodoro
+** [[https://github.com/marcinkoziej/org-pomodoro][org-pomodoro]]
 
 カーソル上のタスクでポモドーロタイマーを設定してくれます。
 
@@ -125,7 +125,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** qiita投稿用
+** [[https://github.com/0x60df/ox-qmd][ox-qmd]] (qiita投稿用)
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1698,14 +1698,6 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (modus-themes-summertime)
 (modus-themes-load-vivendi)
-
-#+end_src
-
-** [[https://github.com/doomemacs/themes][doom-themes]]
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'doom-themes)
 
 #+end_src
 
