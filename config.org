@@ -459,6 +459,8 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
       evil-symbol-word-search t
       evil-kill-on-visual-paste nil)
 
+(require 'evil)
+
 (with-eval-after-load 'evil
   (dolist (state '(normal visual insert))
     (evil-make-intercept-map
@@ -575,6 +577,80 @@ aaa -> (aaa)
 
 #+end_src
 
+* prescient
+
+~prescient-persist-mode~ で履歴を永続的に保存
+※ ~require~ は必須
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'prescient)
+
+(require 'prescient)
+
+(prescient-persist-mode +1)
+
+#+end_src
+
+~compleion-styles~ に設定する
+
+#+begin_src emacs-lisp :tangle yes
+  
+(setq completion-styles '(prescient basic)
+      completion-category-defaults nil
+      completion-category-overrides nil)
+
+#+end_src
+
+使いやすくなるようにカスタム変数を設定
+
+#+begin_src emacs-lisp :tangle yes
+  
+(setq prescient-aggressive-file-save t
+      prescient-use-case-folding t)
+
+#+end_src
+
+~company~ は fuzzy に絞り込み
+
+#+begin_src emacs-lisp :tangle yes
+  
+(add-hook 'company-mode-hook
+          (lambda ()
+            (setq-local prescient-filter-method '(fuzzy))))
+
+#+end_src
+
+** [[https://github.com/radian-software/prescient.el][company-prescient]]
+
+~prescient~ だけでは ~company~ の履歴が保存できないので、~company-prescient~ を導入します。
+長さによる並び替えは ~lsp-mode~ と相性が悪いので無効化しています。
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'company-prescient)
+
+(with-eval-after-load 'company
+  (setq company-prescient-sort-length-enable nil)
+  (company-prescient-mode +1))
+
+#+end_src
+
+** vertico + [[https://github.com/radian-software/prescient.el][prescient]]
+
+~vertico~ に ~prescient~ を適用させています。（[[https://github.com/minad/vertico/wiki#using-prescientel][参考]]）
+
+#+begin_src emacs-lisp :tangle yes
+  
+(with-eval-after-load 'vertico
+  (with-eval-after-load 'prescient
+    (require 'prescient)
+    (setq vertico-sort-function #'prescient-sort)
+    (advice-add #'vertico-insert :after
+                (lambda () (prescient-remember (vertico--candidate))))))
+
+#+end_src
+
 * [[https://company-mode.github.io/][company]]
 
 入力補完用のパッケージです。
@@ -584,7 +660,6 @@ aaa -> (aaa)
 (straight-use-package 'company)
 
 (setq company-minimum-prefix-length 1
-      company-idle-delay 0
       company-require-match nil
       company-tooltip-align-annotations t
       company-dabbrev-other-buffers nil
@@ -677,26 +752,13 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package '(company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
+;; (straight-use-package '(company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
+(straight-use-package 'company-tabnine)
+
+(setq company-tabnine-no-continue t)
 
 (with-eval-after-load 'company
   (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine company-dabbrev)))
-
-#+end_src
-
-** [[https://github.com/radian-software/prescient.el][company-prescient]]
-
-補完候補の並び替えに関するパッケージです。
-長さによる並び替えは ~lsp-mode~ と相性が悪いので無効化しています。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'company-prescient)
-
-(with-eval-after-load 'company
-  (setq company-prescient-sort-length-enable nil)
-  (company-prescient-mode +1)
-  (prescient-persist-mode +1))
 
 #+end_src
 
@@ -737,24 +799,6 @@ aaa -> (aaa)
   
 (with-eval-after-load 'vertico
   (define-key vertico-map (kbd "<backspace>") #'vertico-directory-delete-char))
-
-#+end_src
-
-** vertico + [[https://github.com/radian-software/prescient.el][prescient]]
-
-~vertico~ に ~prescient~ を適用させています。（[[https://github.com/minad/vertico/wiki#using-prescientel][参考]]）
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'prescient)
-
-(with-eval-after-load 'vertico
-  (require 'prescient)
-  (setq vertico-sort-function #'prescient-sort)
-  (advice-add #'vertico-insert :after
-              (lambda () (prescient-remember (vertico--candidate))))
-
-  (prescient-persist-mode +1))
 
 #+end_src
 
@@ -999,78 +1043,6 @@ vertico の候補等に様々なアクションを提供してくれます。
 (straight-use-package 'embark-consult)
 
 (add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
-
-#+end_src
-
-* [[https://github.com/jojojames/fussy][fussy]]
-
-~completion-styles~ を強化してくれるパッケージです。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'fussy)
-
-(require 'fussy)
-
-(push 'fussy completion-styles)
-(setq completion-category-defaults nil
-      completion-category-overrides nil)
-
-#+end_src
-
-** fussy-use-cache
-
-キャッシュを有効にします。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(setq fussy-use-cache t)
-
-#+end_src
-
-** fussy-filter-orderless
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'orderless)
-
-(with-eval-after-load 'fussy
-  (setq fussy-filter-fn #'fussy-filter-orderless-flex))
-
-(with-eval-after-load 'company
-  (defun just-one-face (fn &rest args)
-    (let ((orderless-match-faces [completions-common-part]))
-      (apply fn args)))
-
-  (advice-add 'company-capf--candidates :around #'just-one-face)
-
-  (defun j-company-capf (f &rest args)
-    "Manage `completion-styles'."
-    (if (length= company-prefix 2)
-        ;; Don't use `company' for 2 length prefixes.
-        (let ((completion-styles (remq 'fussy completion-styles)))
-          (apply f args))
-      (let ((fussy-max-candidate-limit 5000))
-        (apply f args))))
-
-  (advice-add 'company-auto-begin :before 'fussy-wipe-cache)
-  (advice-add 'company-capf :around 'j-company-capf))
-
-#+end_src
-
-** [[https://github.com/dangduc/fzf-native][fzf-native]]
-
-スコアリングに ~fzf-native~ を利用します。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package
- '(fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin")))
-
-(with-eval-after-load 'fussy
-  (setq fussy-score-fn #'fussy-fzf-native-score))
-
-(fzf-native-load-dyn)
 
 #+end_src
 
