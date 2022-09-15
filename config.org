@@ -770,8 +770,7 @@ aaa -> (aaa)
   
 (straight-use-package '(vertico :files (:defaults "extensions/*.el")))
 
-(setq vertico-count 24
-      vertico-cycle t)
+(setq vertico-cycle t)
 
 (vertico-mode +1)
 
