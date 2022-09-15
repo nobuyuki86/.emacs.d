@@ -607,7 +607,9 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
   
 (setq prescient-aggressive-file-save t
-      prescient-use-case-folding t)
+      prescient-sort-full-matches-first t
+      prescient-use-case-folding t
+      prescient-completion-enable-sort t)
 
 #+end_src
 
