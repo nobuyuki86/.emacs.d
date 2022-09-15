@@ -1212,7 +1212,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (straight-use-package 'undo-tree)
 
-(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree")))
+(setq undo-tree-auto-save-history nil)
 
 (with-eval-after-load 'evil
   (evil-set-undo-system 'undo-tree)
