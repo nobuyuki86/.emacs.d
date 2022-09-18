@@ -459,8 +459,6 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
       evil-symbol-word-search t
       evil-kill-on-visual-paste nil)
 
-(require 'evil)
-
 (with-eval-after-load 'evil
   (dolist (state '(normal visual insert))
     (evil-make-intercept-map
@@ -488,7 +486,7 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
     (kbd "SPC w") 'evil-window-next
     (kbd "SPC W") 'other-frame))
 
-(evil-mode +1)
+(add-hook 'after-init-hook 'evil-mode)
 
 #+end_src
 
@@ -586,9 +584,8 @@ aaa -> (aaa)
   
 (straight-use-package 'prescient)
 
-(require 'prescient)
-
-(prescient-persist-mode +1)
+(with-eval-after-load 'prescient
+  (prescient-persist-mode +1))
 
 #+end_src
 
@@ -607,19 +604,28 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
   
 (setq prescient-aggressive-file-save t
+      prescient-filter-method '(literal initialism prefix regexp)
+      prescient-use-char-folding t
+      prescient-use-case-folding 'smart
       prescient-sort-full-matches-first t
-      prescient-use-case-folding t
-      prescient-completion-enable-sort t)
+      prescient-sort-length-enable t)
 
 #+end_src
 
-~company~ は fuzzy に絞り込み
+~company~ 向けの設定
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'company-mode-hook
-          (lambda ()
-            (setq-local prescient-filter-method '(fuzzy))))
+(with-eval-after-load 'company
+  (defun j-company-capf (f &rest args)
+    "Manage `completion-styles'."
+    (if (length> company-prefix 3)
+        ;; Don't use `company' for 0 length prefixes.
+        (let ((prescient-filter-method '(fuzzy)))
+          (apply f args))
+      (let ((prescient-filter-method '(literal-prefix)))
+        (apply f args))))
+  (advice-add 'company-capf :around 'j-company-capf))
 
 #+end_src
 
@@ -633,7 +639,8 @@ aaa -> (aaa)
 (straight-use-package 'company-prescient)
 
 (with-eval-after-load 'company
-  (setq company-prescient-sort-length-enable nil)
+  (add-hook 'lsp-mode-hook
+            (lambda () (setq-local company-prescient-sort-length-enable nil)))
   (company-prescient-mode +1))
 
 #+end_src
@@ -646,8 +653,7 @@ aaa -> (aaa)
   
 (with-eval-after-load 'vertico
   (with-eval-after-load 'prescient
-    (require 'prescient)
-    (setq vertico-sort-function #'prescient-sort)
+    (setq vertico-sort-function #'prescient-completion-sort)
     (advice-add #'vertico-insert :after
                 (lambda () (prescient-remember (vertico--candidate))))))
 
@@ -662,6 +668,7 @@ aaa -> (aaa)
 (straight-use-package 'company)
 
 (setq company-minimum-prefix-length 1
+      company-idle-delay 0
       company-require-match nil
       company-tooltip-align-annotations t
       company-dabbrev-other-buffers nil
@@ -671,7 +678,7 @@ aaa -> (aaa)
 (global-set-key [remap indent-for-tab-command]  #'company-indent-or-complete-common)
 (global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
 
-(global-company-mode +1)
+(add-hook 'after-init-hook 'global-company-mode)
 
 #+end_src
 
@@ -754,10 +761,7 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-;; (straight-use-package '(company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
-(straight-use-package 'company-tabnine)
-
-(setq company-tabnine-no-continue t)
+(straight-use-package '(company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
 
 (with-eval-after-load 'company
   (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine company-dabbrev)))
@@ -774,7 +778,7 @@ aaa -> (aaa)
 
 (setq vertico-cycle t)
 
-(vertico-mode +1)
+(add-hook 'after-init-hook 'vertico-mode)
 
 #+end_src
 
@@ -809,40 +813,41 @@ README に記載されている標準機能の設定です。
 
 #+begin_src emacs-lisp :tangle yes
   
-;; Add prompt indicator to ~completing-read-multiple'.
-;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-(defun crm-indicator (args)
-  (cons (format "[CRM%s] %s"
-                (replace-regexp-in-string
-                 "\\~\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                 crm-separator)
-                (car args))
-        (cdr args)))
-(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-;; Do not allow the cursor in the minibuffer prompt
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-;; Vertico commands are hidden in normal buffers.
-(setq read-extended-command-predicate
-      #'command-completion-default-include-p)
-
-;; Enable recursive minibuffers
-(setq enable-recursive-minibuffers t)
-
 (with-eval-after-load 'vertico
-  (with-eval-after-load 'consult
-    ;; Use ~consult-completion-in-region' if Vertico is enabled.
-    ;; Otherwise use the default ~completion--in-region' function.
-    (setq completion-in-region-function
-          (lambda (&rest args)
-            (apply (if vertico-mode
-                       #'consult-completion-in-region
-                     #'completion--in-region)
-                   args)))))
+  ;; Add prompt indicator to ~completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\~\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  (setq read-extended-command-predicate
+        #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t)
+
+  (with-eval-after-load 'vertico
+    (with-eval-after-load 'consult
+      ;; Use ~consult-completion-in-region' if Vertico is enabled.
+      ;; Otherwise use the default ~completion--in-region' function.
+      (setq completion-in-region-function
+            (lambda (&rest args)
+              (apply (if vertico-mode
+                         #'consult-completion-in-region
+                       #'completion--in-region)
+                     args))))))
 
 #+end_src
 
@@ -853,8 +858,6 @@ README に記載されている標準機能の設定です。
 #+begin_src emacs-lisp :tangle yes
   
 (straight-use-package 'consult)
-
-(require 'consult)
 
 ;; Optionally configure the register formatting. This improves the register
 ;; preview for ~consult-register', ~consult-register-load',
@@ -1007,7 +1010,7 @@ README に記載されている標準機能の設定です。
   
 (straight-use-package 'marginalia)
 
-(marginalia-mode +1)
+(add-hook 'after-init-hook 'marginalia-mode)
 
 #+end_src
 
@@ -1055,7 +1058,7 @@ vertico の候補等に様々なアクションを提供してくれます。
   
 (straight-use-package 'yasnippet)
 
-(yas-global-mode +1)
+(add-hook 'after-init-hook 'yas-global-mode)
 
 #+end_src
 
@@ -1080,7 +1083,7 @@ vertico の候補等に様々なアクションを提供してくれます。
   
 (straight-use-package 'dtrt-indent)
 
-(dtrt-indent-global-mode +1)
+(add-hook 'after-init-hook 'dtrt-indent-global-mode)
 
 #+end_src
 
@@ -1098,7 +1101,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 (define-key search-map (kbd "s") #'ctrlf-forward-default)
 
-(ctrlf-mode +1)
+(add-hook 'after-init-hook 'ctrlf-mode)
 
 #+end_src
 
@@ -1118,7 +1121,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (straight-use-package 'diff-hl)
 
-(global-diff-hl-mode +1)
+(add-hook 'after-init-hook 'global-diff-hl-mode)
 
 #+end_src
 
@@ -1130,7 +1133,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (straight-use-package 'which-key)
 
-(which-key-mode +1)
+(add-hook 'after-init-hook 'which-key-mode)
 
 #+end_src
 
@@ -1149,7 +1152,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
     (evil-define-key 'normal my-intercept-mode-map
       (kbd "SPC p") `("projectile" . projectile-command-map))))
 
-(projectile-mode +1)
+(add-hook 'after-init-hook 'projectile-mode)
 
 #+end_src
 
@@ -1165,7 +1168,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 (define-key my-error-map (kbd "n") #'flycheck-next-error)
 (define-key my-error-map (kbd "p") #'flycheck-previous-error)
 
-(global-flycheck-mode +1)
+(add-hook 'after-init-hook 'global-flycheck-mode)
 
 #+end_src
 
@@ -1219,7 +1222,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   (evil-define-key 'normal my-intercept-mode-map
     (kbd "SPC u") 'undo-tree-visualize))
 
-(global-undo-tree-mode +1)
+(add-hook 'after-init-hook 'global-undo-tree-mode)
 
 #+end_src
 
@@ -1739,7 +1742,7 @@ Emacsを再起動してくれます。
 
 (setq beacon-color "red")
 
-(beacon-mode +1)
+(add-hook 'after-init-hook 'beacon-mode)
 
 #+end_src
 
@@ -1755,7 +1758,7 @@ Emacsを再起動してくれます。
       gcmh-auto-idle-delay-factor 10
       gcmh-high-cons-threshold (* 128 1024 1024))
 
-(gcmh-mode +1)
+(add-hook 'after-init-hook 'gcmh-mode)
 
 #+end_src
 
@@ -1785,7 +1788,7 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
   
 (straight-use-package 'volatile-highlights)
 
-(volatile-highlights-mode +1)
+(add-hook 'after-init-hook 'volatile-highlights-mode)
 
 #+end_src
 
@@ -1837,7 +1840,7 @@ Windows用の設定です。
   
 (straight-use-package 'tree-sitter)
 
-(global-tree-sitter-mode +1)
+(add-hook 'after-init-hook 'global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 #+end_src
