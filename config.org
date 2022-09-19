@@ -575,6 +575,58 @@ aaa -> (aaa)
 
 #+end_src
 
+* fussy
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'fussy)
+
+(setq completion-styles '(fussy)
+      completion-category-defaults nil
+      completion-category-overrides nil)
+
+#+end_src
+
+** filter
+
+#+begin_src emacs-lisp :tangle yes
+  
+(with-eval-after-load 'fussy
+  (setq fussy-filter-fn #'fussy-filter-orderless-flex)
+
+  (defun just-one-face (fn &rest args)
+    (let ((orderless-match-faces [completions-common-part]))
+      (apply fn args)))
+  (advice-add 'company-capf--candidates :around #'just-one-face))
+
+#+end_src
+
+** scoring
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package
+ '(fzf-native :type git :host github :repo "dangduc/fzf-native" :files (:defaults "bin")))
+
+(with-eval-after-load 'fussy
+  (setq fussy-score-fn #'fussy-fzf-native-score))
+
+(fzf-native-load-dyn)
+
+#+end_src
+
+** caching
+
+#+begin_src emacs-lisp :tangle yes
+  
+(with-eval-after-load 'fussy
+  (setq fussy-use-cache t)
+
+  (with-eval-after-load 'company
+    (advice-add 'company-auto-begin :before #'fussy-wipe-cache)))
+
+#+end_src
+
 * prescient
 
 ~prescient-persist-mode~ で履歴を永続的に保存
@@ -593,9 +645,9 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq completion-styles '(prescient basic)
-      completion-category-defaults nil
-      completion-category-overrides nil)
+;; (setq completion-styles '(prescient basic)
+;;       completion-category-defaults nil
+;;       completion-category-overrides nil)
 
 #+end_src
 
@@ -606,9 +658,9 @@ aaa -> (aaa)
 (setq prescient-aggressive-file-save t
       prescient-filter-method '(literal initialism prefix regexp)
       prescient-use-char-folding t
-      prescient-use-case-folding 'smart
+      prescient-use-case-folding t
       prescient-sort-full-matches-first t
-      prescient-sort-length-enable t)
+      prescient-sort-length-enable nil)
 
 #+end_src
 
@@ -653,7 +705,7 @@ aaa -> (aaa)
   
 (with-eval-after-load 'vertico
   (with-eval-after-load 'prescient
-    (setq vertico-sort-function #'prescient-completion-sort)
+    (setq vertico-sort-override-function #'prescient-sort)
     (advice-add #'vertico-insert :after
                 (lambda () (prescient-remember (vertico--candidate))))))
 
