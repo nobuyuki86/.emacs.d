@@ -591,6 +591,8 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
+(straight-use-package 'orderless)
+
 (with-eval-after-load 'fussy
   (setq fussy-filter-fn #'fussy-filter-orderless-flex)
 
