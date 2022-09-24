@@ -44,6 +44,9 @@
 (defvar my-org-map (make-sparse-keymap)
   "My error keymap.")
 
+(defvar my-string-inflection-map (make-sparse-keymap)
+  "My string-inflection keymap.")
+
 (define-key my-quit-map (kbd "q") #'save-buffers-kill-terminal)
 (define-key my-file-map (kbd "f") #'find-file)
 (define-key my-file-map (kbd "b") #'bookmark-jump)
@@ -493,6 +496,7 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
     (kbd "SPC e") `("error" . ,my-error-map)
     (kbd "SPC t") `("toggle" . ,my-toggle-map)
     (kbd "SPC o") `("org" . ,my-org-map)
+    (kbd "SPC c") `("string-inflection" . ,my-string-inflection-map)
     (kbd "SPC 5") `("C-x 5" . ,ctl-x-5-map)
     (kbd "SPC 0") 'delete-window
     (kbd "SPC 1") 'delete-other-windows
@@ -718,11 +722,12 @@ fussyの履歴の比較はしないように修正
 2. 頻度による並び替え
 3. fussyのスコアリングによる並び替え
 
-   #+begin_src emacs-lisp :tangle yes
-
+#+begin_src emacs-lisp :tangle yes
+  
 (setq prescient-sort-length-enable nil)
-     
-   #+end_src
+
+#+end_src
+
 * [[https://company-mode.github.io/][company]]
 
 入力補完用のパッケージです。
@@ -2087,6 +2092,22 @@ Windows用の設定です。
 (straight-use-package 'apheleia)
 
 (add-hook 'python-mode-hook 'apheleia-mode)
+
+#+end_src
+
+* string-inflection
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'string-inflection)
+
+(define-key my-string-inflection-map (kbd "a") #'string-inflection-all-cycle)
+(define-key my-string-inflection-map (kbd "_") #'string-inflection-underscore)
+(define-key my-string-inflection-map (kbd "p") #'string-inflection-pascal-case)
+(define-key my-string-inflection-map (kbd "c") #'string-inflection-camelcase)
+(define-key my-string-inflection-map (kbd "u") #'string-inflection-upcase)
+(define-key my-string-inflection-map (kbd "k") #'string-inflection-kebab-case)
+(define-key my-string-inflection-map (kbd "C") #'string-inflection-capital-underscore)
 
 #+end_src
 
