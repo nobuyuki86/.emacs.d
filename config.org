@@ -679,8 +679,7 @@ aaa -> (aaa)
       prescient-filter-method '(literal initialism regexp)
       prescient-use-char-folding t
       prescient-use-case-folding t
-      prescient-sort-full-matches-first nil
-      prescient-sort-length-enable nil)
+      prescient-sort-full-matches-first nil)
 
 #+end_src
 
@@ -732,12 +731,26 @@ aaa -> (aaa)
 
 ** fussy + prescient
 
+prescientで履歴の並び替えを行うので
+fussyの履歴の比較はしないように修正
+
 #+begin_src emacs-lisp :tangle yes
   
 (setq fussy-compare-same-score-fn nil)
 
 #+end_src
 
+下記のように並び替えたいので、長さによる並び替えを無効にします
+
+1. 履歴による並び替え
+2. 頻度による並び替え
+3. fussyのスコアリングによる並び替え
+
+   #+begin_src emacs-lisp :tangle yes
+
+(setq prescient-sort-length-enable nil)
+     
+   #+end_src
 * [[https://company-mode.github.io/][company]]
 
 入力補完用のパッケージです。
@@ -1573,7 +1586,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
               (green-alt-other-faint . "#20885c")
               (yellow . "#b06202")
               (yellow-alt . "#a95642")
-              (yellow-alt-other . "#(and )06f42")
+              (yellow-alt-other . "#a06f42")
               (yellow-faint . "#b07232")
               (yellow-alt-faint . "#a96642")
               (yellow-alt-other-faint . "#a08042")
@@ -1894,6 +1907,7 @@ Windows用の設定です。
 (straight-use-package 'alert-toast)
 
 (when (eq system-type 'windows-nt)
+  (require 'alert-toast)
   (setq alert-default-style 'toast))
 
 #+end_src
