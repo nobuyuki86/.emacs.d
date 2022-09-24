@@ -695,9 +695,10 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
   
 (with-eval-after-load 'vertico
-  (setq vertico-sort-override-function #'prescient-sort)
-  (advice-add #'vertico-insert :after
-              (lambda () (prescient-remember (vertico--candidate)))))
+  (with-eval-after-load 'prescient
+    (setq vertico-sort-override-function #'prescient-sort)
+    (advice-add #'vertico-insert :after
+                (lambda () (prescient-remember (vertico--candidate))))))
 
 #+end_src
 
@@ -1366,7 +1367,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
       ;; of padding and NATNUM), and a floating point for the height of
       ;; the text relative to the base font size (or a cons cell of
       ;; height and FLOAT)
-      modus-themes-mode-line '(accented borderless (padding . 4) (height . 0.9))
+      modus-themes-mode-line '(moody accented borderless (padding . 4) (height . 0.9))
 
       ;; Options for ~modus-themes-markup' are either nil, or a list
       ;; that can combine any of ~bold', ~italic', ~background',
