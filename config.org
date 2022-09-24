@@ -609,15 +609,21 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'orderless)
+(setq fussy-filter-fn #'fussy-filter-default)
 
-(with-eval-after-load 'fussy
-  (setq fussy-filter-fn #'fussy-filter-orderless-flex)
+(with-eval-after-load 'company
+  (defun j-company-capf (f &rest args)
+    "Manage `completion-styles'."
+    (if (length= company-prefix 0)
+        ;; Don't use `company' for 0 length prefixes.
+        (let ((completion-styles (remq 'fussy completion-styles)))
+          (apply f args))
+      (let ((fussy-max-candidate-limit 5000)
+            (fussy-default-regex-fn 'fussy-pattern-first-letter)
+            (fussy-prefer-prefix nil))
+        (apply f args))))
 
-  (defun just-one-face (fn &rest args)
-    (let ((orderless-match-faces [completions-common-part]))
-      (apply fn args)))
-  (advice-add 'company-capf--candidates :around #'just-one-face))
+  (advice-add 'company-capf :around 'j-company-capf))
 
 #+end_src
 
@@ -625,13 +631,7 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package
- '(fzf-native :type git :host github :repo "dangduc/fzf-native" :files (:defaults "bin")))
-
-(with-eval-after-load 'fussy
-  (setq fussy-score-fn #'fussy-fzf-native-score))
-
-(fzf-native-load-dyn)
+(setq fussy-score-fn #'flx-score)
 
 #+end_src
 
@@ -676,17 +676,17 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
   
 (setq prescient-aggressive-file-save t
-      prescient-filter-method '(literal initialism prefix regexp)
+      prescient-filter-method '(literal initialism regexp)
       prescient-use-char-folding t
       prescient-use-case-folding t
-      prescient-sort-full-matches-first t
+      prescient-sort-full-matches-first nil
       prescient-sort-length-enable nil)
 
 #+end_src
 
 ~company~ 向けの設定
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
   
 (with-eval-after-load 'company
   (defun j-company-capf (f &rest args)
@@ -711,8 +711,7 @@ aaa -> (aaa)
 (straight-use-package 'company-prescient)
 
 (with-eval-after-load 'company
-  (add-hook 'lsp-mode-hook
-            (lambda () (setq-local company-prescient-sort-length-enable nil)))
+  (setq company-prescient-sort-length-enable nil)
   (company-prescient-mode +1))
 
 #+end_src
@@ -728,6 +727,14 @@ aaa -> (aaa)
     (setq vertico-sort-override-function #'prescient-sort)
     (advice-add #'vertico-insert :after
                 (lambda () (prescient-remember (vertico--candidate))))))
+
+#+end_src
+
+** fussy + prescient
+
+#+begin_src emacs-lisp :tangle yes
+  
+(setq fussy-compare-same-score-fn nil)
 
 #+end_src
 
