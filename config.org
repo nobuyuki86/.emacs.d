@@ -125,14 +125,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** org-indent
-
-#+begin_src emacs-lisp :tangle no
-  
-(add-hook 'org-mode-hook 'org-indent-mode)
-
-#+end_src
-
 ** org-modern
 
 #+begin_src emacs-lisp :tangle yes
@@ -303,7 +295,12 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   
 (set-language-environment "Japanese")
 
+(prefer-coding-system 'utf-8)
+
 (when (eq system-type 'windows-nt)
+  (set-file-name-coding-system 'cp932)
+  (set-keyboard-coding-system 'cp932)
+  (set-terminal-coding-system 'cp932)
   (set-terminal-coding-system 'utf-8-dos))
 
 #+end_src
@@ -476,6 +473,8 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 (setq evil-want-keybinding nil
       evil-symbol-word-search t
       evil-kill-on-visual-paste nil)
+
+(require 'evil)
 
 (with-eval-after-load 'evil
   (dolist (state '(normal visual insert))
@@ -923,6 +922,8 @@ README に記載されている標準機能の設定です。
 #+begin_src emacs-lisp :tangle yes
   
 (straight-use-package 'consult)
+
+(require 'consult)
 
 ;; Optionally configure the register formatting. This improves the register
 ;; preview for ~consult-register', ~consult-register-load',
