@@ -127,7 +127,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 ** org-indent
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
   
 (add-hook 'org-mode-hook 'org-indent-mode)
 
@@ -656,18 +656,9 @@ aaa -> (aaa)
   
 (straight-use-package 'prescient)
 
-(with-eval-after-load 'prescient
-  (prescient-persist-mode +1))
+(require 'prescient)
 
-#+end_src
-
-~compleion-styles~ に設定する
-
-#+begin_src emacs-lisp :tangle yes
-  
-;; (setq completion-styles '(prescient basic)
-;;       completion-category-defaults nil
-;;       completion-category-overrides nil)
+(prescient-persist-mode +1)
 
 #+end_src
 
@@ -683,27 +674,9 @@ aaa -> (aaa)
 
 #+end_src
 
-~company~ 向けの設定
-
-#+begin_src emacs-lisp :tangle no
-  
-(with-eval-after-load 'company
-  (defun j-company-capf (f &rest args)
-    "Manage `completion-styles'."
-    (if (length> company-prefix 3)
-        ;; Don't use `company' for 0 length prefixes.
-        (let ((prescient-filter-method '(fuzzy)))
-          (apply f args))
-      (let ((prescient-filter-method '(literal-prefix)))
-        (apply f args))))
-  (advice-add 'company-capf :around 'j-company-capf))
-
-#+end_src
-
 ** [[https://github.com/radian-software/prescient.el][company-prescient]]
 
 ~prescient~ だけでは ~company~ の履歴が保存できないので、~company-prescient~ を導入します。
-長さによる並び替えは ~lsp-mode~ と相性が悪いので無効化しています。
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -722,10 +695,9 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
   
 (with-eval-after-load 'vertico
-  (with-eval-after-load 'prescient
-    (setq vertico-sort-override-function #'prescient-sort)
-    (advice-add #'vertico-insert :after
-                (lambda () (prescient-remember (vertico--candidate))))))
+  (setq vertico-sort-override-function #'prescient-sort)
+  (advice-add #'vertico-insert :after
+              (lambda () (prescient-remember (vertico--candidate)))))
 
 #+end_src
 
