@@ -617,14 +617,10 @@ aaa -> (aaa)
 (with-eval-after-load 'company
   (defun j-company-capf (f &rest args)
     "Manage `completion-styles'."
-    (if (length= company-prefix 0)
-        ;; Don't use `company' for 0 length prefixes.
-        (let ((completion-styles (remq 'fussy completion-styles)))
-          (apply f args))
-      (let ((fussy-max-candidate-limit 5000)
-            (fussy-default-regex-fn 'fussy-pattern-first-letter)
-            (fussy-prefer-prefix nil))
-        (apply f args))))
+    (let ((fussy-max-candidate-limit 5000)
+          (fussy-default-regex-fn 'fussy-pattern-first-letter)
+          (fussy-prefer-prefix nil))
+      (apply f args)))
 
   (advice-add 'company-capf :around 'j-company-capf))
 
@@ -634,7 +630,13 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-score-fn #'flx-score)
+(straight-use-package
+ '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
+
+(setq fussy-score-fn #'fussy-fuz-bin-score
+      fussy-fuz-use-skim-p nil)
+
+(fuz-bin-load-dyn)
 
 #+end_src
 
@@ -659,7 +661,6 @@ aaa -> (aaa)
 (straight-use-package 'prescient)
 
 (require 'prescient)
-
 (prescient-persist-mode +1)
 
 #+end_src
