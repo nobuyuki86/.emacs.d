@@ -148,6 +148,45 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
+** denote
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'denote)
+
+(require 'denote)
+
+(setq denote-directory org-directory
+      denote-infer-keywords t
+      denote-sort-keywords t
+      denote-file-type nil
+      denote-prompts '(title keywords)
+      denote-date-prompt-use-org-read-date t
+      denote-allow-multi-word-keywords t
+      denote-date-format nil
+      denote-link-fontify-backlinks t)
+
+(add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
+
+(with-eval-after-load 'evil
+  (evil-define-key '(normal visual) my-intercept-mode-map
+    (kbd "SPC d") #'denote))
+
+#+end_src
+
+*** consult-notes
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'consult-notes)
+
+(setq consult-notes-sources
+      `(("Notes" ?n ,denote-directory)))
+
+(define-key my-file-map (kbd "n") #'consult-notes)
+
+#+end_src
+
 * Emacs標準機能の設定
 
 ** 補完時に大文字小文字を区別しない
@@ -614,17 +653,7 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-filter-fn #'fussy-filter-default)
-
-(with-eval-after-load 'company
-  (defun j-company-capf (f &rest args)
-    "Manage `completion-styles'."
-    (let ((fussy-max-candidate-limit 5000)
-          (fussy-default-regex-fn 'fussy-pattern-first-letter)
-          (fussy-prefer-prefix nil))
-      (apply f args)))
-
-  (advice-add 'company-capf :around 'j-company-capf))
+(setq fussy-filter-fn #'fussy-filter-flex)
 
 #+end_src
 
@@ -632,13 +661,7 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package
- '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
-
-(setq fussy-score-fn #'fussy-fuz-bin-score
-      fussy-fuz-use-skim-p nil)
-
-(fuz-bin-load-dyn)
+(setq fussy-score-fn #'flx-score)
 
 #+end_src
 
@@ -663,6 +686,7 @@ aaa -> (aaa)
 (straight-use-package 'prescient)
 
 (require 'prescient)
+
 (prescient-persist-mode +1)
 
 #+end_src
@@ -688,7 +712,6 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
   
 (with-eval-after-load 'vertico
-  ;; Use `prescient-completion-sort' after filtering.
   (setq vertico-sort-override-function #'prescient-sort)
 
   (defun vertico-prescient-remember ()
