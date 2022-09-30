@@ -183,7 +183,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 (setq consult-notes-sources
       `(("Notes" ?n ,denote-directory)))
 
-(define-key my-file-map (kbd "n") #'consult-notes)
+(with-eval-after-load 'evil
+  (evil-define-key '(normal visual) my-intercept-mode-map
+    (kbd "SPC n") #'consult-notes))
 
 #+end_src
 
