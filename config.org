@@ -602,6 +602,8 @@ aaa -> (aaa)
   
 (straight-use-package 'fussy)
 
+(require 'fussy)
+
 (setq completion-styles '(fussy)
       completion-category-defaults nil
       completion-category-overrides nil)
