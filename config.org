@@ -655,7 +655,17 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-filter-fn #'fussy-filter-flex)
+(setq fussy-filter-fn #'fussy-filter-default)
+
+(with-eval-after-load 'company
+  (defun j-company-capf (f &rest args)
+    "Manage `completion-styles'."
+    (let ((fussy-max-candidate-limit 5000)
+          (fussy-default-regex-fn 'fussy-pattern-first-letter)
+          (fussy-prefer-prefix nil))
+      (apply f args)))
+
+  (advice-add 'company-capf :around 'j-company-capf))
 
 #+end_src
 
@@ -663,7 +673,12 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-score-fn #'flx-score)
+(straight-use-package
+ '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
+
+(setq fussy-score-fn #'fussy-fuz-bin-score)
+
+(fuz-bin-load-dyn)
 
 #+end_src
 
@@ -1766,6 +1781,14 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (modus-themes-summertime)
 (modus-themes-load-vivendi)
+
+#+end_src
+
+** spacemacs-theme
+
+#+begin_src emacs-lisp :tangle yes
+
+  (straight-use-package 'spacemacs-theme)
 
 #+end_src
 
