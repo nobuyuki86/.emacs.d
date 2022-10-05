@@ -1780,15 +1780,17 @@ Emacs上でGitを快適に操作できるようにしてくれます。
           modus-themes-vivendi-color-overrides nil)))
 
 (modus-themes-summertime)
-(modus-themes-load-vivendi)
+;; (modus-themes-load-vivendi)
 
 #+end_src
 
 ** spacemacs-theme
 
 #+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'spacemacs-theme)
 
-  (straight-use-package 'spacemacs-theme)
+(load-theme 'spacemacs-dark t)
 
 #+end_src
 
