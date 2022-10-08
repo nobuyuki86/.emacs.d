@@ -680,7 +680,8 @@ aaa -> (aaa)
 (straight-use-package
  '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
 
-(setq fussy-score-fn #'fussy-fuz-bin-score)
+(setq fussy-score-fn #'fussy-fuz-bin-score
+      fussy-fuz-use-skim-p nil)
 
 (fuz-bin-load-dyn)
 
@@ -752,7 +753,7 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-compare-same-score-fn nil)
+(setq fussy-compare-same-score-fn #'fussy-strlen<)
 
 #+end_src
 
