@@ -467,29 +467,6 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 * modeline
 
-** [[https://github.com/tarsius/moody][moody]]
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'moody)
-
-(setq x-underline-at-descent-line t)
-(moody-replace-mode-line-buffer-identification)
-(moody-replace-vc-mode)
-(moody-replace-eldoc-minibuffer-message-function)
-
-#+end_src
-
-** [[https://github.com/tarsius/minions][minions]]
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'minions)
-
-(minions-mode +1)
-
-#+end_src
-
 ** [[https://github.com/TeMPOraL/nyan-mode][nyan-mode]]
 
 バッファー上での位置をニャンキャットが教えてくれるパッケージです。
@@ -503,6 +480,33 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
       nyan-bar-length 24)
 
 (nyan-mode +1)
+
+#+end_src
+
+** spaceline
+
+#+begin_src emacs-lisp :tangle yes
+
+(straight-use-package 'spaceline)
+
+(require 'spaceline)
+(require 'spaceline-config)
+
+(setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+
+(spaceline-toggle-evil-state-on)
+(spaceline-toggle-anzu-on)
+(spaceline-toggle-nyan-cat-on)
+(spaceline-toggle-which-function-on)
+(spaceline-toggle-buffer-encoding-on)
+
+(spaceline-toggle-buffer-size-off)
+(spaceline-toggle-minor-modes-off)
+(spaceline-toggle-hud-off)
+(spaceline-toggle-buffer-encoding-abbrev-off)
+(spaceline-toggle-buffer-position-off)
+
+(spaceline-spacemacs-theme)
 
 #+end_src
 
