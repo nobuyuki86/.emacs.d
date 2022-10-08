@@ -2188,6 +2188,7 @@ EmacsでLSP機能が利用できるようになります。
 (add-hook 'css-mode-hook #'lsp)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'nxml-mode-hook #'lsp)
+(add-hook 'js-mode-hook #'lsp)
 
 #+end_src
 
