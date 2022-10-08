@@ -2425,6 +2425,16 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
+** sql
+
+#+begin_src emacs-lisp :tangle yes
+  
+(straight-use-package 'sqlformat)
+
+(setq sqlformat-command "sqlfluff")
+
+#+end_src
+
 * footer
 
 #+begin_src emacs-lisp :tangle yes
