@@ -522,8 +522,6 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
       evil-symbol-word-search t
       evil-kill-on-visual-paste nil)
 
-(require 'evil)
-
 (with-eval-after-load 'evil
   (dolist (state '(normal visual insert))
     (evil-make-intercept-map
@@ -659,7 +657,8 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-filter-fn #'fussy-filter-default)
+(setq fussy-filter-fn #'fussy-filter-default
+      fussy-default-regex-fn #'fussy-pattern-flex-2)
 
 (with-eval-after-load 'company
   (defun j-company-capf (f &rest args)
@@ -680,8 +679,8 @@ aaa -> (aaa)
 (straight-use-package
  '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
 
-(setq fussy-score-fn #'fussy-fuz-bin-score
-      fussy-fuz-use-skim-p nil)
+(with-eval-after-load 'fussy
+  (setq fussy-score-fn #'fussy-fuz-bin-score))
 
 (fuz-bin-load-dyn)
 
@@ -708,6 +707,8 @@ aaa -> (aaa)
 (straight-use-package 'prescient)
 
 (require 'prescient)
+
+(setq prescient-aggressive-file-save t)
 
 (prescient-persist-mode +1)
 
@@ -753,7 +754,7 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-compare-same-score-fn #'fussy-strlen<)
+(setq fussy-compare-same-score-fn nil)
 
 #+end_src
 
@@ -769,7 +770,7 @@ fussyの履歴の比較はしないように修正
 
 #+end_src
 
-* [[https://company-mode.github.io/][company]]
+* company
 
 入力補完用のパッケージです。
 
@@ -968,8 +969,6 @@ README に記載されている標準機能の設定です。
 #+begin_src emacs-lisp :tangle yes
   
 (straight-use-package 'consult)
-
-(require 'consult)
 
 ;; Optionally configure the register formatting. This improves the register
 ;; preview for ~consult-register', ~consult-register-load',
