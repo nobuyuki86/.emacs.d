@@ -754,7 +754,7 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq fussy-compare-same-score-fn nil)
+(setq fussy-compare-same-score-fn #'fussy-strlen<)
 
 #+end_src
 
