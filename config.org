@@ -843,6 +843,8 @@ fussyの履歴の比較はしないように修正
   (add-to-list 'company-frontends 'company-dwim-frontend t)
   (delq 'company-preview-if-just-one-frontend company-frontends)
 
+  (global-set-key [remap company-select-next] #'company-dwim-select-next)
+  (global-set-key [remap company-select-previous] #'company-dwim-select-previous)
   (define-key company-active-map (kbd "RET")       #'company-dwim-complete-or-newline)
   (define-key company-active-map (kbd "<return>")  #'company-dwim-complete-or-newline)
   (define-key company-active-map (kbd "TAB")       #'company-dwim-select-next)
