@@ -516,26 +516,14 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
-** spaceline
+** doom-modeline
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package spaceline
+(use-package doom-modeline
   :straight t
-  :custom (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  :config
-  (require 'spaceline-config)
-  (spaceline-toggle-evil-state-on)
-  (spaceline-toggle-anzu-on)
-  (spaceline-toggle-nyan-cat-on)
-  (spaceline-toggle-which-function-on)
-  (spaceline-toggle-buffer-encoding-on)
-  (spaceline-toggle-buffer-size-off)
-  (spaceline-toggle-minor-modes-off)
-  (spaceline-toggle-hud-off)
-  (spaceline-toggle-buffer-encoding-abbrev-off)
-  (spaceline-toggle-buffer-position-off)
-  (spaceline-spacemacs-theme))
+  :init
+  (doom-modeline-mode +1))
 
 #+end_src
 
