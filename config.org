@@ -5,9 +5,9 @@
 
 #+begin_src emacs-lisp :tangle yes
   
-;;; package --- Summary
-;;; Commentary:
-;;; Code:
+  ;;; package --- Summary
+  ;;; Commentary:
+  ;;; Code:
 
 #+end_src
 
@@ -17,42 +17,42 @@
 
 #+begin_src emacs-lisp :tangle yes
   
-(defvar my-intercept-mode-map (make-sparse-keymap)
-  "High precedence keymap.")
+  (defvar my-intercept-mode-map (make-sparse-keymap)
+    "High precedence keymap.")
 
-(define-minor-mode my-intercept-mode
-  "Global minor mode for higher precedence evil keybindings."
-  :global t)
+  (define-minor-mode my-intercept-mode
+    "Global minor mode for higher precedence evil keybindings."
+    :global t)
 
-(my-intercept-mode)
+  (my-intercept-mode)
 
-(defvar my-quit-map (make-sparse-keymap)
-  "My quit keymap.")
+  (defvar my-quit-map (make-sparse-keymap)
+    "My quit keymap.")
 
-(defvar my-file-map (make-sparse-keymap)
-  "My file keymap.")
+  (defvar my-file-map (make-sparse-keymap)
+    "My file keymap.")
 
-(defvar my-buffer-map (make-sparse-keymap)
-  "My buffer keymap.")
+  (defvar my-buffer-map (make-sparse-keymap)
+    "My buffer keymap.")
 
-(defvar my-error-map (make-sparse-keymap)
-  "My error keymap.")
+  (defvar my-error-map (make-sparse-keymap)
+    "My error keymap.")
 
-(defvar my-toggle-map (make-sparse-keymap)
-  "My toggle keymap.")
+  (defvar my-toggle-map (make-sparse-keymap)
+    "My toggle keymap.")
 
-(defvar my-org-map (make-sparse-keymap)
-  "My error keymap.")
+  (defvar my-org-map (make-sparse-keymap)
+    "My error keymap.")
 
-(defvar my-string-inflection-map (make-sparse-keymap)
-  "My string-inflection keymap.")
+  (defvar my-string-inflection-map (make-sparse-keymap)
+    "My string-inflection keymap.")
 
-(define-key my-quit-map (kbd "q") #'save-buffers-kill-terminal)
-(define-key my-file-map (kbd "f") #'find-file)
-(define-key my-file-map (kbd "b") #'bookmark-jump)
-(define-key my-buffer-map (kbd "b") #'switch-to-buffer)
-(define-key my-buffer-map (kbd "d") #'kill-this-buffer)
-(define-key my-buffer-map (kbd "p") #'project-switch-to-buffer)
+  (define-key my-quit-map (kbd "q") #'save-buffers-kill-terminal)
+  (define-key my-file-map (kbd "f") #'find-file)
+  (define-key my-file-map (kbd "b") #'bookmark-jump)
+  (define-key my-buffer-map (kbd "b") #'switch-to-buffer)
+  (define-key my-buffer-map (kbd "d") #'kill-this-buffer)
+  (define-key my-buffer-map (kbd "p") #'project-switch-to-buffer)
 
 #+end_src
 
@@ -69,22 +69,36 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 | straight-freeze-versions | ロックファイルを作成                                                       |
 | straight-thaw-versions   | ロックファイルのバージョンでインストールックファイルのバージョンでインストール |
 
+* use-package
+
+#+begin_src emacs-lisp :tangle yes
+
+  (straight-use-package 'use-package)
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+
+  (use-package bind-key
+    :straight t)
+
+#+end_src
+
 * org
 
 ~org-mode~ に関する基本的な設定をしています。
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq org-tag-alist '(("Sample Tag1" . nil)
-                      ("Sample Tag2" . nil))
-      org-directory "~/org/"
-      org-default-notes-file (concat org-directory "/notes.org")
-      org-startup-folded 'content
-      org-fold-core-style 'overlays)
-
-(define-key my-org-map (kbd "o") #'org-open-at-point)
-(define-key my-org-map (kbd "l") #'org-link)
-(define-key my-org-map (kbd "e") #'org-edit-special)
+(use-package org
+  :custom ((org-directory "~/org/")
+	   (org-startup-folded 'content)
+	   (org-fold-core-style 'overlays))
+  :bind (nil
+	 :map my-org-map
+	 ("o" . org-open-at-point)
+	 ("l" . org-link)
+	 ("e" . org-edit-special)))
 
 #+end_src
 
@@ -93,13 +107,15 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 ~org-capture~ のテンプレートやキーバインドを設定しています。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(setq org-capture-templates '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
-                               "* TODO %?\n  %i\n  %a")
-                              ("j" "Journal" entry (file+datetree "~/org/journal.org")
-                               "* %?\nEntered on %U\n  %i\n  %a")))
 
-(define-key my-org-map (kbd "c") #'org-capture)
+  (use-package org-capture
+    :custom (org-capture-templates '(("t" "Todo" entry (file+headline "~/org/notes.org" "Tasks")
+				      "* TODO %?\n  %i\n  %a")
+				     ("j" "Journal" entry (file+datetree "~/org/journal.org")
+				      "* %?\nEntered on %U\n  %i\n  %a")))
+    :bind (nil
+	   :map my-org-map
+	   ("c" . org-capture)))
 
 #+end_src
 
@@ -110,10 +126,12 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(define-key my-org-map (kbd "a") #'org-agenda)
+(use-package org-agenda
+  :custom (org-agenda-files (directory-files org-directory))
+  :bind (nil
+	 :map my-org-map
+	 ("a" . org-agenda)))
 
-(add-hook 'org-agenda-mode-hook (lambda ()
-                                  (setq org-agenda-files (directory-files org-directory))))
 #+end_src
 
 ** [[https://github.com/marcinkoziej/org-pomodoro][org-pomodoro]]
@@ -122,19 +140,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'org-pomodoro)
-
-(define-key my-org-map (kbd "p") #'org-pomodoro)
-
-#+end_src
-
-** org-modern
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'org-modern)
-
-(global-org-modern-mode +1)
+(use-package org-pomodoro
+  :straight t
+  :bind (nil
+	 :map my-org-map
+	 ("p" . org-pomodoro)))
 
 #+end_src
 
@@ -142,9 +152,8 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'ox-qmd)
-
-(require 'ox-qmd)
+(use-package ox-qmd
+  :straight t)
 
 #+end_src
 
@@ -152,40 +161,38 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'denote)
-
-(require 'denote)
-
-(setq denote-directory org-directory
-      denote-infer-keywords t
-      denote-sort-keywords t
-      denote-file-type nil
-      denote-prompts '(title keywords)
-      denote-date-prompt-use-org-read-date t
-      denote-allow-multi-word-keywords t
-      denote-date-format nil
-      denote-link-fontify-backlinks t)
-
-(add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
-
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) my-intercept-mode-map
-    (kbd "SPC d") #'denote))
+(use-package denote
+  :straight t
+  :demand t
+  :custom ((denote-directory org-directory)
+	   (denote-infer-keywords t)
+	   (denote-sort-keywords t)
+	   (denote-file-type nil)
+	   (denote-prompts '(title keywords))
+	   (denote-date-prompt-use-org-read-date t)
+	   (denote-allow-multi-word-keywords t)
+	   (denote-date-format nil)
+	   (denote-link-fontify-backlinks t))
+  :hook (dired-mode . denote-dired-mode-in-directories)
+  :init
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) my-intercept-mode-map
+      (kbd "SPC d") #'denote)))
 
 #+end_src
 
 *** consult-notes
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'consult-notes)
 
-(setq consult-notes-sources
-      `(("Notes" ?n ,denote-directory)))
-
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) my-intercept-mode-map
-    (kbd "SPC n") #'consult-notes))
+  (use-package consult-notes
+    :straight t
+    :after consult
+    :custom (consult-notes-sources `(("Notes" ?n ,denote-directory)))
+    :init
+    (with-eval-after-load 'evil
+      (evil-define-key '(normal visual) my-intercept-mode-map
+	(kbd "SPC n") #'consult-notes)))
 
 #+end_src
 
@@ -195,9 +202,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq read-file-name-completion-ignore-case t
-      read-buffer-completion-ignore-case t
-      completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t
+	read-buffer-completion-ignore-case t
+	completion-ignore-case t)
 
 #+end_src
 
@@ -205,25 +212,19 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq use-short-answers t)
+  (setq use-short-answers t)
 
 #+end_src
 
-** バックアップファイルを作成しない
+** バックアップファイル・自動保存を無効化
 
 ~lsp-mode~ と相性が悪いみたいなので無効化。
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq make-backup-files nil)
-
-#+end_src
-
-** 自動保存しない
-
-#+begin_src emacs-lisp :tangle yes
-  
-(setq auto-save-default nil)
+(use-package files
+  :custom ((make-backup-files nil)
+	   (auto-save-default nil)))
 
 #+end_src
 
@@ -233,7 +234,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(server-mode +1)
+(use-package server
+  :init
+  (server-mode +1))
 
 #+end_src
 
@@ -241,7 +244,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(savehist-mode +1)
+(use-package savehist
+  :init
+  (savehist-mode +1))
 
 #+end_src
 
@@ -249,7 +254,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(save-place-mode +1)
+(use-package saveplace
+  :init
+  (save-place-mode +1))
 
 #+end_src
 
@@ -257,9 +264,10 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq recentf-max-saved-items 200)
-
-(recentf-mode +1)
+(use-package recentf
+  :custom (recentf-max-saved-items 200)
+  :init
+  (recentf-mode +1))
 
 #+end_src
 
@@ -267,7 +275,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(show-paren-mode +1)
+(use-package paren
+  :init
+  (show-paren-mode +1))
 
 #+end_src
 
@@ -275,7 +285,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(electric-pair-mode +1)
+(use-package elec-pair
+  :init
+  (electric-pair-mode +1))
 
 #+end_src
 
@@ -283,7 +295,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(global-hl-line-mode +1)
+(use-package hl-line
+  :init
+  (global-hl-line-mode +1))
 
 #+end_src
 
@@ -291,7 +305,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(global-auto-revert-mode +1)
+(use-package autorevert
+  :init
+  (global-auto-revert-mode +1))
 
 #+end_src
 
@@ -299,21 +315,29 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(global-display-line-numbers-mode +1)
+(use-package display-line-numbers
+  :init
+  (global-display-line-numbers-mode +1))
 
 #+end_src
 
 ** カーソル上の関数名等をモードラインに表示
 
 #+begin_src emacs-lisp :tangle yes
-  (which-function-mode +1)
+  
+(use-package which-func
+  :init
+  (which-function-mode +1))
+
 #+end_src
 
 ** メニューバーを無効化
 
 #+begin_src emacs-lisp :tangle yes
   
-(menu-bar-mode -1)
+(use-package menu-bar
+  :init
+  (menu-bar-mode -1))
 
 #+end_src
 
@@ -321,7 +345,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(tool-bar-mode -1)
+(use-package tool-bar
+  :init
+  (tool-bar-mode -1))
 
 #+end_src
 
@@ -329,7 +355,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(scroll-bar-mode -1)
+(use-package scroll-bar
+  :init
+  (scroll-bar-mode -1))
 
 #+end_src
 
@@ -337,15 +365,17 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(set-language-environment "Japanese")
+(use-package mule
+  :config
+  (set-language-environment "Japanese")
+  (prefer-coding-system 'utf-8))
 
-(prefer-coding-system 'utf-8)
-
-(when (eq system-type 'windows-nt)
+(use-package mule
+  :if (eq system-type 'windows-nt)
+  :config
   (set-file-name-coding-system 'cp932)
   (set-keyboard-coding-system 'cp932)
-  (set-terminal-coding-system 'cp932)
-  (set-terminal-coding-system 'utf-8-dos))
+  (set-terminal-coding-system 'cp932))
 
 #+end_src
 
@@ -353,10 +383,13 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(set-coding-system-priority 'utf-8
-                            'euc-jp
-                            'iso-2022-jp
-                            'cp932)
+(use-package coding
+  :if (eq system-type 'windows-nt)
+  :init
+  (set-coding-system-priority 'utf-8
+			      'euc-jp
+			      'iso-2022-jp
+			      'cp932))
 
 #+end_src
 
@@ -366,12 +399,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 ~highlight-indent-guides~ と相性が悪いのでタブは可視化していません。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'whitespace)
 
-(setq whitespace-style '(face trailing))
-
-(global-whitespace-mode +1)
+  (use-package whitespace
+    :custom (whitespace-style '(face trailing))
+    :init
+    (global-whitespace-mode +1))
 
 #+end_src
 
@@ -384,10 +416,11 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'tr-ime)
-
-(when (eq system-type 'windows-nt)
-  (setq default-input-method "W32-IME")
+(use-package tr-ime
+  :straight t
+  :if (eq system-type 'windows-nt)
+  :custom (default-input-method "W32-IME")
+  :init
   (tr-ime-standard-install)
   (w32-ime-initialize))
 
@@ -411,10 +444,10 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'mozc)
-
-(when (eq system-type 'gnu/linux)
-  (setq default-input-method "japanese-mozc"))
+(use-package mozc
+  :straight t
+  :if (eq system-type 'gnu/linux)
+  :custom (default-input-method "japanese-mozc"))
 
 #+end_src
 
@@ -424,44 +457,44 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'fontaine)
+(use-package fontaine
+  :straight t
+  :demand t
+  :hook (kill-emacs . fontaine-store-latest-preset)
+  :init
+  (cond ((eq system-type 'gnu/linux)
+	 (setq fontaine-presets
+	       '((regular
+		  :default-family "VLゴシック"
+		  :default-height 100
+		  :fixed-pitch-family "VLゴシック"
+		  :variable-pitch-family "VLPゴシック"
+		  :italic-family "VLゴシック"
+		  :line-spacing 1)
+		 (large
+		  :default-family "VLゴシック"
+		  :default-height 150
+		  :variable-pitch-family "VLPゴシック"
+		  :line-spacing 1))))
 
-(cond ((eq system-type 'gnu/linux)
-       (setq fontaine-presets
-             '((regular
-                :default-family "VLゴシック"
-                :default-height 100
-                :fixed-pitch-family "VLゴシック"
-                :variable-pitch-family "VLPゴシック"
-                :italic-family "VLゴシック"
-                :line-spacing 1)
-               (large
-                :default-family "VLゴシック"
-                :default-height 150
-                :variable-pitch-family "VLPゴシック"
-                :line-spacing 1))))
+	((eq system-type 'windows-nt)
+	 (setq fontaine-presets
+	       '((regular
+		  :default-family "BIZ UDゴシック"
+		  :default-height 100
+		  :fixed-pitch-family "BIZ UDゴシック"
+		  :variable-pitch-family "BIZ UDPゴシック"
+		  :italic-family "BIZ UDゴシック"
+		  :line-spacing 1)
+		 (large
+		  :default-family "BIZ UDゴシック"
+		  :default-height 150
+		  :variable-pitch-family "BIZ UDPゴシック"
+		  :line-spacing 1)))))
 
-      ((eq system-type 'windows-nt)
-       (setq fontaine-presets
-             '((regular
-                :default-family "BIZ UDゴシック"
-                :default-height 100
-                :fixed-pitch-family "BIZ UDゴシック"
-                :variable-pitch-family "BIZ UDPゴシック"
-                :italic-family "BIZ UDゴシック"
-                :line-spacing 1)
-               (large
-                :default-family "BIZ UDゴシック"
-                :default-height 150
-                :variable-pitch-family "BIZ UDPゴシック"
-                :line-spacing 1)))))
-
-;; Recover last preset or fall back to desired style from
-;; ~fontaine-presets'.
-(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
-
-;; The other side of ~fontaine-restore-latest-preset'.
-(add-hook 'kill-emacs-hook 'fontaine-store-latest-preset)
+  ;; Recover last preset or fall back to desired style from
+  ;; ~fontaine-presets'.
+  (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular)))
 
 #+end_src
 
@@ -474,39 +507,35 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'nyan-mode)
-
-(setq nyan-animate-nyancat t
-      nyan-bar-length 24)
-
-(nyan-mode +1)
+(use-package nyan-mode
+  :straight t
+  :custom ((nyan-animate-nyancat t)
+	   (nyan-bar-length 24))
+  :init
+  (nyan-mode +1))
 
 #+end_src
 
 ** spaceline
 
 #+begin_src emacs-lisp :tangle yes
-
-(straight-use-package 'spaceline)
-
-(require 'spaceline)
-(require 'spaceline-config)
-
-(setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-
-(spaceline-toggle-evil-state-on)
-(spaceline-toggle-anzu-on)
-(spaceline-toggle-nyan-cat-on)
-(spaceline-toggle-which-function-on)
-(spaceline-toggle-buffer-encoding-on)
-
-(spaceline-toggle-buffer-size-off)
-(spaceline-toggle-minor-modes-off)
-(spaceline-toggle-hud-off)
-(spaceline-toggle-buffer-encoding-abbrev-off)
-(spaceline-toggle-buffer-position-off)
-
-(spaceline-spacemacs-theme)
+  
+(use-package spaceline
+  :straight t
+  :custom (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+  :config
+  (require 'spaceline-config)
+  (spaceline-toggle-evil-state-on)
+  (spaceline-toggle-anzu-on)
+  (spaceline-toggle-nyan-cat-on)
+  (spaceline-toggle-which-function-on)
+  (spaceline-toggle-buffer-encoding-on)
+  (spaceline-toggle-buffer-size-off)
+  (spaceline-toggle-minor-modes-off)
+  (spaceline-toggle-hud-off)
+  (spaceline-toggle-buffer-encoding-abbrev-off)
+  (spaceline-toggle-buffer-position-off)
+  (spaceline-spacemacs-theme))
 
 #+end_src
 
@@ -516,13 +545,15 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'evil)
+(use-package evil
+  :straight t
+  :custom ((evil-want-keybinding nil)
+	   (evil-symbol-word-search t)
+	   (evil-kill-on-visual-paste nil))
+  :init
+  (evil-mode +1)
 
-(setq evil-want-keybinding nil
-      evil-symbol-word-search t
-      evil-kill-on-visual-paste nil)
-
-(with-eval-after-load 'evil
+  :config
   (dolist (state '(normal visual insert))
     (evil-make-intercept-map
      ;; NOTE: This requires an evil version from 2018-03-20 or later
@@ -550,8 +581,6 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
     (kbd "SPC w") 'evil-window-next
     (kbd "SPC W") 'other-frame))
 
-(add-hook 'after-init-hook 'evil-mode)
-
 #+end_src
 
 ** [[https://github.com/emacs-evil/evil-collection][evil-collection]]
@@ -560,9 +589,10 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'evil-collection)
-
-(with-eval-after-load 'evil
+(use-package evil-collection
+  :straight t
+  :after evil
+  :init
   (evil-collection-init))
 
 #+end_src
@@ -573,9 +603,10 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'evil-commentary)
-
-(with-eval-after-load 'evil
+(use-package evil-commentary
+  :straight t
+  :after evil
+  :init
   (evil-commentary-mode +1))
 
 #+end_src
@@ -591,9 +622,10 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'evil-surround)
-
-(with-eval-after-load 'evil
+(use-package evil-surround
+  :straight t
+  :after evil
+  :init
   (global-evil-surround-mode +1))
 
 #+end_src
@@ -604,9 +636,10 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'evil-matchit)
-
-(with-eval-after-load 'evil
+(use-package evil-matchit
+  :straight t
+  :after evil
+  :init
   (global-evil-matchit-mode +1))
 
 #+end_src
@@ -617,12 +650,14 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'evil-org)
-(require 'evil-org)
-(add-hook 'org-mode-hook 'evil-org-mode)
-(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
-(require 'evil-org-agenda)
-(evil-org-agenda-set-keys)
+(use-package evil-org
+  :straight t
+  :after evil
+  :hook (org-mode . evil-org-mode)
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+  (evil-org-agenda-set-keys))
 
 #+end_src
 
@@ -632,9 +667,10 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'evil-lion)
-
-(with-eval-after-load 'evil
+(use-package evil-lion
+  :straight t
+  :after evil
+  :init
   (evil-lion-mode +1))
 
 #+end_src
@@ -643,57 +679,41 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'fussy)
+(use-package fussy
+  :straight t
+  :custom ((completion-styles '(fussy))
+	   (completion-category-defaults nil)
+	   (completion-category-overrides nil)
+	   (fussy-use-cache t)
+	   (fussy-filter-fn #'fussy-filter-default)
+	   (fussy-default-regex-fn #'fussy-pattern-flex-2))
+  :config
+  (with-eval-after-load 'fuz-bin
+    (setq fussy-filter-fn #'fussy-fuz-bin-score))
 
-(require 'fussy)
+  (with-eval-after-load 'prescient
+    (setq fussy-compare-same-score-fn #'fussy-strlen<))
 
-(setq completion-styles '(fussy)
-      completion-category-defaults nil
-      completion-category-overrides nil)
-
-#+end_src
-
-** filter
-
-#+begin_src emacs-lisp :tangle yes
-  
-(setq fussy-filter-fn #'fussy-filter-default
-      fussy-default-regex-fn #'fussy-pattern-flex-2)
-
-(with-eval-after-load 'company
-  (defun j-company-capf (f &rest args)
-    "Manage `completion-styles'."
-    (let ((fussy-max-candidate-limit 5000)
-          (fussy-default-regex-fn 'fussy-pattern-first-letter)
-          (fussy-prefer-prefix nil))
-      (apply f args)))
-
-  (advice-add 'company-capf :around 'j-company-capf))
+  (with-eval-after-load 'company
+    (defun j-company-capf (f &rest args)
+      "Manage `completion-styles'."
+      (let ((fussy-max-candidate-limit 5000)
+	    (fussy-default-regex-fn 'fussy-pattern-first-letter)
+	    (fussy-prefer-prefix nil))
+	(apply f args)))
+    (advice-add 'company-auto-begin :before #'fussy-wipe-cache)
+    (advice-add 'company-capf :around 'j-company-capf)))
 
 #+end_src
 
-** scoring
+* fuz-bin
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
   
-(straight-use-package
- '(fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin")))
-
-(with-eval-after-load 'fussy
-  (setq fussy-score-fn #'fussy-fuz-bin-score))
-
-(fuz-bin-load-dyn)
-
-#+end_src
-
-** caching
-
-#+begin_src emacs-lisp :tangle yes
-  
-(setq fussy-use-cache t)
-
-(with-eval-after-load 'company
-  (advice-add 'company-auto-begin :before #'fussy-wipe-cache))
+(use-package fuz-bin
+  :straight (:repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin"))
+  :init
+  (fuz-bin-load-dyn))
 
 #+end_src
 
@@ -704,13 +724,10 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'prescient)
-
-(require 'prescient)
-
-(setq prescient-aggressive-file-save t)
-
-(prescient-persist-mode +1)
+(use-package prescient
+  :straight t
+  :config
+  (prescient-persist-mode +1))
 
 #+end_src
 
@@ -720,53 +737,28 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'company-prescient)
-
-(with-eval-after-load 'company
-  (setq company-prescient-sort-length-enable nil)
+(use-package company-prescient
+  :straight t
+  :after company
+  :custom (company-prescient-sort-length-enable nil)
+  :init
   (company-prescient-mode +1))
 
 #+end_src
 
-** vertico + [[https://github.com/radian-software/prescient.el][prescient]]
+** vertico-prescient
 
 ~vertico~ に ~prescient~ を適用させています。（[[https://github.com/minad/vertico/wiki#using-prescientel][参考]]）
 
 #+begin_src emacs-lisp :tangle yes
   
-(with-eval-after-load 'vertico
-  (setq vertico-sort-override-function #'prescient-sort)
-
-  (defun vertico-prescient-remember ()
-    "Remember the chosen candidate with Prescient."
-    (when (>= vertico--index 0)
-      (prescient-remember
-       (substring-no-properties
-        (nth vertico--index vertico--candidates)))))
-  (advice-add #'vertico-insert :after #'vertico-prescient-remember))
-
-#+end_src
-
-** fussy + prescient
-
-prescientで履歴の並び替えを行うので
-fussyの履歴の比較はしないように修正
-
-#+begin_src emacs-lisp :tangle yes
-  
-(setq fussy-compare-same-score-fn #'fussy-strlen<)
-
-#+end_src
-
-下記のように並び替えたいので、長さによる並び替えを無効にします
-
-1. 履歴による並び替え
-2. 頻度による並び替え
-3. fussyのスコアリングによる並び替え
-
-#+begin_src emacs-lisp :tangle yes
-  
-(setq prescient-sort-length-enable nil)
+(use-package vertico-prescient
+  :straight t
+  :after vertico
+  :custom ((vertico-prescient-override-sorting t)
+	   (vertico-prescient-completion-styles '(fussy basic)))
+  :init
+  (vertico-prescient-mode +1))
 
 #+end_src
 
@@ -776,54 +768,31 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'company)
-
-(setq company-minimum-prefix-length 1
-      company-idle-delay 0
-      company-require-match nil
-      company-tooltip-align-annotations t
-      company-dabbrev-other-buffers nil
-      company-dabbrev-downcase nil
-      company-dabbrev-ignore-case nil)
-
-(global-set-key [remap indent-for-tab-command]  #'company-indent-or-complete-common)
-(global-set-key [remap c-indent-line-or-region] #'company-indent-or-complete-common)
-
-(add-hook 'after-init-hook 'global-company-mode)
+(use-package company
+  :straight t
+  :custom ((company-minimum-prefix-length 1)
+	   (company-idle-delay 0)
+	   (company-require-match nil)
+	   (company-tooltip-align-annotations t)
+	   (company-dabbrev-other-buffers nil)
+	   (company-dabbrev-downcase nil)
+	   (company-dabbrev-ignore-case nil))
+:bind (([remap indent-for-tab-command] . company-indent-or-complete-common)
+       ([remap c-indent-line-or-region] . company-indent-or-complete-common))
+  :init
+  (global-company-mode +1))
 
 #+end_src
 
-** [[https://github.com/sebastiencs/company-box][company-box]]
+** company-posframe
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'company-box)
-
-(setq company-box-show-single-candidate t
-      company-box-backends-colors nil
-      company-box-max-candidates 50
-      company-box-icons-alist 'company-box-icons-images)
-
-(setq x-gtk-resize-child-frames 'resize-mode)
-
-(add-hook 'company-mode-hook 'company-box-mode)
-
-(with-eval-after-load 'company-box
-  (delq 'company-echo-metadata-frontend company-frontends)
-  (add-to-list 'company-box-frame-parameters '(tab-bar-lines . 0))
-
-  (defun company-box-detect-deleted-frame-a (frame)
-    (if (frame-live-p frame) frame))
-
-  (advice-add #'company-box--get-frame :filter-return #'company-box-detect-deleted-frame-a)
-
-  (defun company-box-detect-deleted-doc-frame (_selection frame)
-    (and company-box-doc-enable
-         (frame-local-getq company-box-doc-frame frame)
-         (not (frame-live-p (frame-local-getq company-box-doc-frame frame)))
-         (frame-local-setq company-box-doc-frame nil frame)))
-
-  (advice-add #'company-box-doc :before #'company-box-detect-deleted-doc-frame))
+(use-package company-posframe
+  :straight t
+  :after company
+  :init
+  (company-posframe-mode +1))
 
 #+end_src
 
@@ -834,23 +803,22 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package '(company-dwim :type git :host github :repo "nobuyuki86/company-dwim"))
-
-(with-eval-after-load 'company
-  (setq company-selection-default nil)
-
-  (require 'company-dwim)
+(use-package company-dwim
+  :straight (company-dwim :type git :host github :repo "nobuyuki86/company-dwim")
+  :after company
+  :custom (company-selection-default nil)
+  :bind (([remap company-select-next] . company-dwim-select-next)
+	 ([remap company-select-previous] . company-dwim-select-previous)
+	 :map company-active-map
+	 ("RET" . company-dwim-complete-or-newline)
+	 ("<return>" . company-dwim-complete-or-newline)
+	 ("TAB" . company-dwim-select-next)
+	 ("<tab>" . company-dwim-select-next)
+	 ("S-TAB" . company-dwim-select-previous)
+	 ("<backtab>" . company-dwim-select-previous))
+  :config
   (add-to-list 'company-frontends 'company-dwim-frontend t)
-  (delq 'company-preview-if-just-one-frontend company-frontends)
-
-  (global-set-key [remap company-select-next] #'company-dwim-select-next)
-  (global-set-key [remap company-select-previous] #'company-dwim-select-previous)
-  (define-key company-active-map (kbd "RET")       #'company-dwim-complete-or-newline)
-  (define-key company-active-map (kbd "<return>")  #'company-dwim-complete-or-newline)
-  (define-key company-active-map (kbd "TAB")       #'company-dwim-select-next)
-  (define-key company-active-map (kbd "<tab>")     #'company-dwim-select-next)
-  (define-key company-active-map (kbd "S-TAB")     #'company-dwim-select-previous)
-  (define-key company-active-map (kbd "<backtab>") #'company-dwim-select-previous))
+  (delq 'company-preview-if-just-one-frontend company-frontends))
 
 #+end_src
 
@@ -861,10 +829,9 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package '(company-anywhere :type git :host github :repo "zk-phi/company-anywhere"))
-
-(with-eval-after-load 'company
-  (require 'company-anywhere))
+(use-package company-anywhere
+  :straight (company-anywhere :type git :host github :repo "zk-phi/company-anywhere")
+  :after company)
 
 #+end_src
 
@@ -874,9 +841,10 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package '(company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
-
-(with-eval-after-load 'company
+(use-package company-tabnine
+  :straight (company-tabnine :type git :host github :repo "karta0807913/company-tabnine")
+  :after company
+  :config
   (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine company-dabbrev)))
 
 #+end_src
@@ -887,11 +855,46 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package '(vertico :files (:defaults "extensions/*.el")))
+(use-package vertico
+  :straight t
+  :custom (vertico-cycle t)
+  :init
+  (vertico-mode +1)
 
-(setq vertico-cycle t)
+  :config
+  ;; Add prompt indicator to ~completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+		  (replace-regexp-in-string
+		   "\\~\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+		   crm-separator)
+		  (car args))
+	  (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-(add-hook 'after-init-hook 'vertico-mode)
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+	'(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  (setq read-extended-command-predicate
+	#'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t)
+
+  (with-eval-after-load 'consult
+    ;; Use ~consult-completion-in-region' if Vertico is enabled.
+    ;; Otherwise use the default ~completion--in-region' function.
+    (setq completion-in-region-function
+	  (lambda (&rest args)
+	    (apply (if vertico-mode
+		       #'consult-completion-in-region
+		     #'completion--in-region)
+		   args)))))
 
 #+end_src
 
@@ -901,11 +904,14 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) my-intercept-mode-map
-    (kbd "SPC z") 'vertico-repeat))
-
-(add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
+(use-package vertico-repeat
+  :after vertico
+  :load-path "straight/build/vertico/extensions/"
+  :hook (minibuffer-setup . vertico-repeat-save)
+  :init
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) my-intercept-mode-map
+      (kbd "SPC z") 'vertico-repeat)))
 
 #+end_src
 
@@ -915,52 +921,12 @@ fussyの履歴の比較はしないように修正
 
 #+begin_src emacs-lisp :tangle yes
   
-(with-eval-after-load 'vertico
-  (define-key vertico-map (kbd "<backspace>") #'vertico-directory-delete-char))
-
-#+end_src
-
-** vertico向けEmacs標準機能の設定
-
-README に記載されている標準機能の設定です。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(with-eval-after-load 'vertico
-  ;; Add prompt indicator to ~completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\~\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-  ;; Vertico commands are hidden in normal buffers.
-  (setq read-extended-command-predicate
-        #'command-completion-default-include-p)
-
-  ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t)
-
-  (with-eval-after-load 'vertico
-    (with-eval-after-load 'consult
-      ;; Use ~consult-completion-in-region' if Vertico is enabled.
-      ;; Otherwise use the default ~completion--in-region' function.
-      (setq completion-in-region-function
-            (lambda (&rest args)
-              (apply (if vertico-mode
-                         #'consult-completion-in-region
-                       #'completion--in-region)
-                     args))))))
+(use-package vertico-directory
+  :after vertico
+  :load-path "straight/build/vertico/extensions/"
+  :bind (nil
+	 :map vertico-map
+	 ("<backspace>" . vertico-directory-delete-char)))
 
 #+end_src
 
@@ -970,125 +936,121 @@ README に記載されている標準機能の設定です。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'consult)
+;; Example configuration for Consult
+(use-package consult
+  :straight t
+  ;; Replace bindings. Lazily loaded due by `use-package'.
+  :bind (;; C-c bindings (mode-specific-map)
+	 ("C-c h" . consult-history)
+	 ("C-c m" . consult-mode-command)
+	 ("C-c k" . consult-kmacro)
+	 ;; C-x bindings (ctl-x-map)
+	 ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+	 ([remap switch-to-buffer] . consult-buffer)                ;; orig. switch-to-buffer
+	 ([remap switch-to-buffer-other-window] . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+	 ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+	 ([remap bookmark-jump] . consult-bookmark)            ;; orig. bookmark-jump
+	 ([remap project-switch-to-buffer] . consult-project-buffer)      ;; orig. project-switch-to-buffer
+	 ;; Custom M-# bindings for fast register access
+	 ("M-#" . consult-register-load)
+	 ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+	 ("C-M-#" . consult-register)
+	 ;; Other custom bindings
+	 ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+	 ("<help> a" . consult-apropos)            ;; orig. apropos-command
+	 :map goto-map
+	 ("e" . consult-compile-error)
+	 ("f" . consult-flymake)               ;; Alternative: consult-flycheck
+	 ("g" . consult-goto-line)             ;; orig. goto-line
+	 ("M-g" . consult-goto-line)           ;; orig. goto-line
+	 ("o" . consult-outline)               ;; Alternative: consult-org-heading
+	 ("m" . consult-mark)
+	 ("k" . consult-global-mark)
+	 ("i" . consult-imenu)
+	 ("I" . consult-imenu-multi)
+	 :map search-map
+	 ("d" . consult-find)
+	 ("D" . consult-locate)
+	 ("g" . consult-grep)
+	 ("G" . consult-git-grep)
+	 ("r" . consult-ripgrep)
+	 ("l" . consult-line)
+	 ("L" . consult-line-multi)
+	 ("m" . consult-multi-occur)
+	 ("k" . consult-keep-lines)
+	 ("u" . consult-focus-lines)
+	 ("e" . consult-isearch-history)
+	 :map isearch-mode-map
+	 ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+	 ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+	 ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+	 ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+	 ;; Minibuffer history
+	 :map minibuffer-local-map
+	 ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+	 ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
-;; Optionally configure the register formatting. This improves the register
-;; preview for ~consult-register', ~consult-register-load',
-;; ~consult-register-store' and the Emacs built-ins.
-(setq register-preview-delay 0.5
-      register-preview-function #'consult-register-format)
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
 
-;; Optionally tweak the register preview window.
-;; This adds thin lines, sorting and hides the mode line of the window.
-(advice-add #'register-preview :override #'consult-register-window)
+  ;; The :init configuration is always executed (Not lazy)
+  :init
 
-;; Use Consult to select xref locations with preview
-(setq xref-show-xrefs-function #'consult-xref
-      xref-show-definitions-function #'consult-xref)
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+	register-preview-function #'consult-register-format)
 
-;; C-c bindings (mode-specific-map)
-(global-set-key (kbd "C-c h")                         #'consult-history)
-(global-set-key (kbd "C-c m")                         #'consult-mode-command)
-(global-set-key (kbd "C-c k")                         #'consult-kmacro)
-;; C-x bindings (ctl-x-map)
-(global-set-key (kbd "C-x M-:")                       #'consult-complex-command)     ;; orig. repeat-complex-command
-(global-set-key (kbd "C-x b")                         #'consult-buffer)              ;; orig. switch-to-buffer
-(global-set-key [remap switch-to-buffer]              #'consult-buffer)
-(global-set-key (kbd "C-x 4 b")                       #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-(global-set-key [remap switch-to-buffer-other-window] #'consult-buffer-other-window)
-(global-set-key (kbd "C-x 5 b")                       #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-(global-set-key [remap switch-to-buffer-other-frame]  #'consult-buffer-other-frame)
-(global-set-key (kbd "C-x r b")                       #'consult-bookmark)            ;; orig. bookmark-jump
-(global-set-key [remap bookmark-jump]                 #'consult-bookmark)
-(global-set-key (kbd "C-x p b")                       #'consult-project-buffer)      ;; orig. project-switch-to-buffer
-(global-set-key [remap project-switch-to-buffer]      #'consult-project-buffer)
-;; Custom M-# bindings for fast register access
-(global-set-key (kbd "M-#")                           #'consult-register-load)
-(global-set-key (kbd "M-'")                           #'consult-register-store) ;; orig. abbrev-prefix-mark (unrelated)
-(global-set-key (kbd "C-M-#")                         #'consult-register)
-;; Other custom bindings
-(global-set-key (kbd "M-y")                           #'consult-yank-pop) ;; orig. yank-pop
-(global-set-key (kbd "<help> a")                      #'consult-apropos)  ;; orig. apropos-command
-;; goto-map
-(define-key goto-map (kbd "e")                        #'consult-compile-error)
-(define-key goto-map (kbd "f")                        #'consult-flymake)   ;; Alternative: consult-flycheck
-(define-key goto-map (kbd "g")                        #'consult-goto-line) ;; orig. goto-line
-(define-key goto-map (kbd "M-g")                      #'consult-goto-line) ;; orig. goto-line
-(define-key goto-map (kbd "o")                        #'consult-outline)   ;; Alternative: consult-org-heading
-(define-key goto-map (kbd "m")                        #'consult-mark)
-(define-key goto-map (kbd "k")                        #'consult-global-mark)
-(define-key goto-map (kbd "i")                        #'consult-imenu)
-(define-key goto-map (kbd "I")                        #'consult-imenu-multi)
-;; search-map
-(define-key search-map (kbd "d")                      #'consult-find)
-(define-key search-map (kbd "D")                      #'consult-locate)
-(define-key search-map (kbd "g")                      #'consult-grep)
-(define-key search-map (kbd "G")                      #'consult-git-grep)
-(define-key search-map (kbd "r")                      #'consult-ripgrep)
-(define-key search-map (kbd "l")                      #'consult-line)
-(define-key search-map (kbd "L")                      #'consult-line-multi)
-(define-key search-map (kbd "m")                      #'consult-multi-occur)
-(define-key search-map (kbd "k")                      #'consult-keep-lines)
-(define-key search-map (kbd "u")                      #'consult-focus-lines)
-;; Isearch integration
-(define-key search-map (kbd "e")                      #'consult-isearch-history)
-;; isearch-mode-map
-(define-key isearch-mode-map (kbd "M-e")              #'consult-isearch-history) ;; orig. isearch-edit-string
-(define-key isearch-mode-map (kbd "M-s e")            #'consult-isearch-history) ;; orig. isearch-edit-string
-(define-key isearch-mode-map (kbd "M-s l")            #'consult-line)            ;; needed by consult-line to detect isearch
-(define-key isearch-mode-map (kbd "M-s L")            #'consult-line-multi)      ;; needed by consult-line to detect isearch
-;; minibuffer-local-map
-(define-key minibuffer-local-map (kbd "M-s")          #'consult-history) ;; orig. next-matching-history-element
-(define-key minibuffer-local-map (kbd "M-r")          #'consult-history) ;; orig. previous-matching-history-element
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
 
-(add-hook 'completion-list-mode-hook 'consult-preview-at-point-mode)
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+	xref-show-definitions-function #'consult-xref)
 
-(with-eval-after-load 'consult
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
   ;; (setq consult-preview-key (kbd "M-."))
   ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
   ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the ~consult-customize' macro.
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
-   consult-theme
-   :preview-key '(:debounce 0.5 any)
+   consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-recent-file
-   consult--source-project-recent-file
-   :preview-key (kbd "M-."))
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key (kbd "M-.")
+   :preview-key '(:debounce 0.4 any))
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; (kbd "C-+")
 
   ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use ~embark-prefix-help-command' or which-key instead.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
   ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
 
-  ;; By default ~consult-project-function' uses ~project-root' from project.el.
+  ;; By default `consult-project-function' uses `project-root' from project.el.
   ;; Optionally configure a different project root function.
   ;; There are multiple reasonable alternatives to chose from.
-      ;;;; 1. project.el (the default)
+  ;;;; 1. project.el (the default)
   ;; (setq consult-project-function #'consult--default-project--function)
-      ;;;; 2. projectile.el (projectile-project-root)
+  ;;;; 2. projectile.el (projectile-project-root)
   (autoload 'projectile-project-root "projectile")
   (setq consult-project-function (lambda (_) (projectile-project-root)))
-      ;;;; 3. vc.el (vc-root-dir)
+  ;;;; 3. vc.el (vc-root-dir)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-      ;;;; 4. locate-dominating-file
+  ;;;; 4. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-
-  ;; Use ~consult-completion-in-region' if Vertico is enabled.
-  ;; Otherwise use the default ~completion--in-region' function.
-  (setq completion-in-region-function
-        (lambda (&rest args)
-          (apply (if vertico-mode
-                     #'consult-completion-in-region
-                   #'completion--in-region)
-                 args)))
   )
 
 #+end_src
@@ -1097,9 +1059,11 @@ README に記載されている標準機能の設定です。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'consult-dir)
-
-(define-key my-file-map (kbd "d") #'consult-dir)
+(use-package consult-dir
+  :straight t
+  :bind (nil
+	 :map my-file-map
+	 ("d" . consult-dir)))
 
 #+end_src
 
@@ -1107,11 +1071,11 @@ README に記載されている標準機能の設定です。
 
 #+begin_src emacs-lisp :tangle yes
   
-(defun consult-ripgrep-current-directory ()
-  (interactive)
-  (consult-ripgrep default-directory))
+  (defun consult-ripgrep-current-directory ()
+    (interactive)
+    (consult-ripgrep default-directory))
 
-(define-key search-map (kbd "R") #'consult-ripgrep-current-directory)
+  (define-key search-map (kbd "R") #'consult-ripgrep-current-directory)
 
 #+end_src
 
@@ -1121,9 +1085,9 @@ README に記載されている標準機能の設定です。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'marginalia)
-
-(add-hook 'after-init-hook 'marginalia-mode)
+(use-package marginalia
+  :straight t
+  :hook (after-init . marginalia-mode))
 
 #+end_src
 
@@ -1133,21 +1097,21 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'embark)
+(use-package embark
+  :straight t
+  :bind (("C-." . embark-act)         ;; pick some comfortable binding
+	 ("C-;" . embark-dwim)        ;; good alternative: M-.
+	 ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
 
-;; Optionally replace the key help with a completing-read interface
-(setq prefix-help-command #'embark-prefix-help-command)
-
-(global-set-key (kbd "C-.") #'embark-act)        ;; pick some comfortable binding
-(global-set-key (kbd "C-;") #'embark-dwim)       ;; good alternative: M-.
-(global-set-key (kbd "C-h B") #'embark-bindings) ;; alternative for ~describe-bindings'
-
-(with-eval-after-load 'embark
+  :config
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
-               '("\\~\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		 nil
+		 (window-parameters (mode-line-format . none)))))
 
 #+end_src
 
@@ -1157,9 +1121,10 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'embark-consult)
-
-(add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
+(use-package embark-consult
+  :straight t
+  :after consult embark
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 #+end_src
 
@@ -1169,9 +1134,9 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'yasnippet)
-
-(add-hook 'after-init-hook 'yas-global-mode)
+(use-package yasnippet
+  :straight t
+  :hook (after-init . yas-global-mode))
 
 #+end_src
 
@@ -1181,10 +1146,9 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'yasnippet-snippets)
-
-(with-eval-after-load 'yasnippet
-  (require 'yasnippet-snippets))
+(use-package yasnippet-snippets
+  :straight t
+  :after yasnippet)
 
 #+end_src
 
@@ -1194,9 +1158,9 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'dtrt-indent)
-
-(add-hook 'after-init-hook 'dtrt-indent-global-mode)
+(use-package dtrt-indent
+  :straight t
+:hook (after-init . dtrt-indent-global-mode))
 
 #+end_src
 
@@ -1208,13 +1172,14 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'ctrlf)
-
-(setq ctrlf-default-search-style 'fuzzy)
-
-(define-key search-map (kbd "s") #'ctrlf-forward-default)
-
-(add-hook 'after-init-hook 'ctrlf-mode)
+(use-package ctrlf
+  :straight t
+  :custom (ctrlf-default-search-style 'fuzzy)
+  :bind (nil
+	 :map search-map
+	 ("s" . ctrlf-forward-default))
+  :init
+  (ctrlf-mode +1))
 
 #+end_src
 
@@ -1223,18 +1188,20 @@ vertico の候補等に様々なアクションを提供してくれます。
 Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'magit)
+
+  (use-package magit
+    :straight t)
 
 #+end_src
 
 * [[https://github.com/dgutov/diff-hl][diff-hl]]
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'diff-hl)
 
-(add-hook 'after-init-hook 'global-diff-hl-mode)
+  (use-package diff-hl
+    :straight t
+    :init
+    (global-diff-hl-mode +1))
 
 #+end_src
 
@@ -1243,10 +1210,11 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 キーバインドを可視化してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'which-key)
 
-(add-hook 'after-init-hook 'which-key-mode)
+  (use-package which-key
+    :straight t
+    :init
+    (which-key-mode +1))
 
 #+end_src
 
@@ -1255,17 +1223,19 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 プロジェクトに関する便利機能を提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'projectile)
 
-(with-eval-after-load 'projectile
-  (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map)
+  (use-package projectile
+    :straight t
+    :bind (nil
+	   :map projectile-mode-map
+	   ("C-c p" . projectile-command-map))
+    :init
+    (projectile-mode +1)
 
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal my-intercept-mode-map
-      (kbd "SPC p") `("projectile" . projectile-command-map))))
-
-(add-hook 'after-init-hook 'projectile-mode)
+    :config
+    (with-eval-after-load 'evil
+      (evil-define-key 'normal my-intercept-mode-map
+	(kbd "SPC p") `("projectile" . projectile-command-map))))
 
 #+end_src
 
@@ -1274,14 +1244,16 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 構文チェック機能を提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'flycheck)
 
-(define-key my-error-map (kbd "l") #'flycheck-list-errors)
-(define-key my-error-map (kbd "n") #'flycheck-next-error)
-(define-key my-error-map (kbd "p") #'flycheck-previous-error)
-
-(add-hook 'after-init-hook 'global-flycheck-mode)
+  (use-package flycheck
+    :straight t
+    :bind (nil
+	   :map my-error-map
+	   ("l" . flycheck-list-errors)
+	   ("n" . flycheck-next-error)
+	   ("p" . flycheck-previous-error))
+    :init
+    (global-flycheck-mode +1))
 
 #+end_src
 
@@ -1290,20 +1262,19 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 エラー内容などを ~posframe~ を使用して表示してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'flycheck-posframe)
 
-(add-hook 'flycheck-mode-hook 'flycheck-posframe-mode)
-
-(with-eval-after-load 'flycheck-posframe
-  (setq flycheck-posframe-warning-prefix "! "
-        flycheck-posframe-info-prefix "··· "
-        flycheck-posframe-error-prefix "X ")
-  (with-eval-after-load 'company
-    (add-hook 'flycheck-posframe-inhibit-functions 'company--active-p))
-  (with-eval-after-load 'evil
-    (add-hook 'flycheck-posframe-inhibit-functions 'evil-insert-state-p)
-    (add-hook 'flycheck-posframe-inhibit-functions 'evil-replace-state-p)))
+  (use-package flycheck-posframe
+    :straight t
+    :custom ((flycheck-posframe-warning-prefix "! )")
+	     (flycheck-posframe-info-prefix "··· ")
+	     (flycheck-posframe-error-prefix "X "))
+    :hook (flycheck-mode . flycheck-posframe-mode)
+    :config
+    (with-eval-after-load 'company
+      (add-hook 'flycheck-posframe-inhibit-functions 'company--active-p))
+    (with-eval-after-load 'evil
+      (add-hook 'flycheck-posframe-inhibit-functions 'evil-insert-state-p)
+      (add-hook 'flycheck-posframe-inhibit-functions 'evil-replace-state-p)))
 
 #+end_src
 
@@ -1312,11 +1283,13 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 チェック内容を ~consult~ を使用して絞り込めます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'consult-flycheck)
 
-(with-eval-after-load 'flycheck
-  (define-key my-error-map (kbd "e") #'consult-flycheck))
+  (use-package consult-flycheck
+    :straight t
+    :after flycheck consult
+    :bind (nil
+	   :map my-error-map
+	   ("e" . consult-flycheck)))
 
 #+end_src
 
@@ -1325,17 +1298,17 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 編集履歴をツリー表示してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'undo-tree)
 
-(setq undo-tree-auto-save-history nil)
-
-(with-eval-after-load 'evil
-  (evil-set-undo-system 'undo-tree)
-  (evil-define-key 'normal my-intercept-mode-map
-    (kbd "SPC u") 'undo-tree-visualize))
-
-(add-hook 'after-init-hook 'global-undo-tree-mode)
+  (use-package undo-tree
+    :straight t
+    :custom (undo-tree-auto-save-history nil)
+    :init
+    (global-undo-tree-mode +1)
+    :config
+    (with-eval-after-load 'evil
+      (evil-set-undo-system 'undo-tree)
+      (evil-define-key 'normal my-intercept-mode-map
+	(kbd "SPC u") 'undo-tree-visualize)))
 
 #+end_src
 
@@ -1344,8 +1317,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 ~ripgrep~ を利用してGrep検索してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'rg)
+
+  (use-package rg
+    :straight t)
 
 #+end_src
 
@@ -1354,10 +1328,10 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 括弧を色付けしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'rainbow-delimiters)
 
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  (use-package rainbow-delimiters
+    :straight t
+    :hook (prog-mode . rainbow-delimiters-mode))
 
 #+end_src
 
@@ -1366,16 +1340,16 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 インデントを可視化してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'highlight-indent-guides)
 
-(setq highlight-indent-guides-method 'character
-    highlight-indent-guides-character 124
-    highlight-indent-guides-responsive 'top)
-
-(define-key my-toggle-map (kbd "i") 'highlight-indent-guides-mode)
-
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (use-package highlight-indent-guides
+    :straight t
+    :custom ((highlight-indent-guides-method 'character)
+	     (highlight-indent-guides-character 124)
+	     (highlight-indent-guides-responsive 'top))
+    :bind (nil
+	   :map my-toggle-map
+	   ("i" . highlight-indent-guides-mode))
+    :hook (prog-mode . highlight-indent-guides-mode))
 
 #+end_src
 
@@ -1383,429 +1357,30 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(with-eval-after-load 'consult
-  (defadvice consult-theme (after themes-first activate)
-    (with-eval-after-load 'spaceline
-      (spaceline-spacemacs-theme))))
+  (with-eval-after-load 'consult
+    (defadvice consult-theme (after themes-first activate)
+      (with-eval-after-load 'spaceline
+	(spaceline-spacemacs-theme))))
 
 #+end_src
 
 ** [[https://protesilaos.com/emacs/modus-themes][modus-themes]]
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'modus-themes)
 
-;; Add all your customizations prior to loading the themes
-;;
-;; NOTE: these are not my preferences!  I am always testing various
-;; configurations.  Though I still like what I have here.
-(setq modus-themes-italic-constructs t
-      modus-themes-bold-constructs t
-      modus-themes-mixed-fonts nil
-      modus-themes-subtle-line-numbers t
-      modus-themes-intense-mouseovers nil
-      modus-themes-deuteranopia nil
-      modus-themes-tabs-accented nil
-      modus-themes-variable-pitch-ui nil
-      modus-themes-inhibit-reload t ; only applies to ~customize-set-variable' and related
-
-      modus-themes-fringes nil ; {nil,'subtle,'intense}
-
-      ;; Options for ~modus-themes-lang-checkers' are either nil (the
-      ;; default), or a list of properties that may include any of those
-      ;; symbols: ~straight-underline', ~text-also', ~background',
-      ;; ~intense' OR ~faint'.
-      modus-themes-lang-checkers nil
-
-      ;; Options for ~modus-themes-mode-line' are either nil, or a list
-      ;; that can combine any of ~3d' OR ~moody', ~borderless',
-      ;; ~accented', a natural number for extra padding (or a cons cell
-      ;; of padding and NATNUM), and a floating point for the height of
-      ;; the text relative to the base font size (or a cons cell of
-      ;; height and FLOAT)
-      modus-themes-mode-line '(moody accented borderless (padding . 4) (height . 0.9))
-
-      ;; Options for ~modus-themes-markup' are either nil, or a list
-      ;; that can combine any of ~bold', ~italic', ~background',
-      ;; ~intense'.
-      modus-themes-markup nil
-
-      ;; Options for ~modus-themes-syntax' are either nil (the default),
-      ;; or a list of properties that may include any of those symbols:
-      ;; ~faint', ~yellow-comments', ~green-strings', ~alt-syntax'
-      modus-themes-syntax nil
-
-      ;; Options for ~modus-themes-hl-line' are either nil (the default),
-      ;; or a list of properties that may include any of those symbols:
-      ;; ~accented', ~underline', ~intense'
-      modus-themes-hl-line nil
-
-      ;; Options for ~modus-themes-paren-match' are either nil (the
-      ;; default), or a list of properties that may include any of those
-      ;; symbols: ~bold', ~intense', ~underline'
-      modus-themes-paren-match '(bold)
-
-      ;; Options for ~modus-themes-links' are either nil (the default),
-      ;; or a list of properties that may include any of those symbols:
-      ;; ~neutral-underline' OR ~no-underline', ~faint' OR ~no-color',
-      ;; ~bold', ~italic', ~background'
-      modus-themes-links '(neutral-underline)
-
-      ;; Options for ~modus-themes-box-buttons' are either nil (the
-      ;; default), or a list that can combine any of ~flat',
-      ;; ~accented', ~faint', ~variable-pitch', ~underline',
-      ;; ~all-buttons', the symbol of any font weight as listed in
-      ;; ~modus-themes-weights', and a floating point number
-      ;; (e.g. 0.9) for the height of the button's text.
-      modus-themes-box-buttons nil
-
-      ;; Options for ~modus-themes-prompts' are either nil (the
-      ;; default), or a list of properties that may include any of those
-      ;; symbols: ~background', ~bold', ~gray', ~intense', ~italic'
-      modus-themes-prompts nil
-
-      ;; The ~modus-themes-completions' is an alist that reads three
-      ;; keys: ~matches', ~selection', ~popup'.  Each accepts a nil
-      ;; value (or empty list) or a list of properties that can include
-      ;; any of the following (for WEIGHT read further below):
-      ;;
-      ;; ~matches' - ~background', ~intense', ~underline', ~italic', WEIGHT
-      ;; ~selection' - ~accented', ~intense', ~underline', ~italic', ~text-also', WEIGHT
-      ;; ~popup' - same as ~selected'
-      ;; ~t' - applies to any key not explicitly referenced (check docs)
-      ;;
-      ;; WEIGHT is a symbol such as ~semibold', ~light', or anything
-      ;; covered in ~modus-themes-weights'.  Bold is used in the absence
-      ;; of an explicit WEIGHT.
-      modus-themes-completions
-      '((matches . (semibold))
-        (selection . (extrabold accented))
-        (popup . (extrabold accented)))
-
-      modus-themes-mail-citations nil ; {nil,'intense,'faint,'monochrome}
-
-      ;; Options for ~modus-themes-region' are either nil (the default),
-      ;; or a list of properties that may include any of those symbols:
-      ;; ~no-extend', ~bg-only', ~accented'
-      modus-themes-region '(accented no-extend)
-
-      ;; Options for ~modus-themes-diffs': nil, 'desaturated, 'bg-only
-      modus-themes-diffs nil
-
-      modus-themes-org-blocks 'gray-background ; {nil,'gray-background,'tinted-background}
-
-      modus-themes-org-agenda ; this is an alist: read the manual or its doc string
-      '((header-block . (variable-pitch light 1.6))
-        (header-date . (underline-today grayscale workaholic 1.2))
-        (event . (accented italic varied))
-        (scheduled . rainbow)
-        (habit . simplified))
-
-      ;; The ~modus-themes-headings' is an alist with lots of possible
-      ;; combinations, include per-heading-level tweaks: read the
-      ;; manual or its doc string
-      modus-themes-headings
-      '((0 . (variable-pitch light (height 2.2)))
-        (1 . (rainbow variable-pitch light (height 1.6)))
-        (2 . (rainbow variable-pitch light (height 1.4)))
-        (3 . (rainbow variable-pitch regular (height 1.3)))
-        (4 . (rainbow regular (height 1.2)))
-        (5 . (rainbow (height 1.1)))
-        (t . (variable-pitch extrabold))))
-
-;; Load the theme files before enabling a theme (else you get an error).
-(modus-themes-load-themes)
-
-;; Optionally set the ~modus-themes-toggle' to a key binding:
-(define-key global-map (kbd "<f5>") #'modus-themes-toggle)
-
-    ;;;; Modus themes "Summertime"
-
-;; Read the relevant blog post:
-;; <https://protesilaos.com/codelog/2022-07-26-modus-themes-color-override-demo/>
-
-;; Thanks to user "Summer Emacs" for (i) suggesting the name
-;; "summertime", (ii) testing variants of this in her setup, and (iii)
-;; sending me feedback on possible tweaks and refinements.  All errors
-;; are my own.  (This information is shared with permission.)
-(define-minor-mode modus-themes-summertime
-  "Refashion the Modus themes by overriding their colors.
-
-    This is a complete technology demonstration to show how to
-    manually override the colors of the Modus themes.  I have taken
-    good care of those overrides to make them work as a fully fledged
-    color scheme that is compatible with all user options of the
-    Modus themes.
-
-    These overrides are usable by those who (i) like something more
-    fancy than the comparatively austere looks of the Modus themes,
-    and (ii) can cope with a lower contrast ratio.
-
-    The overrides are set up as a minor mode, so that the user can
-    activate the effect on demand.  Those who want to load the
-    overrides at all times can either add them directly to their
-    configuration or enable ~modus-themes-summertime' BEFORE loading
-    either of the Modus themes (if the overrides are evaluated after
-    the theme, the theme must be reloaded).
-
-    Remember that all changes to theme-related variables require a
-    reload of the theme to take effect (the Modus themes have lots of
-    user options, apart from those overrides).
-
-    The ~modus-themes-summertime' IS NOT an official extension to the
-    Modus themes and DOES NOT comply with its lofty accessibility
-    standards.  It is included in the official manual as guidance for
-    those who want to make use of the color overriding facility we
-    provide."
-  :init-value nil
-  :global t
-  (if modus-themes-summertime
-      (setq modus-themes-operandi-color-overrides
-            '((bg-main . "#fff0f2")
-              (bg-dim . "#fbe6ef")
-              (bg-alt . "#f5dae6")
-              (bg-hl-line . "#fad8e3")
-              (bg-active . "#efcadf")
-              (bg-inactive . "#f3ddef")
-              (bg-active-accent . "#ffbbef")
-              (bg-region . "#dfc5d1")
-              (bg-region-accent . "#efbfef")
-              (bg-region-accent-subtle . "#ffd6ef")
-              (bg-header . "#edd3e0")
-              (bg-tab-active . "#ffeff2")
-              (bg-tab-inactive . "#f8d3ef")
-              (bg-tab-inactive-accent . "#ffd9f5")
-              (bg-tab-inactive-alt . "#e5c0d5")
-              (bg-tab-inactive-alt-accent . "#f3cce0")
-              (fg-main . "#543f78")
-              (fg-dim . "#5f476f")
-              (fg-alt . "#7f6f99")
-              (fg-unfocused . "#8f6f9f")
-              (fg-active . "#563068")
-              (fg-inactive . "#8a5698")
-              (fg-docstring . "#5f5fa7")
-              (fg-comment-yellow . "#a9534f")
-              (fg-escape-char-construct . "#8b207f")
-              (fg-escape-char-backslash . "#a06d00")
-              (bg-special-cold . "#d3e0f4")
-              (bg-special-faint-cold . "#e0efff")
-              (bg-special-mild . "#c4ede0")
-              (bg-special-faint-mild . "#e0f0ea")
-              (bg-special-warm . "#efd0c4")
-              (bg-special-faint-warm . "#ffe4da")
-              (bg-special-calm . "#f0d3ea")
-              (bg-special-faint-calm . "#fadff9")
-              (fg-special-cold . "#405fb8")
-              (fg-special-mild . "#407f74")
-              (fg-special-warm . "#9d6f4f")
-              (fg-special-calm . "#af509f")
-              (bg-completion . "#ffc5e5")
-              (bg-completion-subtle . "#f7cfef")
-              (red . "#ed2f44")
-              (red-alt . "#e0403d")
-              (red-alt-other . "#e04059")
-              (red-faint . "#ed4f44")
-              (red-alt-faint . "#e0603d")
-              (red-alt-other-faint . "#e06059")
-              (green . "#217a3c")
-              (green-alt . "#417a1c")
-              (green-alt-other . "#006f3c")
-              (green-faint . "#318a4c")
-              (green-alt-faint . "#518a2c")
-              (green-alt-other-faint . "#20885c")
-              (yellow . "#b06202")
-              (yellow-alt . "#a95642")
-              (yellow-alt-other . "#a06f42")
-              (yellow-faint . "#b07232")
-              (yellow-alt-faint . "#a96642")
-              (yellow-alt-other-faint . "#a08042")
-              (blue . "#275ccf")
-              (blue-alt . "#475cc0")
-              (blue-alt-other . "#3340ef")
-              (blue-faint . "#476ce0")
-              (blue-alt-faint . "#575ccf")
-              (blue-alt-other-faint . "#3f60d7")
-              (magenta . "#bf317f")
-              (magenta-alt . "#d033c0")
-              (magenta-alt-other . "#844fe4")
-              (magenta-faint . "#bf517f")
-              (magenta-alt-faint . "#d053c0")
-              (magenta-alt-other-faint . "#846fe4")
-              (cyan . "#007a9f")
-              (cyan-alt . "#3f709f")
-              (cyan-alt-other . "#107f7f")
-              (cyan-faint . "#108aaf")
-              (cyan-alt-faint . "#3f80af")
-              (cyan-alt-other-faint . "#3088af")
-              (red-active . "#cd2f44")
-              (green-active . "#116a6c")
-              (yellow-active . "#993602")
-              (blue-active . "#475ccf")
-              (magenta-active . "#7f2ccf")
-              (cyan-active . "#007a8f")
-              (red-nuanced-bg . "#ffdbd0")
-              (red-nuanced-fg . "#ed6f74")
-              (green-nuanced-bg . "#dcf0dd")
-              (green-nuanced-fg . "#3f9a4c")
-              (yellow-nuanced-bg . "#fff3aa")
-              (yellow-nuanced-fg . "#b47232")
-              (blue-nuanced-bg . "#e3e3ff")
-              (blue-nuanced-fg . "#201f6f")
-              (magenta-nuanced-bg . "#fdd0ff")
-              (magenta-nuanced-fg . "#c0527f")
-              (cyan-nuanced-bg . "#dbefff")
-              (cyan-nuanced-fg . "#0f3f60")
-              (bg-diff-heading . "#b7cfe0")
-              (fg-diff-heading . "#041645")
-              (bg-diff-added . "#d6f0d6")
-              (fg-diff-added . "#004520")
-              (bg-diff-changed . "#fcefcf")
-              (fg-diff-changed . "#524200")
-              (bg-diff-removed . "#ffe0ef")
-              (fg-diff-removed . "#891626")
-              (bg-diff-refine-added . "#84cfa4")
-              (fg-diff-refine-added . "#002a00")
-              (bg-diff-refine-changed . "#cccf8f")
-              (fg-diff-refine-changed . "#302010")
-              (bg-diff-refine-removed . "#da92b0")
-              (fg-diff-refine-removed . "#500010")
-              (bg-diff-focus-added . "#a6e5c6")
-              (fg-diff-focus-added . "#002c00")
-              (bg-diff-focus-changed . "#ecdfbf")
-              (fg-diff-focus-changed . "#392900")
-              (bg-diff-focus-removed . "#efbbcf")
-              (fg-diff-focus-removed . "#5a0010"))
-            modus-themes-vivendi-color-overrides
-            '((bg-main . "#25152a")
-              (bg-dim . "#2a1930")
-              (bg-alt . "#382443")
-              (bg-hl-line . "#332650")
-              (bg-active . "#463358")
-              (bg-inactive . "#2d1f3a")
-              (bg-active-accent . "#50308f")
-              (bg-region . "#5d4a67")
-              (bg-region-accent . "#60509f")
-              (bg-region-accent-subtle . "#3f285f")
-              (bg-header . "#3a2543")
-              (bg-tab-active . "#26162f")
-              (bg-tab-inactive . "#362647")
-              (bg-tab-inactive-accent . "#36265a")
-              (bg-tab-inactive-alt . "#3e2f5a")
-              (bg-tab-inactive-alt-accent . "#3e2f6f")
-              (fg-main . "#debfe0")
-              (fg-dim . "#d0b0da")
-              (fg-alt . "#ae85af")
-              (fg-unfocused . "#8e7f9f")
-              (fg-active . "#cfbfef")
-              (fg-inactive . "#b0a0c0")
-              (fg-docstring . "#c8d9f7")
-              (fg-comment-yellow . "#cf9a70")
-              (fg-escape-char-construct . "#ff75aa")
-              (fg-escape-char-backslash . "#dbab40")
-              (bg-special-cold . "#2a3f58")
-              (bg-special-faint-cold . "#1e283f")
-              (bg-special-mild . "#0f3f31")
-              (bg-special-faint-mild . "#0f281f")
-              (bg-special-warm . "#44331f")
-              (bg-special-faint-warm . "#372213")
-              (bg-special-calm . "#4a314f")
-              (bg-special-faint-calm . "#3a223f")
-              (fg-special-cold . "#c0b0ff")
-              (fg-special-mild . "#bfe0cf")
-              (fg-special-warm . "#edc0a6")
-              (fg-special-calm . "#ff9fdf")
-              (bg-completion . "#502d70")
-              (bg-completion-subtle . "#451d65")
-              (red . "#ff5f6f")
-              (red-alt . "#ff8f6d")
-              (red-alt-other . "#ff6f9d")
-              (red-faint . "#ffa0a0")
-              (red-alt-faint . "#f5aa80")
-              (red-alt-other-faint . "#ff9fbf")
-              (green . "#51ca5c")
-              (green-alt . "#71ca3c")
-              (green-alt-other . "#51ca9c")
-              (green-faint . "#78bf78")
-              (green-alt-faint . "#99b56f")
-              (green-alt-other-faint . "#88bf99")
-              (yellow . "#f0b262")
-              (yellow-alt . "#f0e242")
-              (yellow-alt-other . "#d0a272")
-              (yellow-faint . "#d2b580")
-              (yellow-alt-faint . "#cabf77")
-              (yellow-alt-other-faint . "#d0ba95")
-              (blue . "#778cff")
-              (blue-alt . "#8f90ff")
-              (blue-alt-other . "#8380ff")
-              (blue-faint . "#82b0ec")
-              (blue-alt-faint . "#a0acef")
-              (blue-alt-other-faint . "#80b2f0")
-              (magenta . "#ff70cf")
-              (magenta-alt . "#ff77f0")
-              (magenta-alt-other . "#ca7fff")
-              (magenta-faint . "#e0b2d6")
-              (magenta-alt-faint . "#ef9fe4")
-              (magenta-alt-other-faint . "#cfa6ff")
-              (cyan . "#30cacf")
-              (cyan-alt . "#60caff")
-              (cyan-alt-other . "#40b79f")
-              (cyan-faint . "#90c4ed")
-              (cyan-alt-faint . "#a0bfdf")
-              (cyan-alt-other-faint . "#a4d0bb")
-              (red-active . "#ff6059")
-              (green-active . "#64dc64")
-              (yellow-active . "#ffac80")
-              (blue-active . "#4fafff")
-              (magenta-active . "#cf88ff")
-              (cyan-active . "#50d3d0")
-              (red-nuanced-bg . "#440a1f")
-              (red-nuanced-fg . "#ffcccc")
-              (green-nuanced-bg . "#002904")
-              (green-nuanced-fg . "#b8e2b8")
-              (yellow-nuanced-bg . "#422000")
-              (yellow-nuanced-fg . "#dfdfb0")
-              (blue-nuanced-bg . "#1f1f5f")
-              (blue-nuanced-fg . "#bfd9ff")
-              (magenta-nuanced-bg . "#431641")
-              (magenta-nuanced-fg . "#e5cfef")
-              (cyan-nuanced-bg . "#042f49")
-              (cyan-nuanced-fg . "#a8e5e5")
-              (bg-diff-heading . "#304466")
-              (fg-diff-heading . "#dae7ff")
-              (bg-diff-added . "#0a383a")
-              (fg-diff-added . "#94ba94")
-              (bg-diff-changed . "#2a2000")
-              (fg-diff-changed . "#b0ba9f")
-              (bg-diff-removed . "#50163f")
-              (fg-diff-removed . "#c6adaa")
-              (bg-diff-refine-added . "#006a46")
-              (fg-diff-refine-added . "#e0f6e0")
-              (bg-diff-refine-changed . "#585800")
-              (fg-diff-refine-changed . "#ffffcc")
-              (bg-diff-refine-removed . "#952838")
-              (fg-diff-refine-removed . "#ffd9eb")
-              (bg-diff-focus-added . "#1d4c3f")
-              (fg-diff-focus-added . "#b4dfb4")
-              (bg-diff-focus-changed . "#424200")
-              (fg-diff-focus-changed . "#d0daaf")
-              (bg-diff-focus-removed . "#6f0f39")
-              (fg-diff-focus-removed . "#eebdba")))
-    (setq modus-themes-operandi-color-overrides nil
-          modus-themes-vivendi-color-overrides nil)))
-
-(modus-themes-summertime)
-;; (modus-themes-load-vivendi)
-
-#+end_src
-
-** spacemacs-theme
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'spacemacs-theme)
-
-(load-theme 'spacemacs-dark t)
+  (use-package emacs
+    :straight t
+    :init
+    ;; Add all your customizations prior to loading the themes
+    (setq modus-themes-italic-constructs t
+	  modus-themes-bold-constructs nil
+	  modus-themes-region '(bg-only no-extend))
+    :config
+    ;; Load the theme of your choice:
+    ;; (load-theme 'modus-operandi)
+    (load-theme 'light-blue t)
+    ;; OR (load-theme 'modus-vivendi)
+    :bind ("<f5>" . modus-themes-toggle)) 
 
 #+end_src
 
@@ -1814,10 +1389,12 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 Emacsを再起動してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'restart-emacs)
 
-(define-key my-quit-map (kbd "r") #'restart-emacs)
+  (use-package restart-emacs
+    :straight t
+    :bind (nil
+	   :map my-quit-map
+	   ("r" . restart-emacs)))
 
 #+end_src
 
@@ -1826,11 +1403,10 @@ Emacsを再起動してくれます。
 アイコンのインストールなど、アイコンに関する機能を提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'all-the-icons)
 
-(when (display-graphic-p)
-  (require 'all-the-icons))
+  (use-package all-the-icons
+    :straight t
+    :if (display-graphic-p))
 
 #+end_src
 
@@ -1839,12 +1415,13 @@ Emacsを再起動してくれます。
 ~vertico~ でアイコンが表示されるようになります。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'all-the-icons-completion)
 
-(add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
-
-(all-the-icons-completion-mode +1)
+  (use-package all-the-icons-completion
+    :straight t
+    :after all-the-icons
+    :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+    :init
+    (all-the-icons-completion-mode +1))
 
 #+end_src
 
@@ -1853,14 +1430,14 @@ Emacsを再起動してくれます。
 ~er/expand-region~ を押すと選択範囲をどんどん広げてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'expand-region)
 
-(global-set-key (kbd "C-=") #'er/expand-region)
-
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) my-intercept-mode-map
-    (kbd "SPC v") 'er/expand-region))
+  (use-package expand-region
+    :straight t
+    :bind ("C-=" . er/expand-region)
+    :init
+    (with-eval-after-load 'evil
+      (evil-define-key '(normal visual) my-intercept-mode-map
+	(kbd "SPC v") 'er/expand-region)))
 
 #+end_src
 
@@ -1869,12 +1446,12 @@ Emacsを再起動してくれます。
 カーソルの移動を強調表示してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'beacon)
 
-(setq beacon-color "red")
-
-(add-hook 'after-init-hook 'beacon-mode)
+  (use-package beacon
+    :straight t
+    :custom (beacon-color "red")
+    :init
+    (beacon-mode +1))
 
 #+end_src
 
@@ -1883,14 +1460,14 @@ Emacsを再起動してくれます。
 ウィンドウが非活性な時などにガベージコレクションを実行してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'gcmh)
 
-(setq gcmh-idle-delay 'auto
-      gcmh-auto-idle-delay-factor 10
-      gcmh-high-cons-threshold (* 128 1024 1024))
-
-(add-hook 'after-init-hook 'gcmh-mode)
+  (use-package gcmh
+    :straight t
+    :custom ((gcmh-idle-delay 'auto)
+	     (gcmh-auto-idle-delay-factor 10)
+	     (gcmh-high-cons-threshold (* 128 1024 1024)))
+    :init
+    (gcmh-mode +1))
 
 #+end_src
 
@@ -1899,16 +1476,16 @@ Emacsを再起動してくれます。
 起動画面をいい感じにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'dashboard)
 
-(setq dashboard-center-content t
-      dashboard-set-heading-icons t
-      dashboard-set-file-icons t
-      dashboard-set-navigator t
-      dashboard-set-init-info t)
-
-(dashboard-setup-startup-hook)
+  (use-package dashboard
+    :straight t
+    :custom ((dashboard-center-content t)
+	     (dashboard-set-heading-icons t)
+	     (dashboard-set-file-icons t)
+	     (dashboard-set-navigator t)
+	     (dashboard-set-init-info t))
+    :init
+    (dashboard-setup-startup-hook))
 
 #+end_src
 
@@ -1917,10 +1494,11 @@ Emacsを再起動してくれます。
 Redo等、一部の操作を強調表示して操作がわかりやすくなります。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'volatile-highlights)
 
-(add-hook 'after-init-hook 'volatile-highlights-mode)
+  (use-package volatile-highlights
+    :straight t
+    :init
+    (volatile-highlights-mode +1))
 
 #+end_src
 
@@ -1930,11 +1508,10 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
 主に ~org-pomodoro~ で使用します。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'alert)
 
-(when (eq system-type 'gnu/linux)
-  (setq alert-default-style 'libnotify))
+  (use-package alert
+    :straight t
+    :custom (alert-default-style 'libnotify))
 
 #+end_src
 
@@ -1943,12 +1520,11 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
 Windows用の設定です。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'alert-toast)
 
-(when (eq system-type 'windows-nt)
-  (require 'alert-toast)
-  (setq alert-default-style 'toast))
+  (use-package alert-toast
+    :straight t
+    :if (eq system-type 'windows-nt)
+    :custom (alert-default-style 'toast))
 
 #+end_src
 
@@ -1957,11 +1533,11 @@ Windows用の設定です。
 ~org-mode~ や ~markdown~ のテーブル機能で日本語が含まれてもずれないようにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'valign)
 
-(add-hook 'org-mode-hook 'valign-mode)
-(add-hook 'markdown-mode-hook 'valign-mode)
+  (use-package valign
+    :straight t
+    :hook ((org-mode . valign-mode)
+	   (markdown-mode . valign-mode)))
 
 #+end_src
 
@@ -1970,22 +1546,22 @@ Windows用の設定です。
 ~tree-sitter~ をEmacsで利用できるようにします。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'tree-sitter)
 
-(add-hook 'after-init-hook 'global-tree-sitter-mode)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+  (use-package tree-sitter
+    :straight t
+    :hook (tree-sitter-after-on . tree-sitter-hl-mode)
+    :init
+    (global-tree-sitter-mode +1))
+
 
 #+end_src
 
 ** [[https://github.com/emacs-tree-sitter/tree-sitter-langs][tree-sitter-langs]]
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'tree-sitter-langs)
 
-(with-eval-after-load 'tree-sitter
-  (require 'tree-sitter-langs))
+  (use-package tree-sitter-langs
+    :straight t)
 
 #+end_src
 
@@ -1995,13 +1571,15 @@ Windows用の設定です。
 ~org-babel~ 等で活躍します。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'polymode)
-(straight-use-package 'poly-markdown)
-(straight-use-package 'poly-org)
-(require 'polymode)
-(require 'poly-markdown)
-(require 'poly-org)
+
+  (use-package 'polymode
+    :straight t)
+
+  (use-package 'poly-markdown
+    :straight t)
+
+  (use-package 'poly-org
+    :straight t)
 
 #+end_src
 
@@ -2011,136 +1589,120 @@ Windows用の設定です。
 普段は利用しませんが、READMEをもとに設定しています。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'treemacs)
 
-(global-set-key (kbd "M-0") #'treemacs-select-window)
-(global-set-key (kbd "C-x t 1") #'treemacs-delete-other-windows)
-(global-set-key (kbd "C-x t t") #'treemacs)
-(global-set-key (kbd "C-x t d") #'treemacs-select-directory)
-(global-set-key (kbd "C-x t B") #'treemacs-bookmark)
-(global-set-key (kbd "C-x t C-t") #'treemacs-find-file)
-(global-set-key (kbd "C-x t M-t") #'treemacs-find-tag)
+  (use-package treemacs
+    :straight t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+	    treemacs-deferred-git-apply-delay        0.5
+	    treemacs-directory-name-transformer      #'identity
+	    treemacs-display-in-side-window          t
+	    treemacs-eldoc-display                   'simple
+	    treemacs-file-event-delay                2000
+	    treemacs-file-extension-regex            treemacs-last-period-regex-value
+	    treemacs-file-follow-delay               0.2
+	    treemacs-file-name-transformer           #'identity
+	    treemacs-follow-after-init               t
+	    treemacs-expand-after-init               t
+	    treemacs-find-workspace-method           'find-for-file-or-pick-first
+	    treemacs-git-command-pipe                ""
+	    treemacs-goto-tag-strategy               'refetch-index
+	    treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+	    treemacs-hide-dot-git-directory          t
+	    treemacs-indentation                     2
+	    treemacs-indentation-string              " "
+	    treemacs-is-never-other-window           nil
+	    treemacs-max-git-entries                 5000
+	    treemacs-missing-project-action          'ask
+	    treemacs-move-forward-on-expand          nil
+	    treemacs-no-png-images                   nil
+	    treemacs-no-delete-other-windows         t
+	    treemacs-project-follow-cleanup          nil
+	    treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+	    treemacs-position                        'left
+	    treemacs-read-string-input               'from-child-frame
+	    treemacs-recenter-distance               0.1
+	    treemacs-recenter-after-file-follow      nil
+	    treemacs-recenter-after-tag-follow       nil
+	    treemacs-recenter-after-project-jump     'always
+	    treemacs-recenter-after-project-expand   'on-distance
+	    treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+	    treemacs-show-cursor                     nil
+	    treemacs-show-hidden-files               t
+	    treemacs-silent-filewatch                nil
+	    treemacs-silent-refresh                  nil
+	    treemacs-sorting                         'alphabetic-asc
+	    treemacs-select-when-already-in-treemacs 'move-back
+	    treemacs-space-between-root-nodes        t
+	    treemacs-tag-follow-cleanup              t
+	    treemacs-tag-follow-delay                1.5
+	    treemacs-text-scale                      nil
+	    treemacs-user-mode-line-format           nil
+	    treemacs-user-header-line-format         nil
+	    treemacs-wide-toggle-width               70
+	    treemacs-width                           35
+	    treemacs-width-increment                 1
+	    treemacs-width-is-initially-locked       t
+	    treemacs-workspace-switch-cleanup        nil)
 
-(with-eval-after-load 'winum
-  (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+      ;; The default width and height of the icons is 22 pixels. If you are
+      ;; using a Hi-DPI display, uncomment this to double the icon size.
+      ;;(treemacs-resize-icons 44)
 
-(with-eval-after-load 'treemacs
-  (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-        treemacs-deferred-git-apply-delay        0.5
-        treemacs-directory-name-transformer      #'identity
-        treemacs-display-in-side-window          t
-        treemacs-eldoc-display                   'simple
-        treemacs-file-event-delay                5000
-        treemacs-file-extension-regex            treemacs-last-period-regex-value
-        treemacs-file-follow-delay               0.2
-        treemacs-file-name-transformer           #'identity
-        treemacs-follow-after-init               t
-        treemacs-expand-after-init               t
-        treemacs-find-workspace-method           'find-for-file-or-pick-first
-        treemacs-git-command-pipe                ""
-        treemacs-goto-tag-strategy               'refetch-index
-        treemacs-header-scroll-indicators        '(nil . "^^^^^^")
-        treemacs-hide-dot-git-directory          t
-      treemacs-indentation                     2
-      treemacs-indentation-string              " "
-        treemacs-is-never-other-window           nil
-        treemacs-max-git-entries                 5000
-        treemacs-missing-project-action          'ask
-        treemacs-move-forward-on-expand          nil
-        treemacs-no-png-images                   nil
-        treemacs-no-delete-other-windows         t
-        treemacs-project-follow-cleanup          nil
-        treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-        treemacs-position                        'left
-        treemacs-read-string-input               'from-child-frame
-        treemacs-recenter-distance               0.1
-        treemacs-recenter-after-file-follow      nil
-        treemacs-recenter-after-tag-follow       nil
-        treemacs-recenter-after-project-jump     'always
-        treemacs-recenter-after-project-expand   'on-distance
-        treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
-        treemacs-show-cursor                     nil
-        treemacs-show-hidden-files               t
-        treemacs-silent-filewatch                nil
-        treemacs-silent-refresh                  nil
-        treemacs-sorting                         'alphabetic-asc
-        treemacs-select-when-already-in-treemacs 'move-back
-        treemacs-space-between-root-nodes        t
-        treemacs-tag-follow-cleanup              t
-        treemacs-tag-follow-delay                1.5
-        treemacs-text-scale                      nil
-        treemacs-user-mode-line-format           nil
-        treemacs-user-header-line-format         nil
-        treemacs-wide-toggle-width               70
-        treemacs-width                           35
-        treemacs-width-increment                 1
-        treemacs-width-is-initially-locked       t
-        treemacs-workspace-switch-cleanup        nil)
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (treemacs-fringe-indicator-mode 'always)
+      (when treemacs-python-executable
+	(treemacs-git-commit-diff-mode t))
 
-  ;; The default width and height of the icons is 22 pixels. If you are
-  ;; using a Hi-DPI display, uncomment this to double the icon size.
-  ;;(treemacs-resize-icons 44)
+      (pcase (cons (not (null (executable-find "git")))
+		   (not (null treemacs-python-executable)))
+	(`(t . t)
+	 (treemacs-git-mode 'deferred))
+	(`(t . _)
+	 (treemacs-git-mode 'simple)))
 
-  (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t)
-  (treemacs-fringe-indicator-mode 'always)
-  (when treemacs-python-executable
-    (treemacs-git-commit-diff-mode t))
+      (treemacs-hide-gitignored-files-mode nil))
+    :bind
+    (:map global-map
+	  ("M-0"       . treemacs-select-window)
+	  ("C-x t 1"   . treemacs-delete-other-windows)
+	  ("C-x t t"   . treemacs)
+	  ("C-x t d"   . treemacs-select-directory)
+	  ("C-x t B"   . treemacs-bookmark)
+	  ("C-x t C-t" . treemacs-find-file)
+	  ("C-x t M-t" . treemacs-find-tag)))
 
-  (pcase (cons (not (null (executable-find "git")))
-               (not (null treemacs-python-executable)))
-    (`(t . t)
-     (treemacs-git-mode 'deferred))
-    (`(t . _)
-     (treemacs-git-mode 'simple)))
+  (use-package treemacs-evil
+    :after (treemacs evil)
+    :straight t)
 
-  (treemacs-hide-gitignored-files-mode nil))
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :straight t)
 
-#+end_src
+  (use-package treemacs-icons-dired
+    :hook (dired-mode . treemacs-icons-dired-enable-once)
+    :straight t)
 
-** treemacs-evil
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :straight t)
 
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'treemacs-evil)
+  (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+    :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+    :straight t
+    :config (treemacs-set-scope-type 'Perspectives))
 
-(with-eval-after-load 'treemacs
-  (with-eval-after-load 'evil
-    (require 'treemacs-evil)))
-
-#+end_src
-
-** treemacs-projectile
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'treemacs-projectile)
-
-(with-eval-after-load 'treemacs
-  (with-eval-after-load 'projectile
-    (require 'treemacs-projectile)))
-
-#+end_src
-
-** treemacs-icons-dired
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'treemacs-icons-dired)
-
-(add-hook 'dired-mode-hook #'treemacs-icons-dired-enable-once)
-
-#+end_src
-
-** treemacs-magit
-
-#+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'treemacs-magit)
-
-(with-eval-after-load 'magit
-  (require 'treemacs-magit))
+  (use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
+    :after (treemacs)
+    :straight t
+    :config (treemacs-set-scope-type 'Tabs))
 
 #+end_src
 
@@ -2149,26 +1711,28 @@ Windows用の設定です。
 保存時などに自動的にフォーマットしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'apheleia)
 
-(add-hook 'python-mode-hook 'apheleia-mode)
+  (use-package apheleia
+    :straight t
+    :hook (python-mode . apheleia-mode))
 
 #+end_src
 
 * string-inflection
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'string-inflection)
 
-(define-key my-string-inflection-map (kbd "a") #'string-inflection-all-cycle)
-(define-key my-string-inflection-map (kbd "_") #'string-inflection-underscore)
-(define-key my-string-inflection-map (kbd "p") #'string-inflection-pascal-case)
-(define-key my-string-inflection-map (kbd "c") #'string-inflection-camelcase)
-(define-key my-string-inflection-map (kbd "u") #'string-inflection-upcase)
-(define-key my-string-inflection-map (kbd "k") #'string-inflection-kebab-case)
-(define-key my-string-inflection-map (kbd "C") #'string-inflection-capital-underscore)
+  (use-package string-inflection
+    :straight t
+    :bind (nil
+	   :map my-string-inflection-map
+	   ("a" . string-inflection-all-cycle)
+	   ("_" . string-inflection-underscore)
+	   ("p" . string-inflection-pascal-case)
+	   ("c" . string-inflection-camelcase)
+	   ("u" . string-inflection-upcase)
+	   ("k" . string-inflection-kebab-case)
+	   ("C" . string-inflection-capital-underscore)))
 
 #+end_src
 
@@ -2177,20 +1741,19 @@ Windows用の設定です。
 EmacsでLSP機能が利用できるようになります。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'lsp-mode)
 
-(setq lsp-keymap-prefix "M-l"
-      read-process-output-max (* 1024 1024))
-
-(add-hook 'lsp-mode-hook (lambda ()
-                           (with-eval-after-load 'evil
-                             (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
-(add-hook 'html-mode-hook #'lsp)
-(add-hook 'css-mode-hook #'lsp)
-(add-hook 'rust-mode-hook #'lsp)
-(add-hook 'nxml-mode-hook #'lsp)
-(add-hook 'js-mode-hook #'lsp)
+  (use-package lsp-mode
+    :straight t
+    :custom ((lsp-keymap-prefix "M-l")
+	     (read-process-output-max (* 1024 1024)))
+    :hook ((lsp-mode . (lambda ()
+			 (with-eval-after-load 'evil
+			   (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
+	   (html-mode . lsp)
+	   (css-mode . lsp)
+	   (rust-mode . lsp)
+	   (nxml-mode . lsp)
+	   (js-mode . lsp)))
 
 #+end_src
 
@@ -2199,8 +1762,10 @@ EmacsでLSP機能が利用できるようになります。
 UIを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'lsp-ui)
+
+  (use-package lsp-ui
+    :straight t
+    :after lsp-mode)
 
 #+end_src
 
@@ -2209,12 +1774,13 @@ UIを提供してくれます。
 JavaのLSは特殊なため、専用の拡張パッケージをインストールします。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'lsp-java)
 
-(add-hook 'java-mode-hook (lambda ()
-                            (require 'lsp-java)
-                            (lsp)))
+  (use-package lsp-java
+    :straight t
+    :after lsp-mode java-mode
+    :hook (java-mode . (lambda ()
+			 (require 'lsp-java)
+			 (lsp))))
 
 #+end_src
 
@@ -2223,12 +1789,13 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ~pyright~ を利用したい場合、こちらのパッケージをインストールします。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'lsp-pyright)
 
-(add-hook 'python-mode-hook (lambda ()
-                              (require 'lsp-pyright)
-                              (lsp)))
+  (use-package lsp-pyright
+    :straight t
+    :after lsp-mode python-mode
+    :hook (python-mode . (lambda ()
+			   (require 'lsp-pyright)
+			   (lsp))))
 
 #+end_src
 
@@ -2237,8 +1804,10 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ~treemacs~ と ~lsp-mode~ を組み合わせてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'lsp-treemacs)
+
+  (use-package lsp-treemacs
+    :straight t
+    :after lsp-mode treemacs)
 
 #+end_src
 
@@ -2253,10 +1822,10 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 既知のシンボルに色を付けてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
-(straight-use-package 'highlight-defined)
 
-(add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)
+  (use-package highlight-defined
+    :straight t
+    :hook (emacs-lisp-mode . highlight-defined-mode))
 
 #+end_src
 
@@ -2266,9 +1835,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'highlight-quoted)
-
-(add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode)
+(use-package highlight-quoted
+  :straight t
+  :hook (emacs-lisp-mode . highlight-quoted-mode))
 
 #+end_src
 
@@ -2276,8 +1845,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'java-mode-hook (lambda ()
-                            (setq-local tab-width 2)))
+  (add-hook 'java-mode-hook (lambda ()
+			      (setq-local tab-width 2)))
 
 #+end_src
 
@@ -2285,7 +1854,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
 
 #+end_src
 
@@ -2295,8 +1864,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'html-mode-hook (lambda()
-                            (setq-local tab-width 2)))
+  (add-hook 'html-mode-hook (lambda()
+			      (setq-local tab-width 2)))
 
 #+end_src
 
@@ -2304,8 +1873,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'css-mode-hook (lambda ()
-                           (setq-local tab-width 2)))
+  (add-hook 'css-mode-hook (lambda ()
+			     (setq-local tab-width 2)))
 
 #+end_src
 
@@ -2313,8 +1882,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'js-mode-hook (lambda ()
-                          (setq-local tab-width 2)))
+  (add-hook 'js-mode-hook (lambda ()
+			    (setq-local tab-width 2)))
 
 #+end_src
 
@@ -2324,10 +1893,10 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'emmet-mode)
-
-(add-hook 'html-mode-hook 'emmet-mode)
-(add-hook 'css-mode-hook 'emmet-mode)
+(use-package emmet-mode
+  :straight t
+  :hook ((html-mode . emmet-mode)
+	 (css-mode . emmet-mode)))
 
 #+end_src
 
@@ -2337,7 +1906,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'web-beautify)
+(use-package web-beautify
+  :straight t)
 
 #+end_src
 
@@ -2345,10 +1915,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'rust-mode)
-
-(add-hook 'rust-mode-hook (lambda ()
-                            (setq-local tab-width 4)))
+(use-package rust-mode
+  :straight t
+  :hook (rust-mode . (lambda () (setq-local tab-width 4))))
 
 #+end_src
 
@@ -2356,9 +1925,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'cargo)
-
-(add-hook 'rust-mode-hook 'cargo-minor-mode)
+(use-package cargo
+  :straight t
+  :hook (rust-mode . cargo-minor-mode))
 
 #+end_src
 
@@ -2368,7 +1937,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'pyvenv)
+(use-package pyvenv
+  :straight t)
 
 #+end_src
 
@@ -2378,9 +1948,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'slime)
-
-(setq inferior-lisp-program "sbcl")
+(use-package slime
+  :straight t
+  :custom (inferior-lisp-program "sbcl"))
 
 #+end_src
 
@@ -2388,11 +1958,11 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'slime-company)
-
-(with-eval-after-load 'company
-  (with-eval-after-load 'slime
-    (slime-setup '(slime-fancy slime-company slime-banner))))
+(use-package slime-company
+  :straight t
+  :after company slime
+  :config
+  (slime-setup '(slime-fancy slime-company slime-banner)))
 
 #+end_src
 
@@ -2402,9 +1972,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'sql-indent)
-
-(add-hook 'sql-mode-hook 'sqlind-minor-mode)
+(use-package sql-indent
+  :straight t
+  :hook (sql-mode . sqlind-minor-mode))
 
 #+end_src
 
@@ -2412,8 +1982,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'nxml-mode-hook (lambda ()
-                            (setq-local tab-width 4)))
+  (add-hook 'nxml-mode-hook (lambda ()
+			      (setq-local tab-width 4)))
 
 #+end_src
 
@@ -2421,9 +1991,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'markdown-mode-hook (lambda ()
-                                (setq-local tab-width 4
-                                            indent-tabs-mode nil)))
+  (add-hook 'markdown-mode-hook (lambda ()
+				  (setq-local tab-width 4
+					      indent-tabs-mode nil)))
 
 #+end_src
 
@@ -2431,9 +2001,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'sqlformat)
-
-(setq sqlformat-command "sqlfluff")
+(use-package sqlformat
+  :straight t
+  :custom (sqlformat-command "sqlfluff"))
 
 #+end_src
 
@@ -2441,7 +2011,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(provide 'config)
-;;; late-init.el ends here
+  (provide 'config)
+  ;;; late-init.el ends here
 
 #+end_src
