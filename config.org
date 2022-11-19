@@ -1162,25 +1162,6 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-* [[https://github.com/radian-software/ctrlf][ctrlf]]
-
-~isearch~ のような操作感でより使いやすい検索パッケージです。
-~fuzzy~ スタイルにすることでスペースによる絞り込みができます。
-上矢印キー・下矢印キーを入力すると過去の履歴で検索してくれます。
-
-#+begin_src emacs-lisp :tangle yes
-
-  (use-package ctrlf
-    :straight t
-    :custom (ctrlf-default-search-style 'fuzzy)
-    :bind (nil
-	   :map search-map
-	   ("s" . ctrlf-forward-default))
-    :init
-    (ctrlf-mode +1))
-
-#+end_src
-
 * [[https://magit.vc/][magit]]
 
 Emacs上でGitを快適に操作できるようにしてくれます。
