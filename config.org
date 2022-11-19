@@ -962,6 +962,7 @@ aaa -> (aaa)
 	 ("g" . consult-grep)
 	 ("G" . consult-git-grep)
 	 ("r" . consult-ripgrep)
+	 ("R" . consult-ripgrep-current-directory)
 	 ("l" . consult-line)
 	 ("L" . consult-line-multi)
 	 ("m" . consult-multi-occur)
@@ -1039,6 +1040,10 @@ aaa -> (aaa)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+
+  (defun consult-ripgrep-current-directory ()
+    (interactive)
+    (consult-ripgrep default-directory))
   )
 
 #+end_src
@@ -1059,12 +1064,6 @@ aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
   
-(defun consult-ripgrep-current-directory ()
-  (interactive)
-  (consult-ripgrep default-directory))
-
-(define-key search-map (kbd "R") #'consult-ripgrep-current-directory)
-
 #+end_src
 
 * [[https://github.com/minad/marginalia][marginalia]]
@@ -1075,7 +1074,8 @@ aaa -> (aaa)
   
 (use-package marginalia
   :straight t
-  :hook (after-init . marginalia-mode))
+  :init
+  (marginalia-mode +1))
 
 #+end_src
 
@@ -1124,7 +1124,8 @@ vertico の候補等に様々なアクションを提供してくれます。
   
 (use-package yasnippet
   :straight t
-  :hook (after-init . yas-global-mode))
+  :init
+  (yas-global-mode +1))
 
 #+end_src
 
@@ -1148,7 +1149,8 @@ vertico の候補等に様々なアクションを提供してくれます。
   
 (use-package dtrt-indent
   :straight t
-:hook (after-init . dtrt-indent-global-mode))
+  :init
+(dtrt-indent-global-mode +1))
 
 #+end_src
 
