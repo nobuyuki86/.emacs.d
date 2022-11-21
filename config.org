@@ -11,6 +11,51 @@
 
 #+end_src
 
+* evil用のマイナーモード、キーマップ作成
+
+~Spacemacs~ のようにスペースを起点にコマンドを実行するために定義しています。
+
+#+begin_src emacs-lisp :tangle yes
+
+  (defvar my-intercept-mode-map (make-sparse-keymap)
+    "High precedence keymap.")
+
+  (define-minor-mode my-intercept-mode
+    "Global minor mode for higher precedence evil keybindings."
+    :global t)
+
+  (my-intercept-mode)
+
+  (defvar my-quit-map (make-sparse-keymap)
+    "My quit keymap.")
+
+  (defvar my-file-map (make-sparse-keymap)
+    "My file keymap.")
+
+  (defvar my-buffer-map (make-sparse-keymap)
+    "My buffer keymap.")
+
+  (defvar my-error-map (make-sparse-keymap)
+    "My error keymap.")
+
+  (defvar my-toggle-map (make-sparse-keymap)
+    "My toggle keymap.")
+
+  (defvar my-org-map (make-sparse-keymap)
+    "My error keymap.")
+
+  (defvar my-string-inflection-map (make-sparse-keymap)
+    "My string-inflection keymap.")
+
+  (define-key my-quit-map (kbd "q") #'save-buffers-kill-terminal)
+  (define-key my-file-map (kbd "f") #'find-file)
+  (define-key my-file-map (kbd "b") #'bookmark-jump)
+  (define-key my-buffer-map (kbd "b") #'switch-to-buffer)
+  (define-key my-buffer-map (kbd "d") #'kill-this-buffer)
+  (define-key my-buffer-map (kbd "p") #'project-switch-to-buffer)
+
+#+end_src
+
 * straight
 
 Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
@@ -32,91 +77,10 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** bind-key
-
 #+begin_src emacs-lisp :tangle yes
 
   (use-package bind-key
     :straight t)
-
-#+end_src
-
-** general
-
-#+begin_src emacs-lisp :tangle yes
-
-  (use-package general
-    :straight t
-    :general
-    (:states '(normal visual) :keymaps 'override :prefix "SPC" :prefix-command 'space-command)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC s" :prefix-command 'search-map)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC g" :prefix-command 'goto-map)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC 5" :prefix-command 'ctl-x-5-map)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC q" :prefix-command 'quit-command)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC f" :prefix-command 'file-command)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC b" :prefix-command 'buffer-command)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC e" :prefix-command 'error-command)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC t" :prefix-command 'toggle-command)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC o" :prefix-command 'org-command)
-    (:states '(normal visual) :keymaps 'override :prefix "SPC S" :prefix-command 'string-inflection-command)
-    :init
-    (setq general-override-states '(insert
-				    emacs
-				    hybrid
-				    normal
-				    visual
-				    motion
-				    operator
-				    replace)))
-
-    #+end_src
-
-*** Emacs標準のコマンドを設定
-
-#+begin_src emacs-lisp :tangle yes
-
-  (use-package simple
-    :bind
-    (:map space-command
-	  ("SPC" . execute-extended-command)))
-
-  (use-package files
-    :bind
-    (:map quit-command
-	  ("q" . save-buffers-kill-terminal))
-    (:map file-command
-	  ("f" . find-file)))
-
-  (use-package bookmark
-    :bind
-    (:map file-command
-	  ("b" . bookmark-jump)))
-
-  (use-package window
-    :bind
-    (:map space-command
-	  ("0" . delete-window)
-	  ("1" . delete-other-windows)
-	  ("2" . split-window-below)
-	  ("3" . split-window-right)
-	  ("4" . switch-to-buffer-other-window))
-    (:map buffer-command
-	  ("b" . switch-to-buffer)))
-
-  (use-package frame
-    :bind
-    (:map space-command
-	  ("W" . other-frame)))
-
-  (use-package menu-bar
-    :bind
-    (:map buffer-command
-	  ("d" . kill-this-buffer)))
-
-  (use-package project
-    :bind
-    (:map buffer-command
-	  ("p" . project-switch-to-buffer)))
 
 #+end_src
 
@@ -130,11 +94,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
     :custom ((org-directory "~/org/")
 	     (org-startup-folded 'content)
 	     (org-fold-core-style 'overlays))
-    :bind
-    (:map org-command
-	  ("o" . org-open-at-point)
-	  ("l" . org-link)
-	  ("e" . org-edit-special)))
+    :bind (nil
+	   :map my-org-map
+	   ("o" . org-open-at-point)
+	   ("l" . org-link)
+	   ("e" . org-edit-special)))
 
 #+end_src
 
@@ -149,9 +113,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 				      "* TODO %?\n  %i\n  %a")
 				     ("j" "Journal" entry (file+datetree "~/org/journal.org")
 				      "* %?\nEntered on %U\n  %i\n  %a")))
-    :bind
-    (:map org-command
-	  ("c" . org-capture)))
+    :bind (nil
+	   :map my-org-map
+	   ("c" . org-capture)))
 
 #+end_src
 
@@ -164,9 +128,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
   (use-package org-agenda
     :custom (org-agenda-files (directory-files org-directory))
-    :bind
-    (:map org-command
-	  ("a" . org-agenda)))
+    :bind (nil
+	   :map my-org-map
+	   ("a" . org-agenda)))
 
 #+end_src
 
@@ -178,9 +142,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
   (use-package org-pomodoro
     :straight t
-    :bind
-    (:map org-command
-	  ("p" . org-pomodoro)))
+    :bind (nil
+	   :map my-org-map
+	   ("p" . org-pomodoro)))
 
 #+end_src
 
@@ -209,10 +173,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 	     (denote-allow-multi-word-keywords t)
 	     (denote-date-format nil)
 	     (denote-link-fontify-backlinks t))
-    :general
-    (:states '(normal visual) :keymaps 'override :prefix "SPC"
-	     "d" #'denote)
-    :hook (dired-mode . denote-dired-mode-in-directories))
+    :hook (dired-mode . denote-dired-mode-in-directories)
+    :init
+    (with-eval-after-load 'evil
+      (evil-define-key '(normal visual) my-intercept-mode-map
+	(kbd "SPC d") #'denote)))
 
 #+end_src
 
@@ -224,9 +189,10 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
     :straight t
     :after consult
     :custom (consult-notes-sources `(("Notes" ?n ,denote-directory)))
-    :general
-    (:states '(normal visual) :keymaps 'override :prefix "SPC"
-	     "n" #'consult-notes))
+    :init
+    (with-eval-after-load 'evil
+      (evil-define-key '(normal visual) my-intercept-mode-map
+	(kbd "SPC n") #'consult-notes)))
 
 #+end_src
 
@@ -572,11 +538,36 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
     :custom ((evil-want-keybinding nil)
 	     (evil-symbol-word-search t)
 	     (evil-kill-on-visual-paste nil))
-    :bind
-    (:map space-command
-	  ("w" . evil-window-next))
     :init
-    (evil-mode +1))
+    (evil-mode +1)
+
+    :config
+    (dolist (state '(normal visual insert))
+      (evil-make-intercept-map
+       ;; NOTE: This requires an evil version from 2018-03-20 or later
+       (evil-get-auxiliary-keymap my-intercept-mode-map state t t)
+       state))
+
+    (evil-define-key '(normal visual) my-intercept-mode-map
+      (kbd "SPC SPC") 'execute-extended-command
+      (kbd "SPC s") `("search" . ,search-map)
+      (kbd "SPC g") `("goto" . ,goto-map)
+      (kbd "SPC q") `("quit" . ,my-quit-map)
+      (kbd "SPC f") `("file" . ,my-file-map)
+      (kbd "SPC b") `("buffer" . ,my-buffer-map)
+      (kbd "SPC e") `("error" . ,my-error-map)
+      (kbd "SPC t") `("toggle" . ,my-toggle-map)
+      (kbd "SPC o") `("org" . ,my-org-map)
+      (kbd "SPC c") `("string-inflection" . ,my-string-inflection-map)
+      (kbd "SPC 5") `("C-x 5" . ,ctl-x-5-map)
+      (kbd "SPC 0") 'delete-window
+      (kbd "SPC 1") 'delete-other-windows
+      (kbd "SPC 2") 'split-window-below
+      (kbd "SPC 3") 'split-window-right
+      (kbd "SPC 4") 'switch-to-buffer-other-window
+      (kbd "SPC 5") 'ctl-x-5-prefix
+      (kbd "SPC w") 'evil-window-next
+      (kbd "SPC W") 'other-frame))
 
 #+end_src
 
@@ -904,10 +895,11 @@ aaa -> (aaa)
   (use-package vertico-repeat
     :after vertico
     :load-path "straight/build/vertico/extensions/"
-    :general
-    (:states '(normal visual) :keymaps 'override :prefix "SPC"
-	     "z" #'vertico-repeat)
-    :hook (minibuffer-setup . vertico-repeat-save))
+    :hook (minibuffer-setup . vertico-repeat-save)
+    :init
+    (with-eval-after-load 'evil
+      (evil-define-key '(normal visual) my-intercept-mode-map
+	(kbd "SPC z") 'vertico-repeat)))
 
 #+end_src
 
@@ -1062,9 +1054,9 @@ aaa -> (aaa)
 
   (use-package consult-dir
     :straight t
-    :bind
-    (:map file-command
-	  ("d" . consult-dir)))
+    :bind (nil
+	   :map my-file-map
+	   ("d" . consult-dir)))
 
 #+end_src
 
@@ -1208,11 +1200,13 @@ Emacs上でGitを快適に操作できるようにしてくれます。
     :bind (nil
 	   :map projectile-mode-map
 	   ("C-c p" . projectile-command-map))
-    :general
-    (:states '(normal visual) :keymaps 'override :prefix "SPC"
-	     "p" projectile-command-map)
     :init
-    (projectile-mode +1))
+    (projectile-mode +1)
+
+    :config
+    (with-eval-after-load 'evil
+      (evil-define-key 'normal my-intercept-mode-map
+	(kbd "SPC p") `("projectile" . projectile-command-map))))
 
 #+end_src
 
@@ -1224,11 +1218,11 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
   (use-package flycheck
     :straight t
-    :bind
-    (:map error-command
-	  ("n" . flycheck-next-error)
-	  ("p" . flycheck-previous-error)
-	  ("l" . flycheck-list-errors))
+    :bind (nil
+	   :map my-error-map
+	   ("l" . flycheck-list-errors)
+	   ("n" . flycheck-next-error)
+	   ("p" . flycheck-previous-error))
     :init
     (global-flycheck-mode +1))
 
@@ -1264,9 +1258,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   (use-package consult-flycheck
     :straight t
     :after flycheck consult
-    :bind
-    (:map error-command
-	  ("e" . consult-flycheck)))
+    :bind (nil
+	   :map my-error-map
+	   ("e" . consult-flycheck)))
 
 #+end_src
 
@@ -1279,14 +1273,13 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   (use-package undo-tree
     :straight t
     :custom (undo-tree-auto-save-history nil)
-    :general
-    (:states '(normal visual) :keymaps 'override :prefix "SPC"
-	     "u" #'undo-tree-visualize)
     :init
     (global-undo-tree-mode +1)
     :config
     (with-eval-after-load 'evil
-      (evil-set-undo-system 'undo-tree)))
+      (evil-set-undo-system 'undo-tree)
+      (evil-define-key 'normal my-intercept-mode-map
+	(kbd "SPC u") 'undo-tree-visualize)))
 
 #+end_src
 
@@ -1324,9 +1317,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
     :custom ((highlight-indent-guides-method 'character)
 	     (highlight-indent-guides-character 124)
 	     (highlight-indent-guides-responsive 'top))
-    :bind
-    (:map toggle-command
-	  ("i" . highlight-indent-guides-mode))
+    :bind (nil
+	   :map my-toggle-map
+	   ("i" . highlight-indent-guides-mode))
     :hook (prog-mode . highlight-indent-guides-mode))
 
 #+end_src
@@ -1370,9 +1363,9 @@ Emacsを再起動してくれます。
 
   (use-package restart-emacs
     :straight t
-    :bind
-    (:map quit-command
-	  ("r" . restart-emacs)))
+    :bind (nil
+	   :map my-quit-map
+	   ("r" . restart-emacs)))
 
 #+end_src
 
@@ -1412,9 +1405,10 @@ Emacsを再起動してくれます。
   (use-package expand-region
     :straight t
     :bind ("C-=" . er/expand-region)
-    :general
-    (:states '(normal visual) :keymaps 'override :prefix "SPC"
-	     "v" #'er/expand-region))
+    :init
+    (with-eval-after-load 'evil
+      (evil-define-key '(normal visual) my-intercept-mode-map
+	(kbd "SPC v") 'er/expand-region)))
 
 #+end_src
 
@@ -1683,16 +1677,15 @@ Windows用の設定です。
 
   (use-package string-inflection
     :straight t
-    :bind
-    (:map string-inflection-command
-	  ("r" . restart-emacs)
-	  ("a" . string-inflection-all-cycle)
-	  ("_" . string-inflection-underscore)
-	  ("p" . string-inflection-pascal-case)
-	  ("c" . string-inflection-camelcase)
-	  ("u" . string-inflection-upcase)
-	  ("k" . string-inflection-kebab-case)
-	  ("C" . string-inflection-capital-underscore)))
+    :bind (nil
+	   :map my-string-inflection-map
+	   ("a" . string-inflection-all-cycle)
+	   ("_" . string-inflection-underscore)
+	   ("p" . string-inflection-pascal-case)
+	   ("c" . string-inflection-camelcase)
+	   ("u" . string-inflection-upcase)
+	   ("k" . string-inflection-kebab-case)
+	   ("C" . string-inflection-capital-underscore)))
 
 #+end_src
 
