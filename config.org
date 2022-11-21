@@ -209,8 +209,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 	     (denote-allow-multi-word-keywords t)
 	     (denote-date-format nil)
 	     (denote-link-fontify-backlinks t))
-    :bind (:map space-command
-		("d" . denote))
+    :general
+    (:states '(normal visual) :keymaps 'override :prefix "SPC"
+	     "d" #'denote)
     :hook (dired-mode . denote-dired-mode-in-directories))
 
 #+end_src
@@ -223,8 +224,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
     :straight t
     :after consult
     :custom (consult-notes-sources `(("Notes" ?n ,denote-directory)))
-    :bind (:map space-command
-		("n" . consult-notes)))
+    :general
+    (:states '(normal visual) :keymaps 'override :prefix "SPC"
+	     "n" #'consult-notes))
 
 #+end_src
 
