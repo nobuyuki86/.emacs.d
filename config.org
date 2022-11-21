@@ -76,40 +76,47 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
 
   (use-package simple
-    :bind (:map space-command
-		("SPC" . execute-extended-command)))
+    :bind
+    (:map space-command
+	  ("SPC" . execute-extended-command)))
 
   (use-package files
-    :bind ((:map quit-command
-		 ("q" . save-buffers-kill-terminal))
-	   (:map file-command
-		 ("f" . find-file))))
+    :bind
+    (:map quit-command
+	  ("q" . save-buffers-kill-terminal))
+    (:map file-command
+	  ("f" . find-file)))
 
   (use-package bookmark
-    :bind (:map file-command
-		("b" . bookmark-jump)))
+    :bind
+    (:map file-command
+	  ("b" . bookmark-jump)))
 
   (use-package window
-    :bind ((:map space-command
-		 ("0" . delete-window)
-		 ("1" . delete-other-windows)
-		 ("2" . split-window-below)
-		 ("3" . split-window-right)
-		 ("4" . switch-to-buffer-other-window))
-	   (:map buffer-command
-		 ("b" . switch-to-buffer))))
+    :bind
+    (:map space-command
+	  ("0" . delete-window)
+	  ("1" . delete-other-windows)
+	  ("2" . split-window-below)
+	  ("3" . split-window-right)
+	  ("4" . switch-to-buffer-other-window))
+    (:map buffer-command
+	  ("b" . switch-to-buffer)))
 
   (use-package frame
-    :bind (:map space-command
-		("W" . other-frame)))
+    :bind
+    (:map space-command
+	  ("W" . other-frame)))
 
   (use-package menu-bar
-    :bind (:map buffer-command
-		("d" . kill-this-buffer)))
+    :bind
+    (:map buffer-command
+	  ("d" . kill-this-buffer)))
 
   (use-package project
-    :bind (:map buffer-command
-		("p" . project-switch-to-buffer)))
+    :bind
+    (:map buffer-command
+	  ("p" . project-switch-to-buffer)))
 
 #+end_src
 
@@ -123,10 +130,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
     :custom ((org-directory "~/org/")
 	     (org-startup-folded 'content)
 	     (org-fold-core-style 'overlays))
-    :bind (:map org-command
-		("o" . org-open-at-point)
-		("l" . org-link)
-		("e" . org-edit-special)))
+    :bind
+    (:map org-command
+	  ("o" . org-open-at-point)
+	  ("l" . org-link)
+	  ("e" . org-edit-special)))
 
 #+end_src
 
@@ -141,8 +149,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 				      "* TODO %?\n  %i\n  %a")
 				     ("j" "Journal" entry (file+datetree "~/org/journal.org")
 				      "* %?\nEntered on %U\n  %i\n  %a")))
-    :bind (:map org-command
-		("c" . org-capture)))
+    :bind
+    (:map org-command
+	  ("c" . org-capture)))
 
 #+end_src
 
@@ -155,8 +164,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
   (use-package org-agenda
     :custom (org-agenda-files (directory-files org-directory))
-    :bind (:map org-command
-		("a" . org-agenda)))
+    :bind
+    (:map org-command
+	  ("a" . org-agenda)))
 
 #+end_src
 
@@ -168,8 +178,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
   (use-package org-pomodoro
     :straight t
-    :bind (:map org-command
-		("p" . org-pomodoro)))
+    :bind
+    (:map org-command
+	  ("p" . org-pomodoro)))
 
 #+end_src
 
@@ -559,8 +570,9 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
     :custom ((evil-want-keybinding nil)
 	     (evil-symbol-word-search t)
 	     (evil-kill-on-visual-paste nil))
-    :bind (:map space-command
-		("w" . evil-window-next))
+    :bind
+    (:map space-command
+	  ("w" . evil-window-next))
     :init
     (evil-mode +1))
 
@@ -906,8 +918,9 @@ aaa -> (aaa)
   (use-package vertico-directory
     :after vertico
     :load-path "straight/build/vertico/extensions/"
-    :bind (:map vertico-map
-		("<backspace>" . vertico-directory-delete-char)))
+    :bind (nil
+	   :map vertico-map
+	   ("<backspace>" . vertico-directory-delete-char)))
 
 #+end_src
 
@@ -1047,8 +1060,9 @@ aaa -> (aaa)
 
   (use-package consult-dir
     :straight t
-    :bind (:map file-command
-		("d" . consult-dir)))
+    :bind
+    (:map file-command
+	  ("d" . consult-dir)))
 
 #+end_src
 
@@ -1189,10 +1203,12 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
   (use-package projectile
     :straight t
-    :bind ((:map space-command
-		 ("p" . projectile-command-map))
-	   (:map projectile-mode-map
-		 ("C-c p" . projectile-command-map)))
+    :bind (nil
+	   :map projectile-mode-map
+	   ("C-c p" . projectile-command-map))
+    :general
+    (:states '(normal visual) :keymaps 'override :prefix "SPC"
+	     "p" projectile-command-map)
     :init
     (projectile-mode +1))
 
@@ -1206,10 +1222,11 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
   (use-package flycheck
     :straight t
-    :bind (:map error-command
-		("n" . flycheck-next-error)
-		("p" . flycheck-previous-error)
-		("l" . flycheck-list-errors))
+    :bind
+    (:map error-command
+	  ("n" . flycheck-next-error)
+	  ("p" . flycheck-previous-error)
+	  ("l" . flycheck-list-errors))
     :init
     (global-flycheck-mode +1))
 
@@ -1245,8 +1262,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   (use-package consult-flycheck
     :straight t
     :after flycheck consult
-    :bind (:map error-command
-		("e" . consult-flycheck)))
+    :bind
+    (:map error-command
+	  ("e" . consult-flycheck)))
 
 #+end_src
 
@@ -1304,8 +1322,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
     :custom ((highlight-indent-guides-method 'character)
 	     (highlight-indent-guides-character 124)
 	     (highlight-indent-guides-responsive 'top))
-    :bind (:map toggle-command
-		("i" . highlight-indent-guides-mode))
+    :bind
+    (:map toggle-command
+	  ("i" . highlight-indent-guides-mode))
     :hook (prog-mode . highlight-indent-guides-mode))
 
 #+end_src
@@ -1349,8 +1368,9 @@ Emacsを再起動してくれます。
 
   (use-package restart-emacs
     :straight t
-    :bind (:map quit-command
-		("r" . restart-emacs)))
+    :bind
+    (:map quit-command
+	  ("r" . restart-emacs)))
 
 #+end_src
 
@@ -1389,9 +1409,10 @@ Emacsを再起動してくれます。
 
   (use-package expand-region
     :straight t
-    :bind (("C-=" . er/expand-region)
-	   :map space-command
-	   ("v" . er/expand-region)))
+    :bind ("C-=" . er/expand-region)
+    :general
+    (:states '(normal visual) :keymaps 'override :prefix "SPC"
+	     "v" #'er/expand-region))
 
 #+end_src
 
@@ -1455,6 +1476,7 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
     (volatile-highlights-mode +1))
 
 #+end_src
+
 * [[https://github.com/jwiegley/alert][alert]]
 
 通知機能を利用できるようにします。
@@ -1659,15 +1681,16 @@ Windows用の設定です。
 
   (use-package string-inflection
     :straight t
-    :bind (:map string-inflection-command
-		("r" . restart-emacs)
-		("a" . string-inflection-all-cycle)
-		("_" . string-inflection-underscore)
-		("p" . string-inflection-pascal-case)
-		("c" . string-inflection-camelcase)
-		("u" . string-inflection-upcase)
-		("k" . string-inflection-kebab-case)
-		("C" . string-inflection-capital-underscore)))
+    :bind
+    (:map string-inflection-command
+	  ("r" . restart-emacs)
+	  ("a" . string-inflection-all-cycle)
+	  ("_" . string-inflection-underscore)
+	  ("p" . string-inflection-pascal-case)
+	  ("c" . string-inflection-camelcase)
+	  ("u" . string-inflection-upcase)
+	  ("k" . string-inflection-kebab-case)
+	  ("C" . string-inflection-capital-underscore)))
 
 #+end_src
 
