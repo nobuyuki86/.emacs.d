@@ -1805,9 +1805,7 @@ EmacsでLSP機能が利用できるようになります。
 	   (lsp-idle-delay 1.0)
 	   (lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request)))
   :general (:states '(normal visual) :keymaps 'lsp-mode-map :prefix "SPC m" :prefix-command 'lsp-command-map)
-  :hook (;; (lsp-mode . (lambda ()
-	 ;; 	       (with-eval-after-load 'evil
-	 ;; 		 (evil-local-set-key 'normal (kbd "SPC m") `("lsp" . ,lsp-command-map)))))
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
 	 (html-mode . lsp)
 	 (css-mode . lsp)
 	 (rust-mode . lsp)
