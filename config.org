@@ -1391,7 +1391,8 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 (use-package ef-themes
   :straight t
   :init
-  (load-theme 'ef-deuteranopia-light t))
+  ;; (load-theme 'ef-deuteranopia-light t)
+  )
 
 #+end_src
 
@@ -1412,7 +1413,12 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 #+begin_src emacs-lisp :tangle yes
   
 (use-package doom-themes
-  :straight t)
+  :straight t
+  :init
+  (load-theme 'doom-nord-light t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-treemacs-config)
+  (doom-themes-org-config))
 
 #+end_src
 
