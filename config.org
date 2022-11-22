@@ -80,7 +80,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   
 (use-package org
   :demand t
-  :custom ((org-startup-folded t)
+  :custom ((org-startup-folded 'content)
 	   (org-fold-core-style 'overlays))
   :bind (nil
 	 :map my-org-map
