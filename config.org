@@ -434,7 +434,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 	 ("b" . switch-to-buffer)))
 
 (use-package frame
-  :bind (nil
+  :bind (("<f12>" . other-frame)
 	 :map my-space-map
 	 ("W" . other-frame)))
 
