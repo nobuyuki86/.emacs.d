@@ -775,6 +775,8 @@ aaa -> (aaa)
   
 (use-package prescient
   :straight t
+  :custom ((prescient-aggressive-file-save t)
+	   (prescient-use-case-folding t))
   :config
   (prescient-persist-mode +1)
 
@@ -805,7 +807,7 @@ aaa -> (aaa)
   
 (use-package vertico-prescient
   :straight t
-  :custom ((vertico-prescient-completion-styles '(fussy basic))
+  :custom ((vertico-prescient-enable-filtering nil)
 	   (vertico-prescient-override-sorting t))
   :init
   (vertico-prescient-mode +1))
