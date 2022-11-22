@@ -1348,7 +1348,8 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package rg :straight t)
+(use-package rg
+  :straight t)
 
 #+end_src
 
@@ -2059,16 +2060,6 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
   :hook (markdown-mode . (lambda ()
 			   (setq-local tab-width 4
 				       indent-tabs-mode nil))))
-
-#+end_src
-
-*** sql
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package sqlformat
-  :straight t
-  :custom (sqlformat-command "sqlfluff"))
 
 #+end_src
 
