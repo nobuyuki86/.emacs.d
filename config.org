@@ -1727,6 +1727,12 @@ Windows用の設定です。
   :after (treemacs magit)
   :straight t)
 
+(use-package treemacs-all-the-icons
+  :straight t
+  :after treemacs treemacs-icons-dired
+  :config
+  (treemacs-load-theme "all-the-icons"))
+
 #+end_src
 
 * [[https://github.com/radian-software/apheleia][apheleia]]
