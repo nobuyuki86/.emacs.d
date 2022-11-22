@@ -375,7 +375,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   
 (use-package menu-bar
   :init
-
   (menu-bar-mode -1))
 
 #+end_src
