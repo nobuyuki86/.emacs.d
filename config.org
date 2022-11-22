@@ -1384,15 +1384,6 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 * theme
 
-#+begin_src emacs-lisp :tangle yes
-  
-(with-eval-after-load 'consult
-  (defadvice consult-theme (after themes-first activate)
-    (with-eval-after-load 'spaceline
-      (spaceline-spacemacs-theme))))
-
-#+end_src
-
 ** ef-themes
 
 #+begin_src emacs-lisp :tangle yes
