@@ -1,7 +1,8 @@
 #+TITLE: config.el
 #+AUTHOR: Nobuyuki Kamimoto
 
-* header
+* config
+** header
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -11,7 +12,7 @@
 
 #+end_src
 
-* OS判定用定数
+** OS判定用定数
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -21,7 +22,7 @@
 
 #+end_src
 
-* straight
+** straight
 
 Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 たどり着いたパッケージマネージャー。
@@ -34,7 +35,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 | straight-freeze-versions | ロックファイルを作成                                                    |
 | straight-thaw-versions   | ロックファイルのバージョンでインストールックファイルのバージョンでインストール |
 
-* use-package
+** use-package
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -42,7 +43,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-* bind-key
+** bind-key
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -51,7 +52,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-* general
+** general
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -72,7 +73,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-* org
+** org
 
 ~org-mode~ に関する基本的な設定をしています。
 
@@ -90,7 +91,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** org-agenda
+*** org-agenda
 
 ~org-agenda~ のキーバインドを設定しています。
 また、同じ内容が２行表示されることがあったので、フックを追加しています。
@@ -105,7 +106,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** [[https://github.com/marcinkoziej/org-pomodoro][org-pomodoro]]
+*** [[https://github.com/marcinkoziej/org-pomodoro][org-pomodoro]]
 
 カーソル上のタスクでポモドーロタイマーを設定してくれます。
 
@@ -119,7 +120,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** org-rainbow-tags
+*** org-rainbow-tags
 
 #+begin_src emacs-lisp :tangle no
   
@@ -130,7 +131,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** [[https://github.com/0x60df/ox-qmd][ox-qmd]] (qiita投稿用)
+*** [[https://github.com/0x60df/ox-qmd][ox-qmd]] (qiita投稿用)
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -139,7 +140,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** denote
+*** denote
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -162,7 +163,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-*** consult-notes
+**** consult-notes
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -175,9 +176,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-* Emacs標準機能の設定
+** Emacs標準機能の設定
 
-** 最適化
+*** 最適化
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -198,7 +199,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 画面の更新頻度
+*** 画面の更新頻度
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -207,7 +208,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 補完時に大文字小文字を区別しない
+*** 補完時に大文字小文字を区別しない
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -217,7 +218,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** yes-or-noをy-or-nに変更
+*** yes-or-noをy-or-nに変更
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -225,7 +226,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 自動生成ファイルを無効にする
+*** 自動生成ファイルを無効にする
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -235,7 +236,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** デーモン起動
+*** デーモン起動
 
 ~emacsclient~ コマンドで高速にファイルが開けます。
 
@@ -247,7 +248,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 最後のカーソル位置を保存する
+*** 最後のカーソル位置を保存する
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -257,7 +258,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** ファイルの閲覧履歴を保存する
+*** ファイルの閲覧履歴を保存する
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -268,7 +269,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** コマンドの履歴を保存
+*** コマンドの履歴を保存
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -278,7 +279,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 対応括弧を強調表示
+*** 対応括弧を強調表示
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -288,7 +289,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 括弧の補完
+*** 括弧の補完
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -298,7 +299,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 現在行を強調表示
+*** 現在行を強調表示
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -308,7 +309,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 他プロセスの編集をバッファに反映
+*** 他プロセスの編集をバッファに反映
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -318,7 +319,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 行番号の表示
+*** 行番号の表示
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -329,7 +330,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 外枠の調整
+*** 外枠の調整
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -349,7 +350,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 水平分割より垂直分割を優先する
+*** 水平分割より垂直分割を優先する
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -359,7 +360,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** カーソル上の関数名等をモードラインに表示
+*** カーソル上の関数名等をモードラインに表示
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -369,7 +370,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** メニューバーを無効化
+*** メニューバーを無効化
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -379,7 +380,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** ツールバーを無効化
+*** ツールバーを無効化
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -389,7 +390,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** スクロールバーの無効化
+*** スクロールバーの無効化
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -399,7 +400,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** 便利コマンドをEvil向けに登録
+*** 便利コマンドをEvil向けに登録
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -454,7 +455,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-* 文字コード
+** 文字コード
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -472,7 +473,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-** shift-jisよりcp932を優先
+*** shift-jisよりcp932を優先
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -484,7 +485,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-* whitespace
+** whitespace
 
 末尾のスペースやタブを可視化することができます。
 ~highlight-indent-guides~ と相性が悪いのでタブは可視化していません。
@@ -498,12 +499,12 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-* IME
+** IME
 
 Emacsは~C-\~で日本語入力を切り替えることができますが、
 デフォルトだとあまり補完が賢くないのでOSに合わせて導入します。
 
-** [[https://github.com/trueroad/tr-emacs-ime-module][tr-ime]]
+*** [[https://github.com/trueroad/tr-emacs-ime-module][tr-ime]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -517,11 +518,11 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
-** mozc
+*** mozc
 
 [[https://www.kkaneko.jp/tools/server/mozc.html][日本語変換 Mozc の設定，emacs 用の Mozc の設定（Ubuntu 上）]] を参考にしています。
 
-*** 必要なパッケージを導入
+**** 必要なパッケージを導入
 
 #+begin_src shell :tangle no
   
@@ -531,7 +532,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
-*** Emacs側の設定
+**** Emacs側の設定
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -542,7 +543,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
-* フォントの設定
+** フォントの設定
 
 私は [[https://github.com/protesilaos/fontaine][fontaine]] を使用してフォントを設定しています。
 
@@ -587,9 +588,9 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
-* modeline
+** modeline
 
-** [[https://github.com/TeMPOraL/nyan-mode][nyan-mode]]
+*** [[https://github.com/TeMPOraL/nyan-mode][nyan-mode]]
 
 バッファー上での位置をニャンキャットが教えてくれるパッケージです。
 マウスでクリックすると大体の位置にジャンプもできます。
@@ -605,7 +606,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
-** doom-modeline
+*** doom-modeline
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -616,7 +617,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
-* [[https://github.com/emacs-evil/evil][evil]]
+** [[https://github.com/emacs-evil/evil][evil]]
 
 VimキーバインドをEmacs上で実現してくれるパッケージです。
 
@@ -632,7 +633,7 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 #+end_src
 
-** [[https://github.com/emacs-evil/evil-collection][evil-collection]]
+*** [[https://github.com/emacs-evil/evil-collection][evil-collection]]
 
 各モードのキーバインドを自動的に設定してくれます。
 
@@ -646,7 +647,7 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 #+end_src
 
-** [[https://github.com/linktohack/evil-commentary][evil-commentary]]
+*** [[https://github.com/linktohack/evil-commentary][evil-commentary]]
 
 ~gc~ でコメントアウトしてくれるパッケージです。
 
@@ -660,7 +661,7 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 #+end_src
 
-** [[https://github.com/emacs-evil/evil-surround][evil-surround]]
+*** [[https://github.com/emacs-evil/evil-surround][evil-surround]]
 
 選択中に ~S~ を入力して任意の文字を入力すると囲んでくれるパッケージです。
 - （例１） aaaを選択中に ~S(~
@@ -679,7 +680,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/redguardtoo/evil-matchit][evil-matchit]]
+*** [[https://github.com/redguardtoo/evil-matchit][evil-matchit]]
 
 ~%~ でHTMLのタグ間をジャンプしてくれるようになります。
 
@@ -693,7 +694,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/Somelauw/evil-org-mode][evil-org]]
+*** [[https://github.com/Somelauw/evil-org-mode][evil-org]]
 
 ~org-agenda~ 等のorg系の特殊なモードでキーバインドを設定してくれます。
 
@@ -710,7 +711,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/edkolev/evil-lion][evil-lion]]
+*** [[https://github.com/edkolev/evil-lion][evil-lion]]
 
 ~gl~ ~gL~ で整列してくれます。
 
@@ -724,7 +725,7 @@ aaa -> (aaa)
 
 #+end_src
 
-* fussy
+** fussy
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -755,7 +756,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** fuz-bin
+*** fuz-bin
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -766,7 +767,7 @@ aaa -> (aaa)
 
 #+end_src
 
-* prescient
+** prescient
 
 ~prescient-persist-mode~ で履歴を永続的に保存
 
@@ -784,7 +785,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/radian-software/prescient.el][company-prescient]]
+*** [[https://github.com/radian-software/prescient.el][company-prescient]]
 
 ~prescient~ だけでは ~company~ の履歴が保存できないので、~company-prescient~ を導入します。
 
@@ -800,7 +801,7 @@ aaa -> (aaa)
 #+end_src
 
 
-** vertico-prescient
+*** vertico-prescient
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -813,7 +814,7 @@ aaa -> (aaa)
 
 #+end_src
 
-* [[https://company-mode.github.io/][company]]
+** [[https://company-mode.github.io/][company]]
 
 入力補完用のパッケージです。
 
@@ -834,7 +835,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** company-posframe
+*** company-posframe
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -850,7 +851,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/zk-phi/company-dwim][company-dwim]]
+*** [[https://github.com/zk-phi/company-dwim][company-dwim]]
 
 ~company~ の挙動を ~ac-dwim~ のように変えてくれるパッケージです。
 私は ~tng~ のような挙動にしたかったので、forkして一部修正して使っています。
@@ -877,7 +878,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/zk-phi/company-anywhere][company-anywhere]]
+*** [[https://github.com/zk-phi/company-anywhere][company-anywhere]]
 
 通常 ~company~ は途中から入力しても補完候補が表示されませんが、
 こちらのパッケージで補完候補が表示されるようになります。
@@ -890,7 +891,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/TommyX12/company-tabnine][company-tabnine]]
+*** [[https://github.com/TommyX12/company-tabnine][company-tabnine]]
 
 ~tabnine~ を利用できるようにするパッケージです。
 
@@ -904,7 +905,7 @@ aaa -> (aaa)
 
 #+end_src
 
-* [[https://github.com/minad/vertico][vertico]]
+** [[https://github.com/minad/vertico][vertico]]
 
 ~helm~ や ~ivy~ よりも補完インタフェース新しくシンプルな補完パッケージです。
 
@@ -953,7 +954,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** vertico-repeat
+*** vertico-repeat
 
 ~verito~ の拡張機能の一つで直前のコマンドを再度表示します。
 
@@ -969,7 +970,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** vertico-directory
+*** vertico-directory
 
 ~verito~ の拡張機能の一つで ~find-file~ 等、ファイルやディレクトリの操作を良くします。
 
@@ -984,7 +985,7 @@ aaa -> (aaa)
 
 #+end_src
 
-* [[https://github.com/minad/consult][consult]]
+** [[https://github.com/minad/consult][consult]]
 
 ~vertico~ や ~selectrum~ で利用できる便利なコマンドを提供してくれます。
 
@@ -1110,7 +1111,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** [[https://github.com/karthink/consult-dir][consult-dir]]
+*** [[https://github.com/karthink/consult-dir][consult-dir]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1122,7 +1123,7 @@ aaa -> (aaa)
 
 #+end_src
 
-** その他
+*** その他
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1134,7 +1135,7 @@ aaa -> (aaa)
 
 #+end_src
 
-* [[https://github.com/minad/marginalia][marginalia]]
+** [[https://github.com/minad/marginalia][marginalia]]
 
 ~vertico~ の候補に情報を追加してくれます。
 
@@ -1147,7 +1148,7 @@ aaa -> (aaa)
 
 #+end_src
 
-* [[https://github.com/oantolin/embark][embark]]
+** [[https://github.com/oantolin/embark][embark]]
 
 vertico の候補等に様々なアクションを提供してくれます。
 
@@ -1170,7 +1171,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-** embark-consult
+*** embark-consult
 
 ~embark~ と ~consult~ を連動させます。
 
@@ -1182,7 +1183,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-* [[https://github.com/joaotavora/yasnippet][yasnippet]]
+** [[https://github.com/joaotavora/yasnippet][yasnippet]]
 
 スニペット機能を提供してくれます。
 
@@ -1195,7 +1196,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-** [[https://github.com/AndreaCrotti/yasnippet-snippets][yasnippet-snippets]]
+*** [[https://github.com/AndreaCrotti/yasnippet-snippets][yasnippet-snippets]]
 
 各言語のスニペットを提供してくれます。
 
@@ -1207,7 +1208,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-* [[https://github.com/jscheid/dtrt-indent][dtrt-indent]]
+** [[https://github.com/jscheid/dtrt-indent][dtrt-indent]]
 
 インデントを推測して、設定してくれます。
 
@@ -1220,7 +1221,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-* [[https://magit.vc/][magit]]
+** [[https://magit.vc/][magit]]
 
 Emacs上でGitを快適に操作できるようにしてくれます。
 
@@ -1230,7 +1231,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/dgutov/diff-hl][diff-hl]]
+** [[https://github.com/dgutov/diff-hl][diff-hl]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1241,7 +1242,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/justbur/emacs-which-key][which-key]]
+** [[https://github.com/justbur/emacs-which-key][which-key]]
 
 キーバインドを可視化してくれます。
 
@@ -1254,7 +1255,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/bbatsov/projectile][projectile]]
+** [[https://github.com/bbatsov/projectile][projectile]]
 
 プロジェクトに関する便利機能を提供してくれます。
 
@@ -1270,7 +1271,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://www.flycheck.org/en/latest/][flycheck]]
+** [[https://www.flycheck.org/en/latest/][flycheck]]
 
 構文チェック機能を提供してくれます。
 
@@ -1289,7 +1290,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-** [[https://github.com/alexmurray/flycheck-posframe][flycheck-posframe]]
+*** [[https://github.com/alexmurray/flycheck-posframe][flycheck-posframe]]
 
 エラー内容などを ~posframe~ を使用して表示してくれます。
 
@@ -1310,7 +1311,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-** [[https://github.com/minad/consult-flycheck][consult-flycheck]]
+*** [[https://github.com/minad/consult-flycheck][consult-flycheck]]
 
 チェック内容を ~consult~ を使用して絞り込めます。
 
@@ -1324,7 +1325,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://www.emacswiki.org/emacs/UndoTree][undo-tree]]
+** [[https://www.emacswiki.org/emacs/UndoTree][undo-tree]]
 
 編集履歴をツリー表示してくれます。
 
@@ -1341,7 +1342,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/dajva/rg.el][rg]]
+** [[https://github.com/dajva/rg.el][rg]]
 
 ~ripgrep~ を利用してGrep検索してくれます。
 
@@ -1351,7 +1352,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]
+** [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]
 
 括弧を色付けしてくれます。
 
@@ -1363,7 +1364,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]]
+** [[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]]
 
 インデントを可視化してくれます。
 
@@ -1382,9 +1383,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* theme
+** theme
 
-** ef-themes
+*** ef-themes
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1396,7 +1397,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-** solarized-theme
+*** solarized-theme
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1408,7 +1409,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-** doom-themes
+*** doom-themes
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1425,7 +1426,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+end_src
 
-* [[https://github.com/iqbalansari/restart-emacs][restart-emacs]]
+** [[https://github.com/iqbalansari/restart-emacs][restart-emacs]]
 
 Emacsを再起動してくれます。
 
@@ -1439,7 +1440,7 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-* [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
+** [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
 
 アイコンのインストールなど、アイコンに関する機能を提供してくれます。
 
@@ -1451,7 +1452,7 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-** all-the-icons-completion
+*** all-the-icons-completion
 
 ~vertico~ でアイコンが表示されるようになります。
 
@@ -1465,7 +1466,7 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-* [[https://github.com/magnars/expand-region.el][expand-region]]
+** [[https://github.com/magnars/expand-region.el][expand-region]]
 
 ~er/expand-region~ を押すと選択範囲をどんどん広げてくれます。
 
@@ -1480,7 +1481,7 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-* [[https://github.com/Malabarba/beacon][beacon]]
+** [[https://github.com/Malabarba/beacon][beacon]]
 
 カーソルの移動を強調表示してくれます。
 
@@ -1494,7 +1495,7 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-* [[https://github.com/emacsmirror/gcmh][gcmh]]
+** [[https://github.com/emacsmirror/gcmh][gcmh]]
 
 ウィンドウが非活性な時などにガベージコレクションを実行してくれます。
 
@@ -1510,7 +1511,7 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-* [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
+** [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
 
 起動画面をいい感じにしてくれます。
 
@@ -1528,7 +1529,7 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-* [[https://github.com/k-talo/volatile-highlights.el][volatile-highlights]]
+** [[https://github.com/k-talo/volatile-highlights.el][volatile-highlights]]
 
 Redo等、一部の操作を強調表示して操作がわかりやすくなります。
 
@@ -1541,7 +1542,7 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
 
 #+end_src
 
-* [[https://github.com/jwiegley/alert][alert]]
+** [[https://github.com/jwiegley/alert][alert]]
 
 通知機能を利用できるようにします。
 主に ~org-pomodoro~ で使用します。
@@ -1554,7 +1555,7 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
 
 #+end_src
 
-** [[https://github.com/gkowzan/alert-toast][alert-toast]]
+*** [[https://github.com/gkowzan/alert-toast][alert-toast]]
 
 Windows用の設定です。
 
@@ -1567,7 +1568,7 @@ Windows用の設定です。
 
 #+end_src
 
-* [[https://github.com/casouri/valign][valign]]
+** [[https://github.com/casouri/valign][valign]]
 
 ~org-mode~ や ~markdown~ のテーブル機能で日本語が含まれてもずれないようにしてくれます。
 
@@ -1580,7 +1581,7 @@ Windows用の設定です。
 
 #+end_src
 
-* [[https://emacs-tree-sitter.github.io/][tree-sitter]]
+** [[https://emacs-tree-sitter.github.io/][tree-sitter]]
 
 ~tree-sitter~ をEmacsで利用できるようにします。
 
@@ -1594,7 +1595,7 @@ Windows用の設定です。
 
 #+end_src
 
-** [[https://github.com/emacs-tree-sitter/tree-sitter-langs][tree-sitter-langs]]
+*** [[https://github.com/emacs-tree-sitter/tree-sitter-langs][tree-sitter-langs]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1604,7 +1605,7 @@ Windows用の設定です。
 
 #+end_src
 
-* [[https://polymode.github.io/][polymode]]
+** [[https://polymode.github.io/][polymode]]
 
 一つのバッファーに対して、複数のメジャーモードを適用してくれるようになります。
 ~org-babel~ 等で活躍します。
@@ -1617,7 +1618,7 @@ Windows用の設定です。
 
 #+end_src
 
-* [[https://github.com/Alexander-Miller/treemacs][treemacs]]
+** [[https://github.com/Alexander-Miller/treemacs][treemacs]]
 
 ~lsp-mode~ を利用すると一緒にインストールされます。
 普段は利用しませんが、READMEをもとに設定しています。
@@ -1738,7 +1739,7 @@ Windows用の設定です。
 
 #+end_src
 
-* [[https://github.com/radian-software/apheleia][apheleia]]
+** [[https://github.com/radian-software/apheleia][apheleia]]
 
 保存時などに自動的にフォーマットしてくれます。
 
@@ -1750,7 +1751,7 @@ Windows用の設定です。
 
 #+end_src
 
-* string-inflection
+** string-inflection
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1768,7 +1769,7 @@ Windows用の設定です。
 
 #+end_src
 
-* line-reminder
+** line-reminder
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1779,7 +1780,7 @@ Windows用の設定です。
 
 #+end_src
 
-* super-save
+** super-save
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1796,7 +1797,7 @@ Windows用の設定です。
 
 #+end_src
 
-* [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
 
@@ -1818,7 +1819,7 @@ EmacsでLSP機能が利用できるようになります。
 
 #+end_src
 
-** [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]]
+*** [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]]
 
 UIを提供してくれます。
 
@@ -1831,7 +1832,7 @@ UIを提供してくれます。
 
 #+end_src
 
-** [[https://github.com/emacs-lsp/lsp-java][lsp-java]]
+*** [[https://github.com/emacs-lsp/lsp-java][lsp-java]]
 
 JavaのLSは特殊なため、専用の拡張パッケージをインストールします。
 
@@ -1843,7 +1844,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** [[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]]
+*** [[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]]
 
 ~pyright~ を利用したい場合、こちらのパッケージをインストールします。
 
@@ -1855,7 +1856,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]]
+*** [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]]
 
 ~treemacs~ と ~lsp-mode~ を組み合わせてくれます。
 
@@ -1865,13 +1866,13 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-* language
+** language
 
 各言語のインデントの設定や専用のパッケージを設定しています。
 
-** elisp
+*** elisp
 
-*** [[https://github.com/Fanael/highlight-defined][highlight-defined]]
+**** [[https://github.com/Fanael/highlight-defined][highlight-defined]]
 
 既知のシンボルに色を付けてくれます。
 
@@ -1883,7 +1884,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** [[https://github.com/Fanael/highlight-quoted][highlight-quoted]]
+**** [[https://github.com/Fanael/highlight-quoted][highlight-quoted]]
 
 引用符と引用記号を色付けしてくれます。
 
@@ -1895,7 +1896,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** java
+*** java
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1904,9 +1905,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** web
+*** web
 
-*** html
+**** html
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1916,7 +1917,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** css
+**** css
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1925,7 +1926,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** javascript
+**** javascript
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1934,7 +1935,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** [[https://github.com/smihica/emmet-mode][emmet-mode]]
+**** [[https://github.com/smihica/emmet-mode][emmet-mode]]
 
 ~Emmet~ を導入します。
 
@@ -1947,7 +1948,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** [[https://github.com/yasuyk/web-beautify][web-beautify]]
+**** [[https://github.com/yasuyk/web-beautify][web-beautify]]
 
 ~web-beautify~ を導入します。
 
@@ -1958,7 +1959,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** [[https://github.com/rust-lang/rust-mode][rust-mode]]
+*** [[https://github.com/rust-lang/rust-mode][rust-mode]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1969,7 +1970,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** [[https://github.com/kwrooijen/cargo.el][cargo]]
+**** [[https://github.com/kwrooijen/cargo.el][cargo]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1979,9 +1980,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** python
+*** python
 
-*** [[https://github.com/jorgenschaefer/pyvenv][pyvenv]]
+**** [[https://github.com/jorgenschaefer/pyvenv][pyvenv]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -1990,9 +1991,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** common lisp
+*** common lisp
 
-*** [[https://slime.common-lisp.dev/][slime]]
+**** [[https://slime.common-lisp.dev/][slime]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2002,7 +2003,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** [[https://github.com/anwyn/slime-company][slime-company]]
+**** [[https://github.com/anwyn/slime-company][slime-company]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2014,9 +2015,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** sql
+*** sql
 
-*** [[https://github.com/alex-hhh/emacs-sql-indent][sql-indent]]
+**** [[https://github.com/alex-hhh/emacs-sql-indent][sql-indent]]
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2026,7 +2027,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-*** sql-format
+**** sql-format
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2036,7 +2037,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** xml
+*** xml
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2045,7 +2046,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** markdown
+*** markdown
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2056,7 +2057,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-** sql
+*** sql
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2066,7 +2067,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
-* footer
+** footer
 
 #+begin_src emacs-lisp :tangle yes
   

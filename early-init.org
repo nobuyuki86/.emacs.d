@@ -1,7 +1,8 @@
 #+TITLE: early-init
 #+AUTHOR: Nobuyuki Kamimoto
 
-* header
+* early-init
+** header
 
 #+begin_src emacs-lisp :tangle yes
   ;;; package --- Summary
@@ -9,7 +10,7 @@
   ;;; Code:
 #+end_src
 
-* package.elを起動しない
+** package.elを起動しない
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -17,7 +18,7 @@
 
 #+end_src
 
-* 画面最大化
+** 画面最大化
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -25,7 +26,7 @@
 
 #+end_src
 
-* スクロール非表示
+** スクロール非表示
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -33,7 +34,7 @@
 
 #+end_src
 
-* メニューバー非表示
+** メニューバー非表示
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -41,7 +42,7 @@
 
 #+end_src
 
-* ツールバー非表示
+** ツールバー非表示
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -49,7 +50,7 @@
 
 #+end_src
 
-* footer
+** footer
 
 #+begin_src emacs-lisp :tangle yes
   
