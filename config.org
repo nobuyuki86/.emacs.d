@@ -1896,16 +1896,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'java-mode-hook (lambda ()
-			    (setq-local tab-width 2)))
-
-#+end_src
-
-** jsp
-
-#+begin_src emacs-lisp :tangle yes
-  
-(add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
+(use-package cc-mode
+  :hook (java-mode . (lambda () (setq-local tab-width 2))))
 
 #+end_src
 
@@ -1915,8 +1907,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'html-mode-hook (lambda()
-			    (setq-local tab-width 2)))
+(use-package sqml
+  :hook (html-mode . (lambda () (setq-local tab-width 2)))
+  :mode ("\\.jsp\\'" . html-mode))
 
 #+end_src
 
@@ -1924,8 +1917,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'css-mode-hook (lambda ()
-			   (setq-local tab-width 2)))
+(use-package css-mode
+  :hook (css-mode . (lambda () (setq-local tab-width 2))))
 
 #+end_src
 
@@ -1933,8 +1926,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'js-mode-hook (lambda ()
-			  (setq-local tab-width 2)))
+(use-package js
+  :hook (js-mode . (lambda () (setq-local tab-width 2))))
 
 #+end_src
 
@@ -1957,7 +1950,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package web-beautify :straight t)
+(use-package web-beautify
+  :straight t)
 
 #+end_src
 
@@ -1988,7 +1982,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package pyvenv :straight t)
+(use-package pyvenv
+  :straight t)
 
 #+end_src
 
@@ -2042,8 +2037,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(add-hook 'nxml-mode-hook (lambda ()
-			    (setq-local tab-width 4)))
+(use-package nxml-mode
+  :hook (nxml-mode . (lambda () (setq-local tab-width 4))))
 
 #+end_src
 
