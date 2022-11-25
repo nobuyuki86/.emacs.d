@@ -120,7 +120,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 *** org-rainbow-tags
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
   
 (use-package org-rainbow-tags
   :straight (:host github :repo "KaratasFurkan/org-rainbow-tags")
