@@ -324,7 +324,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
   
 (use-package display-line-numbers
-  :custom (display-line-numbers-width 4)
+  :custom (display-line-numbers-start t)
   :init
   (global-display-line-numbers-mode +1))
 
@@ -1498,17 +1498,19 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-** [[https://github.com/Malabarba/beacon][beacon]]
-
-カーソルの移動を強調表示してくれます。
+** pulsar
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package beacon
+(use-package pulsar
   :straight t
-  :custom (beacon-color "red")
+  :custom ((pulsar-pulse t)
+	   (pulsar-delay 0.055)
+	   (pulsar-iterations 10)
+	   (pulsar-face 'pulsar-blue)
+	   (pulsar-highlight-face 'pulsar-yellow))
   :init
-  (beacon-mode +1))
+  (pulsar-global-mode +1))
 
 #+end_src
 
