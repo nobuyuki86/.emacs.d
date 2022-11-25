@@ -453,6 +453,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 	 :map my-buffer-map
 	 ("p" . project-switch-to-buffer)))
 
+(use-package isearch
+  :bind (nil
+	 :map search-map
+	 ("s" . isearch-forward)))
+
 #+end_src
 
 ** 文字コード
