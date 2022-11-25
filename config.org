@@ -1768,11 +1768,11 @@ Windows用の設定です。
   
 (use-package super-save
   :straight t
+  :custom (super-save-auto-save-when-idle t)
   :config
   (with-eval-after-load 'evil
     (add-to-list 'super-save-triggers 'evil-window-next)
     (add-to-list 'super-save-triggers 'evil-window-prev))
-
   (super-save-mode +1))
 
 #+end_src
