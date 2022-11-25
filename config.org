@@ -554,7 +554,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
   :demand t
   :hook (kill-emacs . fontaine-store-latest-preset)
   :config
-  (cond ((eq system-type 'gnu/linux)
+  (cond (IS-LINUX
 	 (setq fontaine-presets
 	       '((regular
 		  :default-family "VLゴシック"
@@ -569,7 +569,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 		  :variable-pitch-family "VLPゴシック"
 		  :line-spacing 1))))
 
-	((eq system-type 'windows-nt)
+	(IS-WINDOWS
 	 (setq fontaine-presets
 	       '((regular
 		  :default-family "BIZ UDゴシック"
