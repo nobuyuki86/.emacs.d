@@ -81,8 +81,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   
 (use-package org
   :demand t
-  :custom ((org-startup-folded 'content)
-	   (org-fold-core-style 'overlays))
   :bind (nil
 	 :map my-org-map
 	 ("o" . org-open-at-point)
@@ -177,36 +175,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+end_src
 
 ** Emacs標準機能の設定
-
-*** 最適化
-
-#+begin_src emacs-lisp :tangle yes
-  
-(when IS-WINDOWS
-  (setq w32-get-true-file-attributes nil
-	w32-pipe-read-delay 0
-	w32-pipe-buffer-size (* 64 1024)))
-
-(unless IS-MAC
-  (setq command-line-ns-option-alist nil))
-
-(unless IS-LINUX
-  (setq command-line-x-option-alist nil))
-
-(setq read-process-output-max #x10000)
-
-(setq ffap-machine-p-known 'reject)
-
-#+end_src
-
-*** 画面の更新頻度
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package simple
-  :custom (idle-update-delay 1.0))
-
-#+end_src
 
 *** 補完時に大文字小文字を区別しない
 
@@ -327,36 +295,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   :custom (display-line-numbers-start t)
   :init
   (global-display-line-numbers-mode +1))
-
-#+end_src
-
-*** 外枠の調整
-
-#+begin_src emacs-lisp :tangle yes
-  
-(setq indicate-buffer-boundaries nil
-      indicate-empty-lines nil)
-
-#+end_src
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package frame
-  :custom ((window-divider-default-places t)
-	   (window-divider-default-bottom-width 1)
-	   (window-divider-default-right-width 1))
-  :init
-  (window-divider-mode +1))
-
-#+end_src
-
-*** 水平分割より垂直分割を優先する
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package window
-  :custom ((split-width-threshold 160)
-	   (split-height-threshold nil)))
 
 #+end_src
 
@@ -796,8 +734,6 @@ aaa -> (aaa)
   
 (use-package prescient
   :straight t
-  :custom ((prescient-aggressive-file-save t)
-	   (prescient-use-case-folding t))
   :config
   (prescient-persist-mode +1)
 
@@ -1248,7 +1184,8 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package magit :straight t)
+(use-package magit
+  :straight t)
 
 #+end_src
 
@@ -1300,7 +1237,6 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (use-package flycheck
   :straight t
-  :custom (flycheck-idle-change-delay 1.0)
   :bind (nil
 	 :map my-error-map
 	 ("l" . flycheck-list-errors)
@@ -1401,7 +1337,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 	 :map my-toggle-map
        ("i" . highlight-indent-guides-mode))
 :hook ((prog-mode . highlight-indent-guides-mode)
-     (text-mode . highlight-indent-guides-mode)))
+       (text-mode . highlight-indent-guides-mode)))
 
 #+end_src
 
@@ -1815,8 +1751,6 @@ Windows用の設定です。
   
 (use-package super-save
   :straight t
-  :custom ((super-save-auto-save-when-idle t)
-	   (super-save-idle-duration 4))
   :config
   (with-eval-after-load 'evil
     (add-to-list 'super-save-triggers 'evil-window-next)
@@ -1835,7 +1769,6 @@ EmacsでLSP機能が利用できるようになります。
 (use-package lsp-mode
   :straight t
   :custom ((lsp-keymap-prefix "M-l")
-	   (lsp-idle-delay 1.0)
 	   (lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request)))
   :general (:states '(normal visual) :keymaps 'lsp-mode-map :prefix "SPC m" :prefix-command 'lsp-command-map)
   :hook ((lsp-mode . lsp-enable-which-key-integration)
@@ -1856,9 +1789,7 @@ UIを提供してくれます。
   
 (use-package lsp-ui
   :straight t
-  :after lsp-mode
-  :custom ((lsp-ui-doc-delay 1.0)
-	   (lsp-ui-sideline-delay 1.0)))
+  :after lsp-mode)
 
 #+end_src
 
