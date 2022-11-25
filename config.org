@@ -1891,7 +1891,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+begin_src emacs-lisp :tangle yes
   
-(straight-use-package 'lsp-treemacs)
+(use-package lsp-treemacs
+  :straight t
+  :after (lsp-mode treemacs))
 
 #+end_src
 
