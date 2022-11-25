@@ -99,7 +99,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
   
 (use-package org-agenda
-  :custom (org-agenda-files (directory-files org-directory))
+  :custom (org-agenda-files (file-expand-wildcards (concat org-directory "/*.org")))
   :bind (nil
 	 :map my-org-map
 	 ("a" . org-agenda)))
