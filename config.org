@@ -1976,6 +1976,18 @@ sublimeのようにお洒落になります。
 
 #+end_src
 
+** avy
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package avy
+  :straight t
+  :bind (nil
+	 :map my-space-map
+	 ("a" . avy-goto-char)))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
