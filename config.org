@@ -1932,6 +1932,16 @@ Windows用の設定です。
 
 #+end_src
 
+** ws-butler
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package ws-butler
+  :straight t
+  :hook (prog-mode . ws-butler-mode))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
