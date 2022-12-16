@@ -1056,7 +1056,7 @@ aaa -> (aaa)
   
 (use-package vertico-repeat
   :after vertico
-  :load-path "straight/build/vertico/extensions/"
+  :load-path "straight/build/vertico/extensions"
   :bind (nil
 	 :map my-space-map
 	 ("z" . vertico-repeat))
@@ -1072,7 +1072,7 @@ aaa -> (aaa)
   
 (use-package vertico-directory
   :after vertico
-  :load-path "straight/build/vertico/extensions/"
+  :load-path "straight/build/vertico/extensions"
   :bind (nil
 	 :map vertico-map
 	 ("<backspace>" . vertico-directory-delete-char)))
