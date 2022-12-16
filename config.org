@@ -180,6 +180,97 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 ** Emacs標準機能の設定
 
+*** 最適化
+
+#+begin_src emacs-lisp :tangle yes
+  
+(when IS-WINDOWS
+  (setq w32-get-true-file-attributes nil
+	w32-pipe-read-delay 0
+	w32-pipe-buffer-size (* 64 1024)))
+
+(unless IS-MAC
+  (setq command-line-ns-option-alist nil))
+
+(unless IS-LINUX
+  (setq command-line-x-option-alist nil))
+
+(setq read-process-output-max #x10000)
+
+(setq ffap-machine-p-known 'reject)
+
+#+end_src
+
+*** UI
+
+#+begin_src emacs-lisp :tangle yes
+  
+(setq-default cursor-in-non-selected-windows nil)
+
+(setq highlight-nonselected-windows nil)
+
+(setq fast-but-imprecise-scrolling t)
+(setq redisplay-skip-initial-frame t)
+
+;; Inhibit resizing frame
+(setq frame-inhibit-implied-resize t
+      frame-resize-pixelwise t)
+
+;; Suppress GUI features
+(setq use-file-dialog nil
+      use-dialog-box nil
+      inhibit-startup-screen t
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-default-init t
+      initial-scratch-message nil)
+
+#+end_src
+
+*** カーソルの点滅を無効化
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package frame
+  :init
+  (blink-cursor-mode -1))
+
+#+end_src
+
+*** 画面の更新頻度
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package simple
+  :custom (idle-update-delay 1.0))
+
+#+end_src
+
+*** 外枠の調整
+
+#+begin_src emacs-lisp :tangle yes
+  
+(setq indicate-buffer-boundaries nil
+      indicate-empty-lines nil)
+
+(use-package frame
+  :custom ((window-divider-default-places t)
+	   (window-divider-default-bottom-width 1)
+	   (window-divider-default-right-width 1))
+  :init
+  (window-divider-mode +1))
+
+#+end_src
+
+*** 水平分割より垂直分割を優先する
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package window
+  :custom ((split-width-threshold 160)
+	   (split-height-threshold nil)))
+
+#+end_src
+
 *** 補完時に大文字小文字を区別しない
 
 #+begin_src emacs-lisp :tangle yes
