@@ -1988,6 +1988,17 @@ sublimeのようにお洒落になります。
 
 #+end_src
 
+** solaire-mode
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package solaire-mode
+  :straight t
+  :config
+  (solaire-global-mode +1))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
