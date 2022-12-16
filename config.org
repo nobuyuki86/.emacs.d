@@ -297,6 +297,10 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   :custom ((make-backup-files nil)
 	   (auto-save-default nil)))
 
+(use-package emacs
+  :custom ((create-lockfiles nil)
+	   (auto-save-list-file-prefix nil)))
+
 #+end_src
 
 *** デーモン起動
