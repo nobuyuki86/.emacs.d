@@ -1894,6 +1894,13 @@ Windows用の設定です。
   (with-eval-after-load 'evil
     (add-to-list 'super-save-triggers 'evil-window-next)
     (add-to-list 'super-save-triggers 'evil-window-prev))
+
+  (defun dot/super-save-disable-advice (orig-fun &rest args)
+    "Dont auto-save under these conditions."
+    (unless (equal (car args) " *LV*")
+      (apply orig-fun args)))
+  (advice-add 'super-save-command-advice :around #'dot/super-save-disable-advice)
+
   (super-save-mode +1))
 
 #+end_src
