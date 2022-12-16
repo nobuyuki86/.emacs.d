@@ -1944,6 +1944,21 @@ Windows用の設定です。
 
 #+end_src
 
+** go-translate
+
+Emacs内で翻訳してくれるようになります。
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package go-translate
+  :straight t
+  :custom (gts-translate-list '(("en" "ja")))
+  :bind (nil
+	 :map my-space-map
+	 ("T" . gts-do-translate)))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
