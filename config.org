@@ -675,6 +675,16 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 
 #+end_src
 
+*** minions
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package minions
+  :straight t
+  :hook (doom-modeline-mode . minions-mode))
+
+#+end_src
+
 ** [[https://github.com/emacs-evil/evil][evil]]
 
 VimキーバインドをEmacs上で実現してくれるパッケージです。
