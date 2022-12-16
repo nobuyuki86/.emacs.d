@@ -1959,6 +1959,23 @@ Emacs内で翻訳してくれるようになります。
 
 #+end_src
 
+** sublimity
+
+sublimeのようにお洒落になります。
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package sublimity
+  :straight t
+  :custom (sublimity-attractive-centering-width 150)
+  :config
+  (require 'sublimity-scroll)
+  (require 'sublimity-map)
+  (require 'sublimity-attractive)
+  (sublimity-mode +1))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
