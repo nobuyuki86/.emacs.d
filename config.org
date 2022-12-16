@@ -831,7 +831,7 @@ aaa -> (aaa)
   
 (use-package fussy
   :straight t
-  :custom ((completion-styles '(fussy))
+  :custom ((completion-styles '(fussy basic))
 	   (completion-category-defaults nil)
 	   (completion-category-overrides nil)
 	   (fussy-use-cache t)
@@ -905,9 +905,11 @@ aaa -> (aaa)
   
 (use-package vertico-prescient
   :straight t
-  :custom ((vertico-prescient-enable-filtering nil)
-	   (vertico-prescient-override-sorting t))
   :init
+  (with-eval-after-load 'fussy
+    (setq vertico-prescient-completion-styles '(fussy basic)
+	  vertico-prescient-completion-category-overrides nil
+	  vertico-prescient-override-sorting t))
   (vertico-prescient-mode +1))
 
 #+end_src
