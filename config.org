@@ -2033,7 +2033,9 @@ EmacsでLSP機能が利用できるようになります。
 (use-package lsp-mode
   :straight t
   :custom ((lsp-keymap-prefix "M-l")
-	   (lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request)))
+	   (lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request))
+	   (lsp-idle-delay 1.0)
+	   (lsp-semantic-tokens-enable t))
   :general (:states '(normal visual) :keymaps 'lsp-mode-map :prefix "SPC m" :prefix-command 'lsp-command-map)
   :hook ((lsp-mode . lsp-enable-which-key-integration)
 	 (html-mode . lsp)
@@ -2053,13 +2055,18 @@ UIを提供してくれます。
   
 (use-package lsp-ui
   :straight t
-  :after lsp-mode)
+  :after lsp-mode
+  :custom ((lsp-ui-doc-delay 1.0)
+	   (lsp-ui-sideline-delay 1.0)))
 
 #+end_src
 
 *** [[https://github.com/emacs-lsp/lsp-java][lsp-java]]
 
 JavaのLSは特殊なため、専用の拡張パッケージをインストールします。
+
+最新のバージョンは[[https:download.eclipse.org/jdtls/milestones/?d][ここ]]を参照する。
+※1.13以降はJava17が必要
 
 #+begin_src emacs-lisp :tangle yes
   
@@ -2100,6 +2107,23 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 (use-package lsp-dired
   :after (lsp-mode dired)
   :hook (dired-mode . lsp-dired-mode))
+
+#+end_src
+
+*** consult-lsp
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package consult-lsp
+  :straight t
+  :after consult lsp-mode
+  :bind (nil
+	 :map lsp-mode-map
+	 ([remap xref-find-apropos] . consult-lsp-symbols)
+	 :map my-lsp-command-map
+	 ("d" . consult-lsp-diagnostics)
+	 ("s" . consult-lsp-symbols)
+	 ("S" . consult-lsp-file-symbols)))
 
 #+end_src
 
