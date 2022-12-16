@@ -1431,7 +1431,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (use-package undo-tree
   :straight t
-  :custom (undo-tree-auto-save-history nil)
+  :custom (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree")))
   :bind (nil
 	 :map my-space-map
 	 ("u" . undo-tree-visualize))
