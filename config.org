@@ -821,7 +821,7 @@ aaa -> (aaa)
   
 (use-package fussy
   :straight t
-  :custom ((completion-styles '(fussy basic))
+  :custom ((completion-styles '(fussy))
 	   (completion-category-defaults nil)
 	   (completion-category-overrides nil)
 	   (fussy-use-cache t)
@@ -837,9 +837,7 @@ aaa -> (aaa)
   (with-eval-after-load 'company
     (defun j-company-capf (f &rest args)
       "Manage `completion-styles'."
-      (let ((fussy-max-candidate-limit 5000)
-	    (fussy-default-regex-fn 'fussy-pattern-first-letter)
-	    (fussy-prefer-prefix nil))
+      (let ((fussy-prefer-prefix nil))
 	(apply f args)))
     (advice-add 'company-auto-begin :before #'fussy-wipe-cache)
     (advice-add 'company-capf :around 'j-company-capf)))
@@ -888,7 +886,6 @@ aaa -> (aaa)
 
 #+end_src
 
-
 *** vertico-prescient
 
 #+begin_src emacs-lisp :tangle yes
@@ -897,7 +894,7 @@ aaa -> (aaa)
   :straight t
   :init
   (with-eval-after-load 'fussy
-    (setq vertico-prescient-completion-styles '(fussy basic)
+    (setq vertico-prescient-completion-styles '(fussy)
 	  vertico-prescient-completion-category-overrides nil
 	  vertico-prescient-override-sorting t))
   (vertico-prescient-mode +1))
