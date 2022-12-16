@@ -1587,7 +1587,7 @@ Emacsを再起動してくれます。
 	   (pulsar-delay 0.055)
 	   (pulsar-iterations 10)
 	   (pulsar-face 'pulsar-blue)
-	   (pulsar-highlight-face 'pulsar-yellow))
+	   (pulsar-highlight-face 'pulsar-blue))
   :init
   (pulsar-global-mode +1))
 
