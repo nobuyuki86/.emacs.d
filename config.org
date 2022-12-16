@@ -445,6 +445,14 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
+*** 削除したファイルをゴミ箱に移動させる
+
+#+begin_src emacs-lisp :tangle yes
+  
+(setq delete-by-moving-to-trash t)
+
+#+end_src
+
 *** 便利コマンドをEvil向けに登録
 
 #+begin_src emacs-lisp :tangle yes
