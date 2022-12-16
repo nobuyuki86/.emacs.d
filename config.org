@@ -1905,6 +1905,19 @@ Windows用の設定です。
 
 #+end_src
 
+** gc-buffers
+
+使用されていない一時保存バッファをクリアしてくれるパッケージです。
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package gc-buffers
+  :straight (:type git :repo "https://codeberg.org/akib/emacs-gc-buffers.git")
+  :init
+  (gc-buffers-mode +1))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
