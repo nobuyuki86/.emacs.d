@@ -169,10 +169,12 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   
 (use-package consult-notes
   :straight t
-  :custom (consult-notes-sources `(("Notes" ?n ,denote-directory)))
   :bind (nil
 	 :map my-space-map
-	 ("n" . consult-notes)))
+	 ("n" . consult-notes))
+  :config
+  (when (locate-library "denote")
+    (consult-notes-denote-mode +1)))
 
 #+end_src
 
