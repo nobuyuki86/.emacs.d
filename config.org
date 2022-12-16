@@ -1397,7 +1397,8 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   :straight t
   :custom ((flycheck-posframe-warning-prefix "! ")
 	   (flycheck-posframe-info-prefix "··· ")
-	   (flycheck-posframe-error-prefix "X "))
+	   (flycheck-posframe-error-prefix "X ")
+	   (flycheck-posframe-border-width 1))
   :hook (flycheck-mode . flycheck-posframe-mode)
   :config
   (with-eval-after-load 'company
