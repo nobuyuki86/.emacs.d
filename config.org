@@ -356,16 +356,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
-*** 括弧の補完
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package elec-pair
-  :init
-  (electric-pair-mode +1))
-
-#+end_src
-
 *** 現在行を強調表示
 
 #+begin_src emacs-lisp :tangle yes
@@ -1927,6 +1917,18 @@ Windows用の設定です。
   :custom (ctrlf-default-search-style 'fuzzy)
   :init
   (ctrlf-mode +1))
+
+#+end_src
+
+** smartparens
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package smartparens
+  :straight t
+  :config
+  (require 'smartparens-config)
+  (smartparens-global-mode +1))
 
 #+end_src
 
