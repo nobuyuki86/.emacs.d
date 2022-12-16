@@ -1999,6 +1999,20 @@ sublimeのようにお洒落になります。
 
 #+end_src
 
+** smart-hungry-delete
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package smart-hungry-delete
+  :straight t
+  :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+	 ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+	 ([remap delete-char] . smart-hungry-delete-forward-char))
+  :init
+  (smart-hungry-delete-add-default-hooks))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
