@@ -1934,6 +1934,8 @@ Windows用の設定です。
 
 ** ws-butler
 
+編集行の余分な末尾の空白を削除してくれます。
+
 #+begin_src emacs-lisp :tangle yes
   
 (use-package ws-butler
