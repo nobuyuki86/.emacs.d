@@ -935,19 +935,13 @@ aaa -> (aaa)
 
 #+end_src
 
-*** company-posframe
+*** company-box
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package company-posframe
+(use-package company-box
   :straight t
-  :after company
-  :custom (company-tooltip-minimum-width 40)
-  :init
-  (company-posframe-mode +1)
-  :config
-  (with-eval-after-load 'desktop
-    (push '(company-posframe-mode . nil) desktop-minor-mode-table)))
+  :hook (company-mode . company-box-mode))
 
 #+end_src
 
