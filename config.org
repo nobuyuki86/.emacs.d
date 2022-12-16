@@ -1374,6 +1374,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (use-package flycheck
   :straight t
+  :custom ((flycheck-idle-change-delay 1.0)
+	   (flycheck-display-errors-delay 1.0)
+	   (flycheck-idle-buffer-switch-delay 1.0))
   :bind (nil
 	 :map my-error-map
 	 ("l" . flycheck-list-errors)
