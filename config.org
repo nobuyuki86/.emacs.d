@@ -391,7 +391,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
   
 (use-package display-line-numbers
-  :custom (display-line-numbers-start t)
+  :custom (display-line-numbers-width-start t)
   :init
   (global-display-line-numbers-mode +1))
 
