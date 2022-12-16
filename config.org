@@ -1471,9 +1471,6 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (use-package highlight-indent-guides
   :straight t
-:custom ((highlight-indent-guides-method 'character)
-	 (highlight-indent-guides-character 124)
-	 (highlight-indent-guides-responsive 'top))
   :bind (nil
 	 :map my-toggle-map
        ("i" . highlight-indent-guides-mode))
