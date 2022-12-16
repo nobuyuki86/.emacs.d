@@ -2,6 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
+(setq straight-repository-branch "develop")
+
+(when (and (executable-find "watchexec")
+	   (executable-find "python"))
+  (setq straight-check-for-modifications '(watch-files)))
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -30,6 +36,17 @@
 
 (add-to-list 'load-path (expand-file-name user-emacs-directory))
 (require 'config)
+
+;; Prune the build cache for straight.el; this will prevent it from
+;; growing too large. Do this after the final hook to prevent packages
+;; installed there from being pruned.
+(straight-prune-build-cache)
+
+;; Occasionally prune the build directory as well. For similar reasons
+;; as above, we need to do this after local configuration.
+(unless (bound-and-true-p radian--currently-profiling-p)
+  (when (= 0 (random 100))
+    (straight-prune-build-directory)))
 
 (provide 'init)
 ;;; init.el ends here
