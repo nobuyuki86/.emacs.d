@@ -841,9 +841,6 @@ aaa -> (aaa)
   (with-eval-after-load 'fuz-bin
     (setq fussy-score-fn #'fussy-fuz-bin-score))
 
-  (with-eval-after-load 'fzf-native
-    (setq fussy-score-fn #'fussy-fzf-native-score))
-
   (with-eval-after-load 'prescient
     (setq fussy-compare-same-score-fn #'fussy-strlen<))
 
@@ -867,19 +864,6 @@ aaa -> (aaa)
   :straight (fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin"))
   :config
   (fuz-bin-load-dyn))
-
-#+end_src
-
-*** fzf-native
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package fzf-native
-  :ensure t
-  :straight (fzf-native :repo "dangduc/fzf-native" :host github :files (:defaults "bin"))
-  :config
-  (setq fussy-score-fn 'fussy-fzf-native-score)
-  (fzf-native-load-dyn))
 
 #+end_src
 
