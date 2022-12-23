@@ -50,6 +50,16 @@
 
 #+end_src
 
+** 外枠のスペースを空ける
+
+#+begin_src emacs-lisp :tangle yes
+
+(modify-all-frames-parameters
+ '((right-divider-width . 24)
+   (internal-border-width . 24)))
+
+#+end_src
+
 ** footer
 
 #+begin_src emacs-lisp :tangle yes

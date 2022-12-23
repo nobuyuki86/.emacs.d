@@ -159,22 +159,56 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   :bind (nil
 	 :map my-space-map
 	 ("d" . denote))
+  :general (:states '(normal visual) :keymaps 'override :prefix "SPC d" :prefix-command 'my-denote-map)
   :hook (dired-mode . denote-dired-mode-in-directories))
 
 #+end_src
 
-**** consult-notes
+**** consult-denote
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package consult-notes
-  :straight t
+(use-package consult-denote
+  :straight (consult-denote :type git :host codeberg :repo "whhone/consult-denote")
   :bind (nil
-	 :map my-space-map
-	 ("n" . consult-notes))
-  :config
-  (when (locate-library "denote")
-    (consult-notes-denote-mode +1)))
+	 :map my-denote-map
+	 ("d" . consult-denote-open-or-create)
+	 ("i" . consult-denote-link-insert-link)
+	 ("r" . consult-denote-ripgrep)))
+
+#+end_src
+
+*** org-modern
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package org-modern
+  :straight t
+  :init
+  (setq
+   ;; Edit settings
+   org-auto-align-tags nil
+   org-tags-column 0
+   org-catch-invisible-edits 'show-and-error
+   org-special-ctrl-a/e t
+   org-insert-heading-respect-content t
+
+   ;; Org styling, hide markup etc.
+   org-hide-emphasis-markers t
+   org-pretty-entities t
+   org-ellipsis "…"
+
+   ;; Agenda styling
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "⭠ now ─────────────────────────────────────────────────")
+
+  (global-org-modern-mode +1))
 
 #+end_src
 
@@ -218,8 +252,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 ;; Suppress GUI features
 (setq use-file-dialog nil
-      use-dialog-box nil
-      inhibit-startup-screen t
+      use-dialog-box nil)
+
+(setq inhibit-startup-screen t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
       initial-scratch-message nil)
@@ -275,9 +310,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+begin_src emacs-lisp :tangle yes
   
-(setq read-file-name-completion-ignore-case t
-      read-buffer-completion-ignore-case t
+(setq read-buffer-completion-ignore-case t
       completion-ignore-case t)
+
+(use-package minibuffer
+  :custom (read-file-name-completion-ignore-case t))
 
 #+end_src
 
@@ -834,13 +871,12 @@ aaa -> (aaa)
   (with-eval-after-load 'prescient
     (setq fussy-compare-same-score-fn #'fussy-strlen<))
 
-  (with-eval-after-load 'company
-    (defun j-company-capf (f &rest args)
-      "Manage `completion-styles'."
-      (let ((fussy-prefer-prefix nil))
-	(apply f args)))
-    (advice-add 'company-auto-begin :before #'fussy-wipe-cache)
-    (advice-add 'company-capf :around 'j-company-capf)))
+  (with-eval-after-load 'corfu
+    (advice-add 'corfu--capf-wrapper :before 'fussy-wipe-cache)
+    (add-hook 'corfu-mode-hook
+	      (lambda ()
+		(setq-local fussy-max-candidate-limit 5000
+			    fussy-prefer-prefix nil)))))
 
 #+end_src
 
@@ -871,118 +907,117 @@ aaa -> (aaa)
 
 #+end_src
 
-*** [[https://github.com/radian-software/prescient.el][company-prescient]]
-
-~prescient~ だけでは ~company~ の履歴が保存できないので、~company-prescient~ を導入します。
+** corfu
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package company-prescient
-  :straight t
-  :after company
-  :custom (company-prescient-sort-length-enable nil)
+(use-package corfu
+  :straight (:type git :host github :repo "minad/corfu" :branch "async")
+  :custom ((corfu-auto t)
+	   (corfu-auto-prefix 1)
+	   (corfu-cycle t)
+	 (tab-always-indent 'complete))
+  :bind (nil
+	 :map corfu-map
+	 ("RET" . nil)
+	 ("<return>" . nil)
+	 ("TAB" . corfu-insert)
+	 ("<tab>" . corfu-insert))
   :init
-  (company-prescient-mode +1))
+  (global-corfu-mode +1)
+  :config
+  (defun my/corfu-remap-tab-command ()
+  (global-set-key [remap c-indent-line-or-region] #'indent-for-tab-command))
+  (add-hook 'java-mode-hook #'my/corfu-remap-tab-command)
+
+  (defun corfu-enable-always-in-minibuffer ()
+    "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+    (unless (or (bound-and-true-p mct--active)
+		(bound-and-true-p vertico--input))
+      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+		  corfu-popupinfo-delay nil)
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1))
 
 #+end_src
 
-*** vertico-prescient
+*** corfu-popup
 
 #+begin_src emacs-lisp :tangle yes
   
-(use-package vertico-prescient
+(use-package corfu-popupinfo
+  :load-path "straight/build/corfu/extensions/"
+  :config
+  (corfu-popupinfo-mode +1))
+
+#+end_src
+
+*** corfu-prescient
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package corfu-prescient
   :straight t
+  :after corfu
   :init
   (with-eval-after-load 'fussy
-    (setq vertico-prescient-completion-styles '(fussy)
-	  vertico-prescient-completion-category-overrides nil
-	  vertico-prescient-override-sorting t))
-  (vertico-prescient-mode +1))
+    (setq corfu-prescient-override-sorting t
+	  corfu-prescient-completion-styles '(fussy)
+	  corfu-prescient-completion-category-overrides nil))
+  (corfu-prescient-mode +1))
 
 #+end_src
 
-** [[https://company-mode.github.io/][company]]
-
-入力補完用のパッケージです。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package company
-  :straight t
-  :custom ((company-minimum-prefix-length 1)
-	   (company-idle-delay 0)
-	   (company-require-match nil)
-	   (company-dabbrev-other-buffers nil)
-	   (company-dabbrev-downcase nil)
-	   (company-dabbrev-ignore-case nil))
-:bind (([remap indent-for-tab-command] . company-indent-or-complete-common)
-       ([remap c-indent-line-or-region] . company-indent-or-complete-common))
-  :init
-  (global-company-mode +1))
-
-#+end_src
-
-*** company-box
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package company-box
-  :straight t
-  :hook (company-mode . company-box-mode))
-
-#+end_src
-
-*** [[https://github.com/zk-phi/company-dwim][company-dwim]]
-
-~company~ の挙動を ~ac-dwim~ のように変えてくれるパッケージです。
-私は ~tng~ のような挙動にしたかったので、forkして一部修正して使っています。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package company-dwim
-  :straight (company-dwim :type git :host github :repo "nobuyuki86/company-dwim")
-  :after company
-  :demand t
-  :custom (company-selection-default nil)
-  :bind (([remap company-select-next] . company-dwim-select-next)
-	 ([remap company-select-previous] . company-dwim-select-previous)
-	 :map company-active-map
-	 ("RET" . company-dwim-complete-or-newline)
-	 ("<return>" . company-dwim-complete-or-newline)
-	 ("TAB" . company-dwim-select-next)
-	 ("<tab>" . company-dwim-select-next)
-	 ("S-TAB" . company-dwim-select-previous)
-	 ("<backtab>" . company-dwim-select-previous))
-  :config
-  (add-to-list 'company-frontends 'company-dwim-frontend t)
-  (delq 'company-preview-if-just-one-frontend company-frontends))
-
-#+end_src
-
-*** [[https://github.com/zk-phi/company-anywhere][company-anywhere]]
-
-通常 ~company~ は途中から入力しても補完候補が表示されませんが、
-こちらのパッケージで補完候補が表示されるようになります。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package company-anywhere
-  :straight (company-anywhere :type git :host github :repo "zk-phi/company-anywhere")
-  :after company)
-
-#+end_src
-
-*** [[https://github.com/TommyX12/company-tabnine][company-tabnine]]
-
-~tabnine~ を利用できるようにするパッケージです。
+*** cape
 
 #+begin_src emacs-lisp :tangle yes
   
 (use-package company-tabnine
-  :straight (company-tabnine :type git :host github :repo "karta0807913/company-tabnine")
-  :after company
+  :straight (company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
+
+(use-package cape
+  :straight t
+  :hook ((prog-mode . my/set-basic-capf)
+	 (text-mode . my/set-basic-capf)
+	 (meghanada-mode . my/set-meghanada-capf)
+	 (lsp-completion-mode . my/set-lsp-capf))
   :config
-  (add-to-list 'company-backends '(:separate company-capf company-yasnippet company-tabnine)))
+  (defun my/convert-super-capf (arg-capf)
+    (list (cape-capf-buster
+	   (cape-super-capf arg-capf
+			    (cape-company-to-capf #'company-yasnippet)
+			    (cape-company-to-capf #'company-tabnine)))
+	  #'cape-file
+	  #'cape-dabbrev))
+
+  (defun my/set-basic-capf ()
+    (setq-local completion-at-point-functions (my/convert-super-capf (car completion-at-point-functions))))
+
+  (defun my/set-meghanada-capf ()
+    (setq-local completion-at-point-functions (my/convert-super-capf (cape-company-to-capf #'company-meghanada))))
+
+  (defun my/set-lsp-capf ()
+    (setq-local completion-at-point-functions (my/convert-super-capf #'lsp-completion-at-point)))
+
+  (add-to-list 'completion-at-point-functions (cape-company-to-capf #'company-tabnine) t)
+  (add-to-list 'completion-at-point-functions #'cape-file t)
+  (add-to-list 'completion-at-point-functions #'cape-tex t)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev t)
+  (add-to-list 'completion-at-point-functions #'cape-keyword t))
+
+#+end_src
+
+*** kind-icon
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package kind-icon
+  :straight t
+  :after corfu
+  :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 #+end_src
 
@@ -1063,6 +1098,21 @@ aaa -> (aaa)
   :bind (nil
 	 :map vertico-map
 	 ("<backspace>" . vertico-directory-delete-char)))
+
+#+end_src
+
+*** vertico-prescient
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package vertico-prescient
+  :straight t
+  :init
+  (with-eval-after-load 'fussy
+    (setq vertico-prescient-completion-styles '(fussy)
+	  vertico-prescient-completion-category-overrides nil
+	  vertico-prescient-override-sorting t))
+  (vertico-prescient-mode +1))
 
 #+end_src
 
@@ -1272,6 +1322,13 @@ vertico の候補等に様々なアクションを提供してくれます。
   
 (use-package yasnippet
   :straight t
+  :bind (nil
+	 :map yas-keymap
+	 ("<tab>" . nil)
+	 ("TAB" . nil)
+	 ("<backtab>" . nil)
+	 ("S-TAB" . nil)
+	 ("C-o" . yas-next-field-or-maybe-expand))
   :init
   (yas-global-mode +1))
 
@@ -1418,7 +1475,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   
 (use-package undo-tree
   :straight t
-  :custom (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree")))
+  :custom (undo-tree-auto-save-history nil)
   :bind (nil
 	 :map my-space-map
 	 ("u" . undo-tree-visualize))
@@ -1468,6 +1525,37 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 ** theme
 
+*** 外枠のスペースの色を調整する
+
+#+begin_src emacs-lisp :tangle yes
+  
+(defun my/init-face ()
+  (dolist (face '(window-divider
+		  window-divider-first-pixel
+		  window-divider-last-pixel))
+    (face-spec-reset-face face)
+    (set-face-foreground face (face-attribute 'default :background)))
+  (set-face-background 'fringe (face-attribute 'default :background)))
+
+(defadvice load-theme (after theme activate)
+  (my/init-face))
+
+(with-eval-after-load 'consult
+  (defadvice consult-theme (after theme activate)
+    (my/init-face)))
+
+#+end_src
+
+*** modus-themes
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package modus-themes
+  :straight t
+  )
+
+#+end_src
+
 *** ef-themes
 
 #+begin_src emacs-lisp :tangle yes
@@ -1475,8 +1563,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 (use-package ef-themes
   :straight t
   :init
-  ;; (load-theme 'ef-deuteranopia-light t)
-  )
+  (load-theme 'ef-deuteranopia-light t))
 
 #+end_src
 
@@ -1502,7 +1589,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 	   (doom-themes-enable-italic t)
 	   (doom-themes-treemacs-theme "doom-colors"))
   :init
-  (load-theme 'doom-nord-light t)
+  ;; (load-theme 'doom-nord-light t)
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
@@ -1956,23 +2043,6 @@ Emacs内で翻訳してくれるようになります。
 
 #+end_src
 
-** sublimity
-
-sublimeのようにお洒落になります。
-
-#+begin_src emacs-lisp :tangle yes
-  
-(use-package sublimity
-  :straight t
-  :custom (sublimity-attractive-centering-width 150)
-  :config
-  (require 'sublimity-scroll)
-  (require 'sublimity-map)
-  (require 'sublimity-attractive)
-  (sublimity-mode +1))
-
-#+end_src
-
 ** avy
 
 #+begin_src emacs-lisp :tangle yes
@@ -2021,6 +2091,15 @@ sublimeのようにお洒落になります。
 
 #+end_src
 
+** el-fetch
+
+#+begin_src emacs-lisp :tangle yes
+  
+(use-package el-fetch
+  :straight t)
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
@@ -2032,8 +2111,14 @@ EmacsでLSP機能が利用できるようになります。
   :custom ((lsp-keymap-prefix "M-l")
 	   (lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request))
 	   (lsp-idle-delay 1.0)
-	   (lsp-semantic-tokens-enable t))
-  :general (:states '(normal visual) :keymaps 'lsp-mode-map :prefix "SPC m" :prefix-command 'lsp-command-map)
+	   (lsp-semantic-tokens-enable t)
+	   (lsp-completion-provider :none))
+  :general (:states '(normal visual) :keymaps 'lsp-mode-map :prefix "SPC m" :prefix-command 'my-lsp-command-map)
+  :bind (nil
+	 :map my-lsp-command-map
+	 ("a" . lsp-execute-code-action)
+	 ("r" . lsp-rename)
+	 ("f" . lsp-find-references))
   :hook ((lsp-mode . lsp-enable-which-key-integration)
 	 (html-mode . lsp)
 	 (css-mode . lsp)
