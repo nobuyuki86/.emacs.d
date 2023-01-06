@@ -691,14 +691,17 @@ fcitx-config-gtk
 
 #+end_src
 
-*** doom-modeline
+*** moody
 
 #+begin_src emacs-lisp :tangle yes
 
-(use-package doom-modeline
+(use-package moody
   :straight t
-  :init
-  (doom-modeline-mode +1))
+  :config
+  (setq x-underline-at-descent-line t)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode)
+  (moody-replace-eldoc-minibuffer-message-function))
 
 #+end_src
 
@@ -708,7 +711,8 @@ fcitx-config-gtk
 
 (use-package minions
   :straight t
-  :hook (doom-modeline-mode . minions-mode))
+  :config
+  (minions-mode +1))
 
 #+end_src
 
@@ -990,7 +994,7 @@ aaa -> (aaa)
 	 (lsp-completion-mode . my/set-lsp-capf))
   :config
   (defun my/convert-super-capf (arg-capf)
-    (list (cape-capf-buster
+    (list (cape-capf-case-fold
 	   (cape-super-capf arg-capf
 			    (cape-company-to-capf #'company-yasnippet)
 			    (cape-company-to-capf #'company-tabnine)))
