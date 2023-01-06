@@ -865,7 +865,8 @@ aaa -> (aaa)
   :straight t
   :custom ((completion-styles '(orderless))
 	   (completion-category-defaults nil)
-	   (completion-category-overrides nil)))
+	   (completion-category-overrides nil))
+  :hook (corfu-mode . (lambda () (setq-local orderless-matching-styles '(orderless-flex)))))
 
 #+end_src
 
@@ -923,7 +924,7 @@ aaa -> (aaa)
 
 #+end_src
 
-*** corfu-popup
+*** corfu-popupinfo
 
 #+begin_src emacs-lisp :tangle yes
 
@@ -943,9 +944,8 @@ aaa -> (aaa)
   :after corfu
   :init
   (with-eval-after-load 'orderless
-    (setq corfu-prescient-completion-styles '(orderless)
-	  corfu-prescient-enable-filtering nil)
-    (add-hook 'corfu-mode-hook (lambda () (setq-local orderless-matching-styles '(orderless-flex)))))
+    (setq corfu-prescient-enable-filtering nil
+	  corfu-prescient-override-sorting t))
 
   (corfu-prescient-mode +1))
 
@@ -1093,8 +1093,8 @@ aaa -> (aaa)
   :after vertico
   :init
   (with-eval-after-load 'orderless
-    (setq vertico-prescient-completion-styles '(orderless)
-	  vertico-prescient-enable-filtering nil))
+    (setq vertico-prescient-enable-filtering nil
+	  vertico-prescient-override-sorting t))
   (vertico-prescient-mode +1))
 
 #+end_src
@@ -1546,7 +1546,9 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 (use-package ef-themes
   :straight t
   :init
-  (load-theme 'ef-deuteranopia-light t))
+  ;; (load-theme 'ef-deuteranopia-light t)
+  (load-theme 'ef-light t)
+  )
 
 #+end_src
 
