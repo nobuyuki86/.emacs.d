@@ -2113,6 +2113,20 @@ Emacs内で翻訳してくれるようになります。
 
 #+end_src
 
+
+** hl-block-mode
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package hl-block-mode
+  :straight t
+  :custom ((hl-block-bracket nil)
+	   (hl-block-single-lebel t)
+	   (hl-block-style 'bracket))
+  :hook (prog-mode . hl-block-mode))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
