@@ -912,9 +912,15 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
 
 (use-package corfu
-  :straight (:type git :host github :repo "minad/corfu" :branch "async")
+  :straight (corfu :type git
+		   :host github
+		   :repo "minad/corfu"
+		   :branch "async"
+		   :files (:defaults "extensions/*"))
   :custom ((corfu-auto t)
 	   (corfu-auto-prefix 1)
+	   (corfu-auto-delay 0)
+	   (corfu-cycle t)
 	   (tab-always-indent 'complete))
   :bind (nil
 	 :map corfu-map
@@ -947,7 +953,7 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
 
 (use-package corfu-popupinfo
-  :load-path "straight/build/corfu/extensions/"
+  :after corfu
   :config
   (corfu-popupinfo-mode +1))
 
