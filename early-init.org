@@ -5,15 +5,17 @@
 ** header
 
 #+begin_src emacs-lisp :tangle yes
-  ;;; package --- Summary
-  ;;; Commentary:
-  ;;; Code:
+
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+
 #+end_src
 
 ** package.elを起動しない
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (setq package-enable-at-startup nil)
 
 #+end_src
@@ -21,7 +23,7 @@
 ** 画面最大化
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (push '(fullscreen . maximized) default-frame-alist)
 
 #+end_src
@@ -29,7 +31,7 @@
 ** スクロール非表示
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (push '(vertical-scroll-bars) default-frame-alist)
 
 #+end_src
@@ -37,7 +39,7 @@
 ** メニューバー非表示
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (push '(menu-bar-lines . 0) default-frame-alist)
 
 #+end_src
@@ -45,7 +47,7 @@
 ** ツールバー非表示
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (push '(tool-bar-lines . 0) default-frame-alist)
 
 #+end_src
@@ -63,8 +65,8 @@
 ** footer
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (provide 'early-init)
-  ;;; early-init.el ends here
+;;; early-init.el ends here
 
 #+end_src

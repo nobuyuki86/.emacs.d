@@ -5,17 +5,17 @@
 ** header
 
 #+begin_src emacs-lisp :tangle yes
-  
-  ;;; package --- Summary
-  ;;; Commentary:
-  ;;; Code:
+
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 
 #+end_src
 
 ** OS判定用定数
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (defconst IS-MAC (eq system-type 'darwin))
 (defconst IS-LINUX (memq system-type '(gnu gnu/linux gnu/kfreebsd berkeley-unix)))
 (defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
@@ -28,17 +28,17 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 たどり着いたパッケージマネージャー。
 設定は ~init.el~ に記述。
 
-| コマンド                  | 動作                                                                  |
-|--------------------------+----------------------------------------------------------------------|
-| straight-use-package     | パッケージのインストール                                                |
-| straight-pull-all        | 全てのパッケージを最新の状態に更新                                        |
-| straight-freeze-versions | ロックファイルを作成                                                    |
+| コマンド                  | 動作                                                                      |
+|--------------------------+--------------------------------------------------------------------------|
+| straight-use-package     | パッケージのインストール                                                   |
+| straight-pull-all        | 全てのパッケージを最新の状態に更新                                          |
+| straight-freeze-versions | ロックファイルを作成                                                       |
 | straight-thaw-versions   | ロックファイルのバージョンでインストールックファイルのバージョンでインストール |
 
 ** use-package
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (straight-use-package 'use-package)
 
 #+end_src
@@ -46,16 +46,15 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 ** bind-key
 
 #+begin_src emacs-lisp :tangle yes
-  
-(use-package bind-key
-  :straight t)
+
+(use-package bind-key :straight t)
 
 #+end_src
 
 ** general
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package general
   :straight t
   :custom (general-override-states '(insert emacs hybrid normal visual motion operator replace))
@@ -78,11 +77,12 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 ~org-mode~ に関する基本的な設定をしています。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package org
   :demand t
   :custom ((org-startup-folded 'content)
-	   (org-fold-core-style 'overlays))
+	   (org-fold-core-style 'overlays)
+	   (org-edit-src-content-indentation 0))
   :bind (nil
 	 :map my-org-map
 	 ("o" . org-open-at-point)
@@ -97,7 +97,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 また、同じ内容が２行表示されることがあったので、フックを追加しています。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package org-agenda
   :custom (org-agenda-files (file-expand-wildcards (concat org-directory "/*.org")))
   :bind (nil
@@ -111,7 +111,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 カーソル上のタスクでポモドーロタイマーを設定してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package org-pomodoro
   :straight t
   :bind (nil
@@ -123,7 +123,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** org-rainbow-tags
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package org-rainbow-tags
   :straight (:host github :repo "KaratasFurkan/org-rainbow-tags")
   :custom (org-rainbow-tags-extra-face-attributes '(:inverse-video t :box t :weight 'bold))
@@ -134,7 +134,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** [[https://github.com/0x60df/ox-qmd][ox-qmd]] (qiita投稿用)
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package ox-qmd
   :straight t)
 
@@ -143,7 +143,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** denote
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package denote
   :straight t
   :demand t
@@ -167,7 +167,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 **** consult-denote
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package consult-denote
   :straight (consult-denote :type git :host codeberg :repo "whhone/consult-denote")
   :bind (nil
@@ -181,7 +181,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** org-modern
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package org-modern
   :straight t
   :init
@@ -217,7 +217,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 最適化
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (when IS-WINDOWS
   (setq w32-get-true-file-attributes nil
 	w32-pipe-read-delay 0
@@ -238,7 +238,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** UI
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (setq-default cursor-in-non-selected-windows nil)
 
 (setq highlight-nonselected-windows nil)
@@ -264,7 +264,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** カーソルの点滅を無効化
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package frame
   :init
   (blink-cursor-mode -1))
@@ -274,7 +274,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 画面の更新頻度
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package simple
   :custom (idle-update-delay 1.0))
 
@@ -283,7 +283,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 外枠の調整
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (setq indicate-buffer-boundaries nil
       indicate-empty-lines nil)
 
@@ -299,7 +299,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 水平分割より垂直分割を優先する
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package window
   :custom ((split-width-threshold 160)
 	   (split-height-threshold nil)))
@@ -309,7 +309,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 補完時に大文字小文字を区別しない
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (setq read-buffer-completion-ignore-case t
       completion-ignore-case t)
 
@@ -321,7 +321,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** yes-or-noをy-or-nに変更
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (setq use-short-answers t)
 
 #+end_src
@@ -329,7 +329,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 自動生成ファイルを無効にする
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package files
   :custom ((make-backup-files nil)
 	   (auto-save-default nil)))
@@ -345,7 +345,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 ~emacsclient~ コマンドで高速にファイルが開けます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package server
   :init
   (server-mode +1))
@@ -355,7 +355,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 最後のカーソル位置を保存する
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package saveplace
   :init
   (save-place-mode +1))
@@ -365,7 +365,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** ファイルの閲覧履歴を保存する
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package recentf
   :custom (recentf-max-saved-items 200)
   :init
@@ -376,7 +376,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** コマンドの履歴を保存
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package savehist
   :init
   (savehist-mode +1))
@@ -386,7 +386,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 対応括弧を強調表示
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package paren
   :init
   (show-paren-mode +1))
@@ -396,7 +396,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 現在行を強調表示
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package hl-line
   :init
   (global-hl-line-mode +1))
@@ -406,7 +406,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 他プロセスの編集をバッファに反映
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package autorevert
   :init
   (global-auto-revert-mode +1))
@@ -416,7 +416,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 行番号の表示
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package display-line-numbers
   :custom (display-line-numbers-width-start t)
   :init
@@ -427,7 +427,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** カーソル上の関数名等をモードラインに表示
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package which-func
   :init
   (which-function-mode +1))
@@ -437,7 +437,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** メニューバーを無効化
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package menu-bar
   :init
   (menu-bar-mode -1))
@@ -447,7 +447,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** ツールバーを無効化
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package tool-bar
   :init
   (tool-bar-mode -1))
@@ -457,7 +457,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** スクロールバーの無効化
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package scroll-bar
   :init
   (scroll-bar-mode -1))
@@ -467,7 +467,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** GC中にフォントを圧縮しない
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (setq inhibit-compacting-font-caches t)
 
 #+end_src
@@ -475,7 +475,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 削除したファイルをゴミ箱に移動させる
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (setq delete-by-moving-to-trash t)
 
 #+end_src
@@ -483,7 +483,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** 便利コマンドをEvil向けに登録
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package simple
   :bind (nil
 	 :map my-space-map
@@ -543,7 +543,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 ** 文字コード
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package mule
   :init
   (set-language-environment "Japanese")
@@ -561,7 +561,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 *** shift-jisよりcp932を優先
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (when IS-WINDOWS
   (set-coding-system-priority 'utf-8
 			      'euc-jp
@@ -576,7 +576,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 ~highlight-indent-guides~ と相性が悪いのでタブは可視化していません。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package whitespace
   :custom (whitespace-style '(face trailing))
   :init
@@ -592,7 +592,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 *** [[https://github.com/trueroad/tr-emacs-ime-module][tr-ime]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package tr-ime
   :straight t
   :if IS-WINDOWS
@@ -610,17 +610,17 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 **** 必要なパッケージを導入
 
 #+begin_src shell :tangle no
-  
-  sudo apt install fcitx-libs-dev
-  sudo apt install emacs-mozc
-  fcitx-config-gtk
+
+sudo apt install fcitx-libs-dev
+sudo apt install emacs-mozc
+fcitx-config-gtk
 
 #+end_src
 
 **** Emacs側の設定
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package mozc
   :straight t
   :if IS-LINUX
@@ -633,7 +633,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 私は [[https://github.com/protesilaos/fontaine][fontaine]] を使用してフォントを設定しています。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package fontaine
   :straight t
   :demand t
@@ -681,7 +681,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 マウスでクリックすると大体の位置にジャンプもできます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package nyan-mode
   :straight t
   :custom ((nyan-animate-nyancat t)
@@ -694,7 +694,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 *** doom-modeline
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package doom-modeline
   :straight t
   :init
@@ -705,7 +705,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 *** minions
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package minions
   :straight t
   :hook (doom-modeline-mode . minions-mode))
@@ -717,7 +717,7 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil
   :straight t
   :custom ((evil-want-keybinding nil)
@@ -748,7 +748,7 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 各モードのキーバインドを自動的に設定してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil-collection
   :straight t
   :after evil
@@ -762,7 +762,7 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 ~gc~ でコメントアウトしてくれるパッケージです。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil-commentary
   :straight t
   :after evil
@@ -781,7 +781,7 @@ aaa -> ( aaa )
 aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil-surround
   :straight t
   :after evil
@@ -795,7 +795,7 @@ aaa -> (aaa)
 ~%~ でHTMLのタグ間をジャンプしてくれるようになります。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil-matchit
   :straight t
   :after evil
@@ -809,7 +809,7 @@ aaa -> (aaa)
 ~org-agenda~ 等のorg系の特殊なモードでキーバインドを設定してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil-org
   :straight t
   :after evil
@@ -826,7 +826,7 @@ aaa -> (aaa)
 ~gl~ ~gL~ で整列してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil-lion
   :straight t
   :after evil
@@ -838,7 +838,7 @@ aaa -> (aaa)
 *** evil-textobj-tree-sitter
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package evil-textobj-tree-sitter
   :straight t
   :after tree-sitter
@@ -855,7 +855,7 @@ aaa -> (aaa)
 ** fussy
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package fussy
   :straight t
   :custom ((completion-styles '(fussy))
@@ -883,7 +883,7 @@ aaa -> (aaa)
 *** fuz-bin
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package fuz-bin
   :straight (fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin"))
   :config
@@ -896,7 +896,7 @@ aaa -> (aaa)
 ~prescient-persist-mode~ で履歴を永続的に保存
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package prescient
   :straight t
   :config
@@ -910,13 +910,12 @@ aaa -> (aaa)
 ** corfu
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package corfu
   :straight (:type git :host github :repo "minad/corfu" :branch "async")
   :custom ((corfu-auto t)
 	   (corfu-auto-prefix 1)
-	   (corfu-cycle t)
-	 (tab-always-indent 'complete))
+	   (tab-always-indent 'complete))
   :bind (nil
 	 :map corfu-map
 	 ("RET" . nil)
@@ -925,9 +924,10 @@ aaa -> (aaa)
 	 ("<tab>" . corfu-insert))
   :init
   (global-corfu-mode +1)
+
   :config
   (defun my/corfu-remap-tab-command ()
-  (global-set-key [remap c-indent-line-or-region] #'indent-for-tab-command))
+    (global-set-key [remap c-indent-line-or-region] #'indent-for-tab-command))
   (add-hook 'java-mode-hook #'my/corfu-remap-tab-command)
 
   (defun corfu-enable-always-in-minibuffer ()
@@ -945,7 +945,7 @@ aaa -> (aaa)
 *** corfu-popup
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package corfu-popupinfo
   :load-path "straight/build/corfu/extensions/"
   :config
@@ -956,7 +956,7 @@ aaa -> (aaa)
 *** corfu-prescient
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package corfu-prescient
   :straight t
   :after corfu
@@ -972,7 +972,7 @@ aaa -> (aaa)
 *** cape
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package company-tabnine
   :straight (company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
 
@@ -1011,7 +1011,7 @@ aaa -> (aaa)
 *** kind-icon
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package kind-icon
   :straight t
   :after corfu
@@ -1026,7 +1026,7 @@ aaa -> (aaa)
 ~helm~ や ~ivy~ よりも補完インタフェース新しくシンプルな補完パッケージです。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package vertico
   :straight t
   :custom (vertico-cycle t)
@@ -1075,7 +1075,7 @@ aaa -> (aaa)
 ~verito~ の拡張機能の一つで直前のコマンドを再度表示します。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package vertico-repeat
   :after vertico
   :load-path "straight/build/vertico/extensions"
@@ -1091,7 +1091,7 @@ aaa -> (aaa)
 ~verito~ の拡張機能の一つで ~find-file~ 等、ファイルやディレクトリの操作を良くします。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package vertico-directory
   :after vertico
   :load-path "straight/build/vertico/extensions"
@@ -1104,7 +1104,7 @@ aaa -> (aaa)
 *** vertico-prescient
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package vertico-prescient
   :straight t
   :init
@@ -1121,7 +1121,7 @@ aaa -> (aaa)
 ~vertico~ や ~selectrum~ で利用できる便利なコマンドを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 ;; Example configuration for Consult
 (use-package consult
   :straight t
@@ -1245,7 +1245,7 @@ aaa -> (aaa)
 *** [[https://github.com/karthink/consult-dir][consult-dir]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package consult-dir
   :straight t
   :bind (nil
@@ -1257,7 +1257,7 @@ aaa -> (aaa)
 *** その他
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (defun consult-ripgrep-current-directory ()
   (interactive)
   (consult-ripgrep default-directory))
@@ -1271,7 +1271,7 @@ aaa -> (aaa)
 ~vertico~ の候補に情報を追加してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package marginalia
   :straight t
   :init
@@ -1284,7 +1284,7 @@ aaa -> (aaa)
 vertico の候補等に様々なアクションを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package embark
   :straight t
   :bind (("C-." . embark-act)         ;; pick some comfortable binding
@@ -1307,7 +1307,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 ~embark~ と ~consult~ を連動させます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package embark-consult
   :straight t ; only need to install it, embark loads it after consult if found
   :hook (embark-collect-mode . consult-preview-at-point-mode))
@@ -1319,7 +1319,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 スニペット機能を提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package yasnippet
   :straight t
   :bind (nil
@@ -1339,7 +1339,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 各言語のスニペットを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package yasnippet-snippets
   :straight t
   :after yasnippet)
@@ -1351,11 +1351,11 @@ vertico の候補等に様々なアクションを提供してくれます。
 インデントを推測して、設定してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package dtrt-indent
   :straight t
   :init
-(dtrt-indent-global-mode +1))
+  (dtrt-indent-global-mode +1))
 
 #+end_src
 
@@ -1364,7 +1364,7 @@ vertico の候補等に様々なアクションを提供してくれます。
 Emacs上でGitを快適に操作できるようにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package magit
   :straight t)
 
@@ -1373,7 +1373,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 ** [[https://github.com/dgutov/diff-hl][diff-hl]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package diff-hl
   :straight t
   :init
@@ -1386,7 +1386,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 キーバインドを可視化してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package which-key
   :straight t
   :init
@@ -1399,7 +1399,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 プロジェクトに関する便利機能を提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package projectile
   :straight t
   :bind (("C-c p" . projectile-command-map)
@@ -1415,7 +1415,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 構文チェック機能を提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package flycheck
   :straight t
   :custom ((flycheck-idle-change-delay 1.0)
@@ -1436,7 +1436,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 エラー内容などを ~posframe~ を使用して表示してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package flycheck-posframe
   :straight t
   :custom ((flycheck-posframe-warning-prefix "! ")
@@ -1458,7 +1458,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 チェック内容を ~consult~ を使用して絞り込めます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package consult-flycheck
   :straight t
   :bind (nil
@@ -1472,7 +1472,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 編集履歴をツリー表示してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package undo-tree
   :straight t
   :custom (undo-tree-auto-save-history nil)
@@ -1489,7 +1489,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 ~ripgrep~ を利用してGrep検索してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package rg
   :straight t)
 
@@ -1500,7 +1500,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 括弧を色付けしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package rainbow-delimiters
   :straight t
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -1512,14 +1512,14 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 インデントを可視化してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package highlight-indent-guides
   :straight t
   :bind (nil
 	 :map my-toggle-map
-       ("i" . highlight-indent-guides-mode))
-:hook ((prog-mode . highlight-indent-guides-mode)
-       (text-mode . highlight-indent-guides-mode)))
+	 ("i" . highlight-indent-guides-mode))
+  :hook ((prog-mode . highlight-indent-guides-mode)
+	 (text-mode . highlight-indent-guides-mode)))
 
 #+end_src
 
@@ -1528,7 +1528,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 *** 外枠のスペースの色を調整する
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (defun my/init-face ()
   (dolist (face '(window-divider
 		  window-divider-first-pixel
@@ -1549,7 +1549,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 *** modus-themes
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package modus-themes
   :straight t
   )
@@ -1559,7 +1559,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 *** ef-themes
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package ef-themes
   :straight t
   :init
@@ -1570,7 +1570,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 *** solarized-theme
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package solarized-theme
   :straight t
   :init
@@ -1582,7 +1582,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 *** doom-themes
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package doom-themes
   :straight t
   :custom ((doom-themes-enable-bold t)
@@ -1601,7 +1601,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 Emacsを再起動してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package restart-emacs
   :straight t
   :bind (nil
@@ -1615,7 +1615,7 @@ Emacsを再起動してくれます。
 アイコンのインストールなど、アイコンに関する機能を提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package all-the-icons
   :straight t
   :if (display-graphic-p))
@@ -1627,7 +1627,7 @@ Emacsを再起動してくれます。
 ~vertico~ でアイコンが表示されるようになります。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package all-the-icons-completion
   :straight t
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
@@ -1641,7 +1641,7 @@ Emacsを再起動してくれます。
 ~er/expand-region~ を押すと選択範囲をどんどん広げてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package expand-region
   :straight t
   :demand t
@@ -1654,7 +1654,7 @@ Emacsを再起動してくれます。
 ** pulsar
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package pulsar
   :straight t
   :custom ((pulsar-pulse t)
@@ -1672,7 +1672,7 @@ Emacsを再起動してくれます。
 ウィンドウが非活性な時などにガベージコレクションを実行してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package gcmh
   :straight t
   :custom ((gcmh-idle-delay 'auto)
@@ -1688,7 +1688,7 @@ Emacsを再起動してくれます。
 起動画面をいい感じにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package dashboard
   :straight t
   :custom ((dashboard-center-content t)
@@ -1706,7 +1706,7 @@ Emacsを再起動してくれます。
 Redo等、一部の操作を強調表示して操作がわかりやすくなります。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package volatile-highlights
   :straight t
   :init
@@ -1720,7 +1720,7 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
 主に ~org-pomodoro~ で使用します。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package alert
   :straight t
   :custom (alert-default-style 'libnotify))
@@ -1732,7 +1732,7 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
 Windows用の設定です。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package alert-toast
   :straight t
   :if IS-WINDOWS
@@ -1745,7 +1745,7 @@ Windows用の設定です。
 ~org-mode~ や ~markdown~ のテーブル機能で日本語が含まれてもずれないようにしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package valign
   :straight t
   :hook ((org-mode . valign-mode)
@@ -1758,7 +1758,7 @@ Windows用の設定です。
 ~tree-sitter~ をEmacsで利用できるようにします。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package tree-sitter
   :straight t
   :hook (tree-sitter-after-on . tree-sitter-hl-mode)
@@ -1770,7 +1770,7 @@ Windows用の設定です。
 *** [[https://github.com/emacs-tree-sitter/tree-sitter-langs][tree-sitter-langs]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package tree-sitter-langs
   :straight t
   :after tree-sitter)
@@ -1783,7 +1783,7 @@ Windows用の設定です。
 ~org-babel~ 等で活躍します。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package polymode
   :straight t)
 
@@ -1801,7 +1801,7 @@ Windows用の設定です。
 普段は利用しませんが、READMEをもとに設定しています。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package treemacs
   :straight t
   :defer t
@@ -1826,8 +1826,8 @@ Windows用の設定です。
 	  treemacs-goto-tag-strategy               'refetch-index
 	  treemacs-header-scroll-indicators        '(nil . "^^^^^^")
 	  treemacs-hide-dot-git-directory          t
-	treemacs-indentation                     2
-	treemacs-indentation-string              " "
+	  treemacs-indentation                     2
+	  treemacs-indentation-string              " "
 	  treemacs-is-never-other-window           nil
 	  treemacs-max-git-entries                 5000
 	  treemacs-missing-project-action          'ask
@@ -1921,7 +1921,7 @@ Windows用の設定です。
 保存時などに自動的にフォーマットしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package apheleia
   :straight t
   :hook (python-mode . apheleia-mode))
@@ -1931,7 +1931,7 @@ Windows用の設定です。
 ** string-inflection
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package string-inflection
   :straight t
   :bind (nil
@@ -1949,7 +1949,7 @@ Windows用の設定です。
 ** line-reminder
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package line-reminder
   :straight t
   :init
@@ -1960,7 +1960,7 @@ Windows用の設定です。
 ** super-save
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package super-save
   :straight t
   :custom (super-save-auto-save-when-idle t)
@@ -1984,7 +1984,7 @@ Windows用の設定です。
 使用されていない一時保存バッファをクリアしてくれるパッケージです。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package gc-buffers
   :straight (:type git :repo "https://codeberg.org/akib/emacs-gc-buffers.git")
   :init
@@ -1995,7 +1995,7 @@ Windows用の設定です。
 ** ctrlf
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package ctrlf
   :straight t
   :custom (ctrlf-default-search-style 'fuzzy)
@@ -2007,7 +2007,7 @@ Windows用の設定です。
 ** smartparens
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package smartparens
   :straight t
   :config
@@ -2021,7 +2021,7 @@ Windows用の設定です。
 編集行の余分な末尾の空白を削除してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package ws-butler
   :straight t
   :hook (prog-mode . ws-butler-mode))
@@ -2033,7 +2033,7 @@ Windows用の設定です。
 Emacs内で翻訳してくれるようになります。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package go-translate
   :straight t
   :custom (gts-translate-list '(("en" "ja")))
@@ -2046,7 +2046,7 @@ Emacs内で翻訳してくれるようになります。
 ** avy
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package avy
   :straight t
   :bind (nil
@@ -2058,7 +2058,7 @@ Emacs内で翻訳してくれるようになります。
 ** solaire-mode
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package solaire-mode
   :straight t
   :config
@@ -2069,7 +2069,7 @@ Emacs内で翻訳してくれるようになります。
 ** smart-hungry-delete
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package smart-hungry-delete
   :straight t
   :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
@@ -2083,7 +2083,7 @@ Emacs内で翻訳してくれるようになります。
 ** dirvish
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package dirvish
   :straight t
   :config
@@ -2094,7 +2094,7 @@ Emacs内で翻訳してくれるようになります。
 ** el-fetch
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package el-fetch
   :straight t)
 
@@ -2105,7 +2105,7 @@ Emacs内で翻訳してくれるようになります。
 EmacsでLSP機能が利用できるようになります。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package lsp-mode
   :straight t
   :custom ((lsp-keymap-prefix "M-l")
@@ -2134,7 +2134,7 @@ EmacsでLSP機能が利用できるようになります。
 UIを提供してくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package lsp-ui
   :straight t
   :after lsp-mode
@@ -2151,7 +2151,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ※1.13以降はJava17が必要
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package lsp-java
   :straight t
   :after (lsp-mode java-mode))
@@ -2163,7 +2163,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ~pyright~ を利用したい場合、こちらのパッケージをインストールします。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package lsp-pyright
   :straight t
   :after (lsp-mode python-mode))
@@ -2175,7 +2175,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ~treemacs~ と ~lsp-mode~ を組み合わせてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package lsp-treemacs
   :straight t
   :after (lsp-mode treemacs))
@@ -2185,7 +2185,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 *** lsp-dired
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package lsp-dired
   :after (lsp-mode dired)
   :hook (dired-mode . lsp-dired-mode))
@@ -2195,7 +2195,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 *** consult-lsp
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package consult-lsp
   :straight t
   :after consult lsp-mode
@@ -2220,7 +2220,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 既知のシンボルに色を付けてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package highlight-defined
   :straight t
   :hook (emacs-lisp-mode . highlight-defined-mode))
@@ -2232,7 +2232,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 引用符と引用記号を色付けしてくれます。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package highlight-quoted
   :straight t
   :hook (emacs-lisp-mode . highlight-quoted-mode))
@@ -2242,7 +2242,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 *** java
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package cc-mode
   :hook (java-mode . (lambda () (setq-local tab-width 2))))
 
@@ -2253,7 +2253,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** html
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package sgml-mode
   :hook (html-mode . (lambda () (setq-local tab-width 2)))
   :mode ("\\.jsp\\'" . html-mode))
@@ -2263,7 +2263,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** css
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package css-mode
   :hook (css-mode . (lambda () (setq-local tab-width 2))))
 
@@ -2272,7 +2272,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** javascript
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package js
   :hook (js-mode . (lambda () (setq-local tab-width 2))))
 
@@ -2283,7 +2283,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ~Emmet~ を導入します。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package emmet-mode
   :straight t
   :hook ((html-mode . emmet-mode)
@@ -2296,7 +2296,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ~web-beautify~ を導入します。
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package web-beautify
   :straight t)
 
@@ -2305,7 +2305,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 *** [[https://github.com/rust-lang/rust-mode][rust-mode]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package rust-mode
   :straight t
   :hook (rust-mode . (lambda ()
@@ -2316,7 +2316,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** [[https://github.com/kwrooijen/cargo.el][cargo]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package cargo
   :straight t
   :hook (rust-mode . cargo-minor-mode))
@@ -2328,7 +2328,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** [[https://github.com/jorgenschaefer/pyvenv][pyvenv]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package pyvenv
   :straight t)
 
@@ -2339,7 +2339,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** [[https://slime.common-lisp.dev/][slime]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package slime
   :straight t
   :custom (inferior-lisp-program "sbcl"))
@@ -2349,7 +2349,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** [[https://github.com/anwyn/slime-company][slime-company]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package slime-company
   :straight t
   :after slime company
@@ -2363,7 +2363,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** [[https://github.com/alex-hhh/emacs-sql-indent][sql-indent]]
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package sql-indent
   :straight t
   :hook (sql-mode . sqlind-minor-mode))
@@ -2373,7 +2373,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 **** sql-format
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package sqlformat
   :straight t
   :custom (sqlformat-command "sqlfluff"))
@@ -2383,7 +2383,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 *** xml
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package nxml-mode
   :hook (nxml-mode . (lambda () (setq-local tab-width 4))))
 
@@ -2392,7 +2392,7 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 *** markdown
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (use-package markdown-mode
   :hook (markdown-mode . (lambda ()
 			   (setq-local tab-width 4
@@ -2403,8 +2403,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 ** footer
 
 #+begin_src emacs-lisp :tangle yes
-  
+
 (provide 'config)
-    ;;; late-init.el ends here
+;;; late-init.el ends here
 
 #+end_src
