@@ -83,8 +83,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   :custom ((org-startup-folded 'content)
 	   (org-fold-core-style 'overlays)
 	   (org-edit-src-content-indentation 0))
+  :general (:states '(normal visual) :keymaps 'org-mode-map :prefix "SPC m" :prefix-command 'my-org-mode-command-map)
   :bind (nil
-	 :map my-org-map
+	 :map my-org-mode-command-map
 	 ("o" . org-open-at-point)
 	 ("l" . org-link)
 	 ("e" . org-edit-special)))
@@ -115,7 +116,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 (use-package org-pomodoro
   :straight t
   :bind (nil
-	 :map my-org-map
+	 :map my-org-mode-command-map
 	 ("p" . org-pomodoro)))
 
 #+end_src
