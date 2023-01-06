@@ -857,42 +857,15 @@ aaa -> (aaa)
 
 #+end_src
 
-** fussy
+** orderless
 
 #+begin_src emacs-lisp :tangle yes
 
-(use-package fussy
+(use-package orderless
   :straight t
-  :custom ((completion-styles '(fussy))
+  :custom ((completion-styles '(orderless))
 	   (completion-category-defaults nil)
-	   (completion-category-overrides nil)
-	   (fussy-use-cache t)
-	   (fussy-filter-fn #'fussy-filter-default)
-	   (fussy-default-regex-fn #'fussy-pattern-flex-2))
-  :config
-  (with-eval-after-load 'fuz-bin
-    (setq fussy-score-fn #'fussy-fuz-bin-score))
-
-  (with-eval-after-load 'prescient
-    (setq fussy-compare-same-score-fn #'fussy-strlen<))
-
-  (with-eval-after-load 'corfu
-    (advice-add 'corfu--capf-wrapper :before 'fussy-wipe-cache)
-    (add-hook 'corfu-mode-hook
-	      (lambda ()
-		(setq-local fussy-max-candidate-limit 5000
-			    fussy-prefer-prefix nil)))))
-
-#+end_src
-
-*** fuz-bin
-
-#+begin_src emacs-lisp :tangle yes
-
-(use-package fuz-bin
-  :straight (fuz-bin :repo "jcs-elpa/fuz-bin" :fetcher github :files (:defaults "bin"))
-  :config
-  (fuz-bin-load-dyn))
+	   (completion-category-overrides nil)))
 
 #+end_src
 
@@ -905,10 +878,7 @@ aaa -> (aaa)
 (use-package prescient
   :straight t
   :config
-  (prescient-persist-mode +1)
-
-  (with-eval-after-load 'fussy
-    (setq prescient-sort-length-enable nil)))
+  (prescient-persist-mode +1))
 
 #+end_src
 
@@ -972,10 +942,11 @@ aaa -> (aaa)
   :straight t
   :after corfu
   :init
-  (with-eval-after-load 'fussy
-    (setq corfu-prescient-override-sorting t
-	  corfu-prescient-completion-styles '(fussy)
-	  corfu-prescient-completion-category-overrides nil))
+  (with-eval-after-load 'orderless
+    (setq corfu-prescient-completion-styles '(orderless)
+	  corfu-prescient-enable-filtering nil)
+    (add-hook 'corfu-mode-hook (lambda () (setq-local orderless-matching-styles '(orderless-flex)))))
+
   (corfu-prescient-mode +1))
 
 #+end_src
@@ -1121,10 +1092,9 @@ aaa -> (aaa)
   :straight t
   :after vertico
   :init
-  (with-eval-after-load 'fussy
-    (setq vertico-prescient-completion-styles '(fussy)
-	  vertico-prescient-completion-category-overrides nil
-	  vertico-prescient-override-sorting t))
+  (with-eval-after-load 'orderless
+    (setq vertico-prescient-completion-styles '(orderless)
+	  vertico-prescient-enable-filtering nil))
   (vertico-prescient-mode +1))
 
 #+end_src
