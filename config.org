@@ -668,7 +668,6 @@ fcitx-config-gtk
 		  :variable-pitch-family "源ノ角ゴシック VF"
 		  :line-spacing 1))))
 
-	(iswi)
 	(IS-WINDOWS
 	 (setq fontaine-presets
 	       '((regular
@@ -958,7 +957,7 @@ aaa -> (aaa)
   :init
   (setq corfu-cycle t
 	corfu-auto t
-	corfu-auto-prefix 1
+	corfu-auto-prefix 0
 	corfu-auto-delay 0
 	corfu-preselect-first nil
 	tab-always-indent 'complete)
