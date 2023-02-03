@@ -22,6 +22,22 @@
 
 #+end_src
 
+** Msys2用の設定
+
+#+begin_src emacs-lisp :tangle yes
+
+(when IS-WINDOWS
+  ;; MSYS2の実行パスを通す。Windowsの環境変数で通していれば不要。
+  (setenv "PATH" (format "C:/msys64/usr/bin:%s"  (getenv "PATH")))
+  ;; bashを指定
+  (setq shell-file-name "C:/msys64/usr/bin/bash.exe")
+  (setq explicit-shell-file-name shell-file-name)
+  ;; NULLデバイスの設定。標準ではWindowsの"NUL"になっており、MSYS2のバイナリで上手く扱えない。
+  (setq null-device "/dev/null"))
+
+#+end_src
+
+
 ** straight
 
 Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
