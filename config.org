@@ -2008,7 +2008,9 @@ Windows用の設定です。
 
 (use-package apheleia
   :straight t
-  :hook (python-mode . apheleia-mode))
+  :config
+  (add-to-list 'apheleia-mode-alist '(typescript-mode . prettier))
+  (apheleia-global-mode +1))
 
 #+end_src
 
