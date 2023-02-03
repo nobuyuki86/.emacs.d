@@ -154,34 +154,26 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
   :straight t
   :demand t
   :bind (nil
-	 :map my-space-map
-	 ("d" . denote))
-  :general (:states '(normal visual) :keymaps 'override :prefix "SPC d" :prefix-command 'my-denote-map)
+	 :map my-denote-map
+	 ("d" . denote-open-or-create)
+	 ("l" . denote-link-or-create)
+	 ("f" . denote-link-find-file)
+	 ("b" . denote-link-find-backlink))
   :hook (dired-mode . denote-dired-mode-in-directories)
   :init
-  (setq denote-directory org-directory
-	denote-infer-keywords t
+  (with-eval-after-load 'org
+    (setq denote-directory org-directory))
+
+  (setq denote-infer-keywords t
 	denote-sort-keywords t
 	denote-file-type nil
 	denote-prompts '(title keywords)
 	denote-date-prompt-use-org-read-date t
 	denote-allow-multi-word-keywords t
 	denote-date-format nil
-	denote-link-fontify-backlinks t))
+	denote-link-fontify-backlinks t)
 
-#+end_src
-
-**** consult-denote
-
-#+begin_src emacs-lisp :tangle yes
-
-(use-package consult-denote
-  :straight (consult-denote :type git :host codeberg :repo "whhone/consult-denote")
-  :bind (nil
-	 :map my-denote-map
-	 ("d" . consult-denote-open-or-create)
-	 ("i" . consult-denote-link-insert-link)
-	 ("r" . consult-denote-ripgrep)))
+  (general-def :states '(normal visual) :keymaps 'override :prefix "SPC d" :prefix-command 'my-denote-map))
 
 #+end_src
 
