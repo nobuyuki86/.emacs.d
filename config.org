@@ -896,11 +896,40 @@ aaa -> (aaa)
 
 (use-package orderless
   :straight t
+  :demand t
   :hook (corfu-mode . (lambda () (setq-local orderless-matching-styles '(orderless-flex))))
   :init
   (setq completion-styles '(orderless)
 	completion-category-defaults nil
-	completion-category-overrides nil))
+	completion-category-overrides nil)
+
+  :config
+  (with-eval-after-load 'migemo
+    (defun orderless-migemo (component)
+      (let ((pattern (migemo-get-pattern component)))
+	(condition-case nil
+	    (progn (string-match-p pattern "") pattern)
+	  (invalid-regexp nil))))
+
+    (orderless-define-completion-style orderless-default-style
+      (orderless-matching-styles '(orderless-literal
+				   orderless-regexp)))
+
+    (orderless-define-completion-style orderless-migemo-style
+      (orderless-matching-styles '(orderless-literal
+				   orderless-regexp
+				   orderless-migemo)))
+
+    (setq completion-category-overrides
+	  '((command (styles orderless-default-style))
+	    (file (styles orderless-migemo-style))
+	    (buffer (styles orderless-migemo-style))
+	    (notes (styles orderless-migemo-style))
+	    (symbol (styles orderless-default-style))
+	    (consult-location (styles orderless-migemo-style)) ; category `consult-location' は `consult-line' などに使われる
+	    (consult-multi (styles orderless-migemo-style)) ; category `consult-multi' は `consult-buffer' などに使われる
+	    (unicode-name (styles orderless-migemo-style))
+	    (variable (styles orderless-default-style))))))
 
 #+end_src
 
@@ -1580,7 +1609,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   (setq modus-themes-common-palette-overrides
 	modus-themes-preset-overrides-intense)
 
-  (load-theme 'modus-operandi t)))
+  (load-theme 'modus-vivendi t))
 
 #+end_src
 
@@ -2157,12 +2186,24 @@ Emacs内で翻訳してくれるようになります。
 
 #+end_src
 
-** format-all
+** migemo
 
-#+begin_src emacs-lisp :tangle yes
+ #+begin_src emacs-lisp :tangle yes
 
-(use-package format-all
-  :straight t)
+(use-package migemo
+  :straight t
+  :config
+  ;; cmigemo(default)
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs"))
+
+  ;; Set your installed path
+  (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
+
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (migemo-init))
 
 #+end_src
 
