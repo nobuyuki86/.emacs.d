@@ -602,10 +602,6 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 Emacsは~C-\~で日本語入力を切り替えることができますが、
 デフォルトだとあまり補完が賢くないのでOSに合わせて導入します。
 
-*** mozc
-
-[[https://www.kkaneko.jp/tools/server/mozc.html][日本語変換 Mozc の設定，emacs 用の Mozc の設定（Ubuntu 上）]] を参考にしています。
-
 *** [[https://github.com/trueroad/tr-emacs-ime-module][tr-ime]]
 
 #+begin_src emacs-lisp :tangle yes
@@ -619,6 +615,10 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
   (w32-ime-initialize))
 
 #+end_src
+
+*** mozc
+
+[[https://www.kkaneko.jp/tools/server/mozc.html][日本語変換 Mozc の設定，emacs 用の Mozc の設定（Ubuntu 上）]] を参考にしています。
 
 **** 必要なパッケージを導入
 
