@@ -1784,16 +1784,15 @@ Emacsを再起動してくれます。
 
 #+end_src
 
-** [[https://github.com/k-talo/volatile-highlights.el][volatile-highlights]]
-
-Redo等、一部の操作を強調表示して操作がわかりやすくなります。
+** goggles
 
 #+begin_src emacs-lisp :tangle yes
 
-(use-package volatile-highlights
+(use-package goggles
   :straight t
-  :init
-  (volatile-highlights-mode +1))
+  :hook ((prog-mode text-mode) . goggles-mode)
+  :config
+  (setq-default goggles-pulse t))
 
 #+end_src
 
