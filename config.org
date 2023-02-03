@@ -2080,19 +2080,6 @@ Windows用の設定です。
 
 #+end_src
 
-** ctrlf
-
-#+begin_src emacs-lisp :tangle yes
-
-(use-package ctrlf
-  :straight t
-  :init
-  :init
-  (setq ctrlf-default-search-style 'fuzzy)
-  (ctrlf-mode +1))
-
-#+end_src
-
 ** smartparens
 
 #+begin_src emacs-lisp :tangle yes
