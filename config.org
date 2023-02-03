@@ -565,15 +565,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 (use-package mule
   :init
-  (set-language-environment "Japanese")
-  (prefer-coding-system 'utf-8))
+  (set-language-environment "Japanese"))
 
-(use-package mule
-  :if IS-WINDOWS
-  :init
-  (set-file-name-coding-system 'cp932)
-  (set-keyboard-coding-system 'cp932)
-  (set-terminal-coding-system 'cp932))
+(setq-default buffer-file-coding-system 'utf-8)
 
 #+end_src
 
