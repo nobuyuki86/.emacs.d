@@ -2232,12 +2232,12 @@ EmacsでLSP機能が利用できるようになります。
 	 (rust-mode . lsp)
 	 (nxml-mode . lsp)
 	 (java-mode . lsp)
-	 (js-mode . lsp))
+	 (js-mode . lsp)
+	 (typescript-mode . lsp))
   :init
   (setq lsp-keymap-prefix "M-l"
 	lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request)
 	lsp-idle-delay 1.0
-	lsp-semantic-tokens-enable t
 	lsp-completion-provider :none))
 
 #+end_src
@@ -2389,6 +2389,15 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 (use-package js
   :hook (js-mode . (lambda () (setq-local tab-width 2))))
+
+#+end_src
+
+**** typescript-mode
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package typescript-mode
+  :straight t)
 
 #+end_src
 
