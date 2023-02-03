@@ -37,7 +37,6 @@
 
 #+end_src
 
-
 ** straight
 
 Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
@@ -415,7 +414,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 *** 現在行を強調表示
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 (use-package hl-line
   :init
