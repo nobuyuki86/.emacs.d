@@ -57,8 +57,8 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 (use-package general
   :straight t
-  :custom (general-override-states '(insert emacs hybrid normal visual motion operator replace))
   :config
+  (setq general-override-states '(insert emacs hybrid normal visual motion operator replace))
   (general-def :states '(normal visual) :keymaps 'override :prefix "SPC" :prefix-command 'my-space-map)
   (general-def :states '(normal visual) :keymaps 'override :prefix "SPC s" :prefix-command 'search-map)
   (general-def :states '(normal visual) :keymaps 'override :prefix "SPC g" :prefix-command 'goto-map)
@@ -80,15 +80,16 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 (use-package org
   :demand t
-  :custom ((org-startup-folded 'content)
-	   (org-fold-core-style 'overlays)
-	   (org-edit-src-content-indentation 0))
   :general (:states '(normal visual) :keymaps 'org-mode-map :prefix "SPC m" :prefix-command 'my-org-mode-command-map)
   :bind (nil
 	 :map my-org-mode-command-map
 	 ("o" . org-open-at-point)
 	 ("l" . org-link)
-	 ("e" . org-edit-special)))
+	 ("e" . org-edit-special))
+  :init
+  (setq org-startup-folded 'content
+	org-fold-core-style 'overlays
+	org-edit-src-content-indentation 0))
 
 #+end_src
 
@@ -100,10 +101,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
 
 (use-package org-agenda
-  :custom (org-agenda-files (file-expand-wildcards (concat org-directory "/*.org")))
   :bind (nil
 	 :map my-org-map
-	 ("a" . org-agenda)))
+	 ("a" . org-agenda))
+  :init
+  (setq org-agenda-files (file-expand-wildcards (concat org-directory "/*.org"))))
 
 #+end_src
 
@@ -127,8 +129,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 (use-package org-rainbow-tags
   :straight (:host github :repo "KaratasFurkan/org-rainbow-tags")
-  :custom (org-rainbow-tags-extra-face-attributes '(:inverse-video t :box t :weight 'bold))
-  :hook (org-mode . org-rainbow-tags-mode))
+  :hook (org-mode . org-rainbow-tags-mode)
+  :init
+  (setq org-rainbow-tags-extra-face-attributes '(:inverse-video t :box t :weight 'bold)))
 
 #+end_src
 
@@ -148,20 +151,21 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 (use-package denote
   :straight t
   :demand t
-  :custom ((denote-directory org-directory)
-	   (denote-infer-keywords t)
-	   (denote-sort-keywords t)
-	   (denote-file-type nil)
-	   (denote-prompts '(title keywords))
-	   (denote-date-prompt-use-org-read-date t)
-	   (denote-allow-multi-word-keywords t)
-	   (denote-date-format nil)
-	   (denote-link-fontify-backlinks t))
   :bind (nil
 	 :map my-space-map
 	 ("d" . denote))
   :general (:states '(normal visual) :keymaps 'override :prefix "SPC d" :prefix-command 'my-denote-map)
-  :hook (dired-mode . denote-dired-mode-in-directories))
+  :hook (dired-mode . denote-dired-mode-in-directories)
+  :init
+  (setq denote-directory org-directory
+	denote-infer-keywords t
+	denote-sort-keywords t
+	denote-file-type nil
+	denote-prompts '(title keywords)
+	denote-date-prompt-use-org-read-date t
+	denote-allow-multi-word-keywords t
+	denote-date-format nil
+	denote-link-fontify-backlinks t))
 
 #+end_src
 
@@ -277,7 +281,8 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
 
 (use-package simple
-  :custom (idle-update-delay 1.0))
+  :init
+  (setq idle-update-delay 1.0))
 
 #+end_src
 
@@ -289,10 +294,10 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
       indicate-empty-lines nil)
 
 (use-package frame
-  :custom ((window-divider-default-places t)
-	   (window-divider-default-bottom-width 1)
-	   (window-divider-default-right-width 1))
   :init
+  (setq window-divider-default-places t
+	window-divider-default-bottom-width 1
+	window-divider-default-right-width 1)
   (window-divider-mode +1))
 
 #+end_src
@@ -302,8 +307,9 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
 
 (use-package window
-  :custom ((split-width-threshold 160)
-	   (split-height-threshold nil)))
+  :init
+  (setq split-width-threshold 160
+	split-height-threshold nil))
 
 #+end_src
 
@@ -315,7 +321,8 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
       completion-ignore-case t)
 
 (use-package minibuffer
-  :custom (read-file-name-completion-ignore-case t))
+  :init
+  (setq read-file-name-completion-ignore-case t))
 
 #+end_src
 
@@ -332,12 +339,14 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
 
 (use-package files
-  :custom ((make-backup-files nil)
-	   (auto-save-default nil)))
+  :init
+  (setq make-backup-files nil
+	auto-save-default nil))
 
 (use-package emacs
-  :custom ((create-lockfiles nil)
-	   (auto-save-list-file-prefix nil)))
+  :init
+  (setq create-lockfiles nil
+	auto-save-list-file-prefix nil))
 
 #+end_src
 
@@ -368,8 +377,8 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
 
 (use-package recentf
-  :custom (recentf-max-saved-items 200)
   :init
+  (setq recentf-max-saved-items 200)
   (recentf-mode +1))
 
 #+end_src
@@ -396,7 +405,7 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 *** 現在行を強調表示
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package hl-line
   :init
@@ -416,11 +425,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 *** 行番号の表示
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package display-line-numbers
-  :custom (display-line-numbers-width-start t)
   :init
+  (setq display-line-numbers-width-start t)
   (global-display-line-numbers-mode +1))
 
 #+end_src
@@ -579,8 +588,8 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 #+begin_src emacs-lisp :tangle yes
 
 (use-package whitespace
-  :custom (whitespace-style '(face trailing))
   :init
+  (setq whitespace-style '(face trailing))
   (global-whitespace-mode +1))
 
 #+end_src
@@ -590,6 +599,10 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 Emacsは~C-\~で日本語入力を切り替えることができますが、
 デフォルトだとあまり補完が賢くないのでOSに合わせて導入します。
 
+*** mozc
+
+[[https://www.kkaneko.jp/tools/server/mozc.html][日本語変換 Mozc の設定，emacs 用の Mozc の設定（Ubuntu 上）]] を参考にしています。
+
 *** [[https://github.com/trueroad/tr-emacs-ime-module][tr-ime]]
 
 #+begin_src emacs-lisp :tangle yes
@@ -597,16 +610,12 @@ Emacsは~C-\~で日本語入力を切り替えることができますが、
 (use-package tr-ime
   :straight t
   :if IS-WINDOWS
-  :custom (default-input-method "W32-IME")
   :init
+  (setq default-input-method "W32-IME")
   (tr-ime-standard-install)
   (w32-ime-initialize))
 
 #+end_src
-
-*** mozc
-
-[[https://www.kkaneko.jp/tools/server/mozc.html][日本語変換 Mozc の設定，emacs 用の Mozc の設定（Ubuntu 上）]] を参考にしています。
 
 **** 必要なパッケージを導入
 
@@ -625,7 +634,8 @@ fcitx-config-gtk
 (use-package mozc
   :straight t
   :if IS-LINUX
-  :custom (default-input-method "japanese-mozc"))
+  :init
+  (setq default-input-method "japanese-mozc"))
 
 #+end_src
 
@@ -674,6 +684,17 @@ fcitx-config-gtk
 
 #+end_src
 
+*** unicode-fonts
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package unicode-fonts
+  :straight t
+  :config
+  (unicode-fonts-setup))
+
+#+end_src
+
 ** modeline
 
 *** [[https://github.com/TeMPOraL/nyan-mode][nyan-mode]]
@@ -685,16 +706,16 @@ fcitx-config-gtk
 
 (use-package nyan-mode
   :straight t
-  :custom ((nyan-animate-nyancat t)
-	   (nyan-bar-length 24))
   :init
+  (setq nyan-animate-nyancat t
+	nyan-bar-length 24)
   (nyan-mode +1))
 
 #+end_src
 
 *** moody
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package moody
   :straight t
@@ -708,12 +729,23 @@ fcitx-config-gtk
 
 *** minions
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package minions
   :straight t
   :config
   (minions-mode +1))
+
+#+end_src
+
+*** doom-modeline
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package doom-modeline
+  :straight t
+  :init
+  (doom-modeline-mode +1))
 
 #+end_src
 
@@ -725,11 +757,12 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 (use-package evil
   :straight t
-  :custom ((evil-want-keybinding nil)
-	   (evil-symbol-word-search t)
-	   (evil-kill-on-visual-paste nil))
   :init
+  (setq evil-want-keybinding nil
+	evil-symbol-word-search t
+	evil-kill-on-visual-paste nil)
   (evil-mode +1)
+
   :config
   (defun my/evil-shift-right ()
     (interactive)
@@ -780,9 +813,9 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 選択中に ~S~ を入力して任意の文字を入力すると囲んでくれるパッケージです。
 - （例１） aaaを選択中に ~S(~
-aaa -> ( aaa )
+			    aaa -> ( aaa )
 
-- （例２） aaaを選択中に ~S)~
+			    - （例２） aaaを選択中に ~S)~
 aaa -> (aaa)
 
 #+begin_src emacs-lisp :tangle yes
@@ -863,10 +896,11 @@ aaa -> (aaa)
 
 (use-package orderless
   :straight t
-  :custom ((completion-styles '(orderless))
-	   (completion-category-defaults nil)
-	   (completion-category-overrides nil))
-  :hook (corfu-mode . (lambda () (setq-local orderless-matching-styles '(orderless-flex)))))
+  :hook (corfu-mode . (lambda () (setq-local orderless-matching-styles '(orderless-flex))))
+  :init
+  (setq completion-styles '(orderless)
+	completion-category-defaults nil
+	completion-category-overrides nil))
 
 #+end_src
 
@@ -893,11 +927,6 @@ aaa -> (aaa)
 		   :repo "minad/corfu"
 		   :branch "async"
 		   :files (:defaults "extensions/*"))
-  :custom ((corfu-auto t)
-	   (corfu-auto-prefix 1)
-	   (corfu-auto-delay 0)
-	   (corfu-cycle t)
-	   (tab-always-indent 'complete))
   :bind (nil
 	 :map corfu-map
 	 ("RET" . nil)
@@ -905,6 +934,11 @@ aaa -> (aaa)
 	 ("TAB" . corfu-insert)
 	 ("<tab>" . corfu-insert))
   :init
+  (setq corfu-auto t
+	corfu-auto-prefix 1
+	corfu-auto-delay 0
+	corfu-cycle t
+	tab-always-indent 'complete)
   (global-corfu-mode +1)
 
   :config
@@ -997,7 +1031,8 @@ aaa -> (aaa)
 (use-package kind-icon
   :straight t
   :after corfu
-  :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :init
+  (setq kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
@@ -1014,8 +1049,8 @@ aaa -> (aaa)
 		     :host github
 		     :repo "minad/vertico"
 		     :files (:defaults "extensions/*"))
-  :custom (vertico-cycle t)
   :init
+  (setq vertico-cycle t)
   (vertico-mode +1)
 
   :config
@@ -1401,15 +1436,15 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (use-package flycheck
   :straight t
-  :custom ((flycheck-idle-change-delay 1.0)
-	   (flycheck-display-errors-delay 1.0)
-	   (flycheck-idle-buffer-switch-delay 1.0))
   :bind (nil
 	 :map my-error-map
 	 ("l" . flycheck-list-errors)
 	 ("n" . flycheck-next-error)
 	 ("p" . flycheck-previous-error))
   :init
+  (setq flycheck-idle-change-delay 1.0
+	flycheck-display-errors-delay 1.0
+	flycheck-idle-buffer-switch-delay 1.0)
   (global-flycheck-mode +1))
 
 #+end_src
@@ -1422,11 +1457,13 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (use-package flycheck-posframe
   :straight t
-  :custom ((flycheck-posframe-warning-prefix "! ")
-	   (flycheck-posframe-info-prefix "··· ")
-	   (flycheck-posframe-error-prefix "X ")
-	   (flycheck-posframe-border-width 1))
   :hook (flycheck-mode . flycheck-posframe-mode)
+  :init
+  (setq flycheck-posframe-warning-prefix "! "
+	flycheck-posframe-info-prefix "··· "
+	flycheck-posframe-error-prefix "X "
+	flycheck-posframe-border-width 1)
+
   :config
   (with-eval-after-load 'company
     (add-hook 'flycheck-posframe-inhibit-functions 'company--active-p))
@@ -1458,11 +1495,11 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (use-package undo-tree
   :straight t
-  :custom (undo-tree-auto-save-history nil)
   :bind (nil
 	 :map my-space-map
 	 ("u" . undo-tree-visualize))
   :init
+  (setq undo-tree-auto-save-history nil)
   (global-undo-tree-mode +1))
 
 #+end_src
@@ -1547,7 +1584,8 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   :straight t
   :init
   ;; (load-theme 'ef-deuteranopia-light t)
-  (load-theme 'ef-light t)
+  ;; (load-theme 'ef-light t)
+  ;; (load-theme 'ef-deuteranopia-dark t)
   )
 
 #+end_src
@@ -1558,9 +1596,15 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (use-package solarized-theme
   :straight t
-  :init
-  ;; (load-theme 'solarized-light t)
-  )
+  :config
+  ;; (load-theme 'solarized-dark t)
+  (let ((line (face-attribute 'mode-line :underline)))
+    (set-face-attribute 'mode-line          nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :underline  line)
+    (set-face-attribute 'mode-line          nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :background "#f9f2d9")))
 
 #+end_src
 
@@ -1570,11 +1614,11 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (use-package doom-themes
   :straight t
-  :custom ((doom-themes-enable-bold t)
-	   (doom-themes-enable-italic t)
-	   (doom-themes-treemacs-theme "doom-colors"))
   :init
-  ;; (load-theme 'doom-nord-light t)
+  (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t
+	doom-themes-treemacs-theme "doom-colors")
+  (load-theme 'doom-solarized-dark t)
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
@@ -1642,12 +1686,12 @@ Emacsを再起動してくれます。
 
 (use-package pulsar
   :straight t
-  :custom ((pulsar-pulse t)
-	   (pulsar-delay 0.055)
-	   (pulsar-iterations 10)
-	   (pulsar-face 'pulsar-blue)
-	   (pulsar-highlight-face 'pulsar-blue))
   :init
+  (setq pulsar-pulse t
+	pulsar-delay 0.055
+	pulsar-iterations 10
+	pulsar-face 'pulsar-blue
+	pulsar-highlight-face 'pulsar-blue)
   (pulsar-global-mode +1))
 
 #+end_src
@@ -1660,10 +1704,10 @@ Emacsを再起動してくれます。
 
 (use-package gcmh
   :straight t
-  :custom ((gcmh-idle-delay 'auto)
-	   (gcmh-auto-idle-delay-factor 10)
-	   (gcmh-high-cons-threshold (* 128 1024 1024)))
   :init
+  (setq gcmh-idle-delay 'auto
+	gcmh-auto-idle-delay-factor 10
+	gcmh-high-cons-threshold (* 128 1024 1024))
   (gcmh-mode +1))
 
 #+end_src
@@ -1676,12 +1720,12 @@ Emacsを再起動してくれます。
 
 (use-package dashboard
   :straight t
-  :custom ((dashboard-center-content t)
-	   (dashboard-set-heading-icons t)
-	   (dashboard-set-file-icons t)
-	   (dashboard-set-navigator t)
-	   (dashboard-set-init-info t))
   :init
+  (setq dashboard-center-content t
+	dashboard-set-heading-icons t
+	dashboard-set-file-icons t
+	dashboard-set-navigator t
+	dashboard-set-init-info t)
   (dashboard-setup-startup-hook))
 
 #+end_src
@@ -1708,7 +1752,8 @@ Redo等、一部の操作を強調表示して操作がわかりやすくなり�
 
 (use-package alert
   :straight t
-  :custom (alert-default-style 'libnotify))
+  :init
+  (setq alert-default-style 'libnotify))
 
 #+end_src
 
@@ -1721,7 +1766,8 @@ Windows用の設定です。
 (use-package alert-toast
   :straight t
   :if IS-WINDOWS
-  :custom (alert-default-style 'toast))
+  :init
+  (setq alert-default-style 'toast))
 
 #+end_src
 
@@ -1948,7 +1994,9 @@ Windows用の設定です。
 
 (use-package super-save
   :straight t
-  :custom (super-save-auto-save-when-idle t)
+  :init
+  (setq super-save-auto-save-when-idle t)
+
   :config
   (with-eval-after-load 'evil
     (add-to-list 'super-save-triggers 'evil-window-next)
@@ -1983,8 +2031,9 @@ Windows用の設定です。
 
 (use-package ctrlf
   :straight t
-  :custom (ctrlf-default-search-style 'fuzzy)
   :init
+  :init
+  (setq ctrlf-default-search-style 'fuzzy)
   (ctrlf-mode +1))
 
 #+end_src
@@ -2021,10 +2070,11 @@ Emacs内で翻訳してくれるようになります。
 
 (use-package go-translate
   :straight t
-  :custom (gts-translate-list '(("en" "ja")))
   :bind (nil
 	 :map my-space-map
-	 ("T" . gts-do-translate)))
+	 ("T" . gts-do-translate))
+  :init
+  (setq gts-translate-list '(("en" "ja"))))
 
 #+end_src
 
@@ -2085,17 +2135,26 @@ Emacs内で翻訳してくれるようになります。
 
 #+end_src
 
-
 ** hl-block-mode
 
 #+begin_src emacs-lisp :tangle yes
 
 (use-package hl-block-mode
   :straight t
-  :custom ((hl-block-bracket nil)
-	   (hl-block-single-lebel t)
-	   (hl-block-style 'bracket))
-  :hook (prog-mode . hl-block-mode))
+  :hook (prog-mode . hl-block-mode)
+  :init
+  (setq hl-block-bracket nil
+	hl-block-single-lebel t
+	hl-block-style 'bracket))
+
+#+end_src
+
+** format-all
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package format-all
+  :straight t)
 
 #+end_src
 
@@ -2107,11 +2166,6 @@ EmacsでLSP機能が利用できるようになります。
 
 (use-package lsp-mode
   :straight t
-  :custom ((lsp-keymap-prefix "M-l")
-	   (lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request))
-	   (lsp-idle-delay 1.0)
-	   (lsp-semantic-tokens-enable t)
-	   (lsp-completion-provider :none))
   :general (:states '(normal visual) :keymaps 'lsp-mode-map :prefix "SPC m" :prefix-command 'my-lsp-command-map)
   :bind (nil
 	 :map my-lsp-command-map
@@ -2124,7 +2178,13 @@ EmacsでLSP機能が利用できるようになります。
 	 (rust-mode . lsp)
 	 (nxml-mode . lsp)
 	 (java-mode . lsp)
-	 (js-mode . lsp)))
+	 (js-mode . lsp))
+  :init
+  (setq lsp-keymap-prefix "M-l"
+	lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request)
+	lsp-idle-delay 1.0
+	lsp-semantic-tokens-enable t
+	lsp-completion-provider :none))
 
 #+end_src
 
@@ -2137,8 +2197,9 @@ UIを提供してくれます。
 (use-package lsp-ui
   :straight t
   :after lsp-mode
-  :custom ((lsp-ui-doc-delay 1.0)
-	   (lsp-ui-sideline-delay 1.0)))
+  :init
+  (setq lsp-ui-doc-delay 1.0
+	lsp-ui-sideline-delay 1.0))
 
 #+end_src
 
@@ -2341,7 +2402,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 (use-package slime
   :straight t
-  :custom (inferior-lisp-program "sbcl"))
+  :init
+  (setq inferior-lisp-program "sbcl"))
 
 #+end_src
 
@@ -2375,7 +2437,8 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 (use-package sqlformat
   :straight t
-  :custom (sqlformat-command "sqlfluff"))
+  :init
+  (setq sqlformat-command "sqlfluff"))
 
 #+end_src
 
