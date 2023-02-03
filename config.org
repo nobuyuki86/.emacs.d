@@ -1572,7 +1572,15 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 
 (use-package modus-themes
   :straight t
-  )
+  :config
+  (setq modus-themes-bold-constructs t
+	modus-themes-italic-constructs t)
+
+  ;; Maybe define some palette overrides, such as by using our presets
+  (setq modus-themes-common-palette-overrides
+	modus-themes-preset-overrides-intense)
+
+  (load-theme 'modus-operandi t)))
 
 #+end_src
 
@@ -1618,7 +1626,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t
 	doom-themes-treemacs-theme "doom-colors")
-  (load-theme 'doom-solarized-dark t)
+  ;; (load-theme 'doom-solarized-dark t)
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
