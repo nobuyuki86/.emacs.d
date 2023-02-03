@@ -656,45 +656,35 @@ fcitx-config-gtk
   (cond (IS-LINUX
 	 (setq fontaine-presets
 	       '((regular
-		  :default-family "VLゴシック"
-		  :default-height 100
-		  :fixed-pitch-family "VLゴシック"
-		  :variable-pitch-family "VLPゴシック"
-		  :italic-family "VLゴシック"
+		  :default-family "源ノ角ゴシック Code JP"
+		  :default-height 80
+		  :fixed-pitch-family "源ノ角ゴシック Code JP"
+		  :variable-pitch-family "源ノ角ゴシック VF"
+		  :italic-family "源ノ角ゴシック Code JP"
 		  :line-spacing 1)
 		 (large
-		  :default-family "VLゴシック"
-		  :default-height 150
-		  :variable-pitch-family "VLPゴシック"
+		  :default-family "源ノ角ゴシック Code JPゴシック"
+		  :default-height 120
+		  :variable-pitch-family "源ノ角ゴシック VF"
 		  :line-spacing 1))))
 
+	(iswi)
 	(IS-WINDOWS
 	 (setq fontaine-presets
 	       '((regular
-		  :default-family "BIZ UDゴシック"
-		  :default-height 120
-		  :fixed-pitch-family "BIZ UDゴシック"
-		  :variable-pitch-family "BIZ UDPゴシック"
-		  :italic-family "BIZ UDゴシック"
+		  :default-family "Cica"
+		  :default-height 100
+		  :fixed-pitch-family "Cica"
+		  :variable-pitch-family "ＭＳ Ｐゴシック"
+		  :italic-family "Cica"
 		  :line-spacing 1)
 		 (large
-		  :default-family "BIZ UDゴシック"
+		  :default-family "Cica"
 		  :default-height 150
-		  :variable-pitch-family "BIZ UDPゴシック"
+		  :variable-pitch-family "ＭＳ Ｐゴシック"
 		  :line-spacing 1)))))
 
   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular)))
-
-#+end_src
-
-*** unicode-fonts
-
-#+begin_src emacs-lisp :tangle yes
-
-(use-package unicode-fonts
-  :straight t
-  :config
-  (unicode-fonts-setup))
 
 #+end_src
 
