@@ -896,8 +896,6 @@ aaa -> (aaa)
 
 (use-package orderless
   :straight t
-  :demand t
-  :hook (corfu-mode . (lambda () (setq-local orderless-matching-styles '(orderless-flex))))
   :init
   (setq completion-styles '(orderless)
 	completion-category-defaults nil
@@ -960,13 +958,16 @@ aaa -> (aaa)
 	 :map corfu-map
 	 ("RET" . nil)
 	 ("<return>" . nil)
-	 ("TAB" . corfu-insert)
-	 ("<tab>" . corfu-insert))
+	 ("TAB" . corfu-next)
+	 ("<tab>" . corfu-next)
+	 ("S-TAB" . corfu-previous)
+	 ("<backtab>" . corfu-previous))
   :init
-  (setq corfu-auto t
+  (setq corfu-cycle t
+	corfu-auto t
 	corfu-auto-prefix 1
 	corfu-auto-delay 0
-	corfu-cycle t
+	corfu-preselect-first nil
 	tab-always-indent 'complete)
   (global-corfu-mode +1)
 
@@ -983,7 +984,27 @@ aaa -> (aaa)
       (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
 		  corfu-popupinfo-delay nil)
       (corfu-mode 1)))
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
+
+  (with-eval-after-load 'orderless
+    ;; configure the first word as flex filtered.
+    (defun my/orderless-dispatch-flex-first (_pattern index _total)
+      (and (eq index 0) 'orderless-flex))
+    (add-hook 'corfu-mode-hook (lambda ()
+				 (setq-local orderless-style-dispatchers '(my/orderless-dispatch-flex-first)))))
+
+  ;; TAB-and-Go completion
+  (dolist (c (list (cons "SPC" " ")
+		   (cons "." ".")
+		   (cons "," ",")
+		   (cons ":" ":")
+		   (cons ")" ")")
+		   (cons "}" "}")
+		   (cons "]" "]")))
+    (define-key corfu-map (kbd (car c)) `(lambda ()
+					   (interactive)
+					   (corfu-insert)
+					   (insert ,(cdr c))))))
 
 #+end_src
 
@@ -1019,10 +1040,12 @@ aaa -> (aaa)
 #+begin_src emacs-lisp :tangle yes
 
 (use-package company-tabnine
-  :straight (company-tabnine :type git :host github :repo "karta0807913/company-tabnine"))
+  :straight (company-tabnine :type git :host github :repo "karta0807913/company-tabnine")
+  :after corfu)
 
 (use-package cape
   :straight t
+  :after corfu
   :hook ((prog-mode . my/set-basic-capf)
 	 (text-mode . my/set-basic-capf)
 	 (meghanada-mode . my/set-meghanada-capf)
