@@ -43,11 +43,11 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 たどり着いたパッケージマネージャー。
 設定は ~init.el~ に記述。
 
-| コマンド                  | 動作                                                                      |
-|--------------------------+--------------------------------------------------------------------------|
-| straight-use-package     | パッケージのインストール                                                   |
-| straight-pull-all        | 全てのパッケージを最新の状態に更新                                          |
-| straight-freeze-versions | ロックファイルを作成                                                       |
+| コマンド                 | 動作                                                                           |
+|--------------------------+--------------------------------------------------------------------------------|
+| straight-use-package     | パッケージのインストール                                                       |
+| straight-pull-all        | 全てのパッケージを最新の状態に更新                                             |
+| straight-freeze-versions | ロックファイルを作成                                                           |
 | straight-thaw-versions   | ロックファイルのバージョンでインストールックファイルのバージョンでインストール |
 
 ** use-package
@@ -702,31 +702,6 @@ fcitx-config-gtk
   (setq nyan-animate-nyancat t
 	nyan-bar-length 24)
   (nyan-mode +1))
-
-#+end_src
-
-*** moody
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package moody
-  :straight t
-  :config
-  (setq x-underline-at-descent-line t)
-  (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode)
-  (moody-replace-eldoc-minibuffer-message-function))
-
-#+end_src
-
-*** minions
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package minions
-  :straight t
-  :config
-  (minions-mode +1))
 
 #+end_src
 
@@ -1621,7 +1596,7 @@ Emacs上でGitを快適に操作できるようにしてくれます。
   (setq modus-themes-common-palette-overrides
 	modus-themes-preset-overrides-intense)
 
-  (load-theme 'modus-vivendi t))
+  (load-theme 'modus-operandi t))
 
 #+end_src
 
