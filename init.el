@@ -62,6 +62,7 @@
  '(blink-cursor-mode nil)
  '(menu-bar-mode nil)
  '(tool-bar-mode nil)
+ '(transient-mark-mode nil)
  '(warning-suppress-types '((emacs) (org-element-cache) (initialization) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -656,31 +656,31 @@ fcitx-config-gtk
   (cond (IS-LINUX
 	 (setq fontaine-presets
 	       '((regular
-		  :default-family "源ノ角ゴシック Code JP"
+		  :default-family "PlemolJP HS"
 		  :default-height 80
-		  :fixed-pitch-family "源ノ角ゴシック Code JP"
-		  :variable-pitch-family "源ノ角ゴシック VF"
-		  :italic-family "源ノ角ゴシック Code JP"
+		  :fixed-pitch-family "PlemolJP HS"
+		  :variable-pitch-family "IBM Plex Sans JP"
+		  :italic-family "PlemolJP HS"
 		  :line-spacing 1)
 		 (large
-		  :default-family "源ノ角ゴシック Code JPゴシック"
+		  :default-family "PlemolJP HS"
 		  :default-height 120
-		  :variable-pitch-family "源ノ角ゴシック VF"
+		  :variable-pitch-family "IBM Plex Sans JP"
 		  :line-spacing 1))))
 
 	(IS-WINDOWS
 	 (setq fontaine-presets
 	       '((regular
-		  :default-family "Cica"
-		  :default-height 100
-		  :fixed-pitch-family "Cica"
-		  :variable-pitch-family "ＭＳ Ｐゴシック"
-		  :italic-family "Cica"
+		  :default-family "PlemolJP"
+		  :default-height 80
+		  :fixed-pitch-family "PlemolJP"
+		  :variable-pitch-family "IBM Plex Sans JP"
+		  :italic-family "PlemolJP"
 		  :line-spacing 1)
 		 (large
-		  :default-family "Cica"
-		  :default-height 150
-		  :variable-pitch-family "ＭＳ Ｐゴシック"
+		  :default-family "PlemolJP"
+		  :default-height 120
+		  :variable-pitch-family "IBM Plex Sans JP"
 		  :line-spacing 1)))))
 
   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular)))
@@ -1617,9 +1617,6 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 (use-package modus-themes
   :straight t
   :config
-  (setq modus-themes-bold-constructs t
-	modus-themes-italic-constructs t)
-
   ;; Maybe define some palette overrides, such as by using our presets
   (setq modus-themes-common-palette-overrides
 	modus-themes-preset-overrides-intense)
@@ -2210,6 +2207,20 @@ Emacs内で翻訳してくれるようになります。
 
 #+end_src
 
+** lin
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package lin
+  :straight t
+  :config
+  (setq lin-face 'lin-blue)
+  (add-to-list 'lin-mode-hooks 'prog-mode-hook)
+  (add-to-list 'lin-mode-hooks 'text-mode-hook)
+  (lin-global-mode +1))
+
+#+end_src
+
 ** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 EmacsでLSP機能が利用できるようになります。
@@ -2399,6 +2410,19 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 
 #+end_src
 
+***** ansi-color
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package ansi-color
+  :straight t
+  :config
+  (defun colorize-compilation-buffer ()
+    (ansi-color-apply-on-region compilation-filter-start (point-max)))
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
+
+#+end_src
+
 **** [[https://github.com/smihica/emmet-mode][emmet-mode]]
 
 ~Emmet~ を導入します。
@@ -2408,7 +2432,9 @@ JavaのLSは特殊なため、専用の拡張パッケージをインストー�
 (use-package emmet-mode
   :straight t
   :hook ((html-mode . emmet-mode)
-	 (css-mode . emmet-mode)))
+	 (css-mode . emmet-mode)
+	 (js-mode . emmet-mode)
+	 (typescript-mode . emmet-mode)))
 
 #+end_src
 
