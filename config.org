@@ -923,8 +923,6 @@ aaa -> (aaa)
 		   :files (:defaults "extensions/*"))
   :bind (nil
 	 :map corfu-map
-	 ("RET" . nil)
-	 ("<return>" . nil)
 	 ("TAB" . corfu-next)
 	 ("<tab>" . corfu-next)
 	 ("S-TAB" . corfu-previous)
@@ -934,7 +932,6 @@ aaa -> (aaa)
 	corfu-auto t
 	corfu-auto-prefix 0
 	corfu-auto-delay 0
-	corfu-preselect-first nil
 	tab-always-indent 'complete)
   (global-corfu-mode +1)
 
@@ -958,20 +955,7 @@ aaa -> (aaa)
     (defun my/orderless-dispatch-flex-first (_pattern index _total)
       (and (eq index 0) 'orderless-flex))
     (add-hook 'corfu-mode-hook (lambda ()
-				 (setq-local orderless-style-dispatchers '(my/orderless-dispatch-flex-first)))))
-
-  ;; TAB-and-Go completion
-  (dolist (c (list (cons "SPC" " ")
-		   (cons "." ".")
-		   (cons "," ",")
-		   (cons ":" ":")
-		   (cons ")" ")")
-		   (cons "}" "}")
-		   (cons "]" "]")))
-    (define-key corfu-map (kbd (car c)) `(lambda ()
-					   (interactive)
-					   (corfu-insert)
-					   (insert ,(cdr c))))))
+				 (setq-local orderless-style-dispatchers '(my/orderless-dispatch-flex-first))))))
 
 #+end_src
 
@@ -1012,7 +996,7 @@ aaa -> (aaa)
 
 (use-package cape
   :straight t
-  :after corfu
+  :after corfu tempel
   :hook ((prog-mode . my/set-basic-capf)
 	 (text-mode . my/set-basic-capf)
 	 (meghanada-mode . my/set-meghanada-capf)
@@ -1021,7 +1005,8 @@ aaa -> (aaa)
   (defun my/convert-super-capf (arg-capf)
     (list (cape-capf-case-fold
 	   (cape-super-capf arg-capf
-			    (cape-company-to-capf #'company-yasnippet)
+			    ;; (cape-company-to-capf #'company-yasnippet)
+			    #'tempel-complete
 			    (cape-company-to-capf #'company-tabnine)))
 	  #'cape-file
 	  #'cape-dabbrev))
@@ -1351,35 +1336,23 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
-** [[https://github.com/joaotavora/yasnippet][yasnippet]]
-
-スニペット機能を提供してくれます。
+** tempel
 
 #+begin_src emacs-lisp :tangle yes
 
-(use-package yasnippet
+(use-package tempel
   :straight t
-  :bind (nil
-	 :map yas-keymap
-	 ("<tab>" . nil)
-	 ("TAB" . nil)
-	 ("<backtab>" . nil)
-	 ("S-TAB" . nil)
-	 ("C-o" . yas-next-field-or-maybe-expand))
-  :init
-  (yas-global-mode +1))
+  :demand t
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+	 ("M-*" . tempel-insert)))
 
 #+end_src
 
-*** [[https://github.com/AndreaCrotti/yasnippet-snippets][yasnippet-snippets]]
-
-各言語のスニペットを提供してくれます。
+*** tempel-collection
 
 #+begin_src emacs-lisp :tangle yes
 
-(use-package yasnippet-snippets
-  :straight t
-  :after yasnippet)
+(use-package tempel-collection :straight t)
 
 #+end_src
 
