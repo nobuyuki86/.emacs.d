@@ -926,7 +926,6 @@ aaa -> (aaa)
   :straight (corfu :type git
 		   :host github
 		   :repo "minad/corfu"
-		   :branch "async"
 		   :files (:defaults "extensions/*"))
   :bind (nil
 	 :map corfu-map
@@ -939,6 +938,7 @@ aaa -> (aaa)
 	corfu-auto t
 	corfu-auto-prefix 0
 	corfu-auto-delay 0
+	corfu-preselect 'prompt
 	tab-always-indent 'complete)
   (global-corfu-mode +1)
 
