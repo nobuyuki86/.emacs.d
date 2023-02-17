@@ -559,6 +559,27 @@ Emacs標準の ~package.el+quelpa~ や ~el-get~ 等を色々試した結果、
 
 #+end_src
 
+*** 括弧の補完
+
+#+begin_src emacs-lisp
+
+(use-package elec-pair
+  :config
+  (electric-pair-mode +1))
+
+#+end_src
+
+** 共通ライブラリ
+
+*** compat
+
+#+begin_src emacs-lisp
+
+(use-package compat
+  :straight (:type git :host github :repo "emacs-compat/compat"))
+
+#+end_src
+
 ** 文字コード
 
 #+begin_src emacs-lisp
@@ -1363,6 +1384,27 @@ vertico の候補等に様々なアクションを提供してくれます。
 
 #+end_src
 
+** [[https://github.com/joaotavora/yasnippet][yasnippet]]
+
+スニペット機能を提供してくれます。
+
+#+begin_src emacs-lisp
+
+(use-package yasnippet
+  :straight t
+  :bind (nil
+	 :map yas-keymap
+	 ("<tab>" . nil)
+	 ("TAB" . nil)
+	 ("<backtab>" . nil)
+	 ("S-TAB" . nil)
+	 ("M-{" . yas-next-field-or-maybe-expand)
+	 ("M-}" . yas-prev-field))
+  :init
+  (yas-global-mode +1))
+ 
+ #+end_src
+
 ** [[https://github.com/jscheid/dtrt-indent][dtrt-indent]]
 
 インデントを推測して、設定してくれます。
@@ -1538,7 +1580,10 @@ Emacs上でGitを快適に操作できるようにしてくれます。
 	 :map my-toggle-map
 	 ("i" . highlight-indent-guides-mode))
   :hook ((prog-mode . highlight-indent-guides-mode)
-	 (text-mode . highlight-indent-guides-mode)))
+	 (text-mode . highlight-indent-guides-mode))
+  :init
+  (setq highlight-indent-guides-auto-odd-face-perc 3
+	highlight-indent-guides-auto-even-face-perc 5))
 
 #+end_src
 
@@ -2030,15 +2075,16 @@ Windows用の設定です。
 
 #+end_src
 
-** smartparens
+** puni
 
 #+begin_src emacs-lisp
 
-(use-package smartparens
+(use-package puni
   :straight t
-  :config
-  (require 'smartparens-config)
-  (smartparens-global-mode +1))
+  :defer t
+  :init
+  (puni-global-mode)
+  (add-hook 'term-mode-hook #'puni-disable-puni-mode))
 
 #+end_src
 
@@ -2173,6 +2219,19 @@ Emacs内で翻訳してくれるようになります。
   (add-to-list 'lin-mode-hooks 'prog-mode-hook)
   (add-to-list 'lin-mode-hooks 'text-mode-hook)
   (lin-global-mode +1))
+
+#+end_src
+
+** snap-indent
+
+#+begin_src emacs-lisp
+
+(use-package snap-indent
+  :straight t
+  :hook (prog-mode . snap-indent-mode)
+  :init
+  (setq snap-indent-format 'untabify
+	snap-indent-on-save t))
 
 #+end_src
 
