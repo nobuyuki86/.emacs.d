@@ -679,7 +679,7 @@ fcitx-config-gtk
 	 (setq fontaine-presets
 	       '((regular
 		  :default-family "PlemolJP"
-		  :default-height 80
+		  :default-height 100
 		  :fixed-pitch-family "PlemolJP"
 		  :variable-pitch-family "IBM Plex Sans JP"
 		  :italic-family "PlemolJP"
@@ -787,9 +787,9 @@ VimキーバインドをEmacs上で実現してくれるパッケージです。
 
 選択中に ~S~ を入力して任意の文字を入力すると囲んでくれるパッケージです。
 - （例１） aaaを選択中に ~S(~
-			    aaa -> ( aaa )
+  aaa -> ( aaa )
 
-			    - （例２） aaaを選択中に ~S)~
+- （例２） aaaを選択中に ~S)~
 aaa -> (aaa)
 
 #+begin_src emacs-lisp
@@ -998,11 +998,12 @@ aaa -> (aaa)
 #+begin_src emacs-lisp
 
 (use-package company-tabnine
-  :straight (company-tabnine :type git :host github :repo "karta0807913/company-tabnine")
+  :straight t
   :after corfu)
 
 (use-package cape
   :straight t
+  :after corfu
   :hook ((prog-mode . my/set-basic-capf)
 	 (text-mode . my/set-basic-capf)
 	 (meghanada-mode . my/set-meghanada-capf)
